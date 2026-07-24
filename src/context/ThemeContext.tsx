@@ -13,13 +13,12 @@ const ThemeContext = createContext<ThemeContextType>({
 export const useTheme = () => useContext(ThemeContext);
 
 export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [darkMode, setDarkMode] = useState(true);
-
-  useEffect(() => {
-    const isDark = localStorage.getItem('darkMode') !== 'false';
-    setDarkMode(isDark);
+  const [darkMode, setDarkMode] = useState(() => {
+    const stored = localStorage.getItem('darkMode');
+    const isDark = stored !== 'false';
     document.documentElement.classList.toggle('dark', isDark);
-  }, []);
+    return isDark;
+  });
 
   const toggleDarkMode = () => {
     const newMode = !darkMode;

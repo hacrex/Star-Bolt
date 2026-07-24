@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import { Star, Music2 } from 'lucide-react';
 
 const FeaturedArtist = () => {
@@ -25,7 +26,7 @@ const FeaturedArtist = () => {
         <div className="p-6">
           <div className="flex items-center justify-between mb-4">
             <h4 className="font-semibold">Popular Songs</h4>
-            <button className="text-purple-400 hover:text-purple-300 text-sm">View All</button>
+            <Link to="/search?q=Taylor+Swift" className="text-purple-400 hover:text-purple-300 text-sm">View All</Link>
           </div>
           <div className="space-y-3">
             {['Anti-Hero', 'Cruel Summer', 'Shake It Off'].map((song) => (

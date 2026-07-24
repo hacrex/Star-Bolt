@@ -22,23 +22,23 @@ const Footer = () => {
             <h3 className="text-lg font-semibold mb-4">Quick Links</h3>
             <ul className="space-y-2">
               <li>
-                <Link to="/privacy-policy" className="hover:text-purple-400 transition-colors">
-                  Privacy Policy
+                <Link to="/" className="hover:text-purple-400 transition-colors">
+                  Home
                 </Link>
               </li>
               <li>
-                <Link to="/terms" className="hover:text-purple-400 transition-colors">
-                  Terms & Conditions
+                <Link to="/search" className="hover:text-purple-400 transition-colors">
+                  Search Songs
                 </Link>
               </li>
               <li>
-                <Link to="/about" className="hover:text-purple-400 transition-colors">
-                  About Us
+                <Link to="/ai-lyrics" className="hover:text-purple-400 transition-colors">
+                  AI Lyrics Generator
                 </Link>
               </li>
               <li>
-                <Link to="/contact" className="hover:text-purple-400 transition-colors">
-                  Contact Us
+                <Link to="/videos" className="hover:text-purple-400 transition-colors">
+                  Videos
                 </Link>
               </li>
             </ul>

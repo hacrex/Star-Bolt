@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 import { supabase } from '../lib/supabase';
-import type { Database } from '../lib/database.types';
+import { generateLyricsAPI, translateLyricsAPI } from '../lib/api';
 
 interface AISettings {
   rhymeScheme: 'ABAB' | 'AABB' | 'FREE';
@@ -53,34 +53,8 @@ export const useAIStore = create<AIStore>((set, get) => ({
     try {
       set({ loading: true, error: null });
       const settings = get().settings;
-      
-      // In a real implementation, this would call your AI service
-      // For now, we'll simulate the API call
-      const response = await fetch('https://api.openai.com/v1/completions', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${import.meta.env.VITE_OPENAI_API_KEY}`,
-        },
-        body: JSON.stringify({
-          model: "gpt-3.5-turbo",
-          messages: [{
-            role: "system",
-            content: `Generate song lyrics with the following parameters:
-              Rhyme scheme: ${settings.rhymeScheme}
-              Syllables per line: ${settings.syllablesPerLine}
-              Genre: ${settings.genre}
-              Mood: ${settings.mood}
-              Language: ${settings.language}`
-          }, {
-            role: "user",
-            content: prompt
-          }]
-        }),
-      });
-
-      const data = await response.json();
-      return data.choices[0].message.content;
+      const content = await generateLyricsAPI(prompt, settings);
+      return content;
     } catch (error) {
       set({ error: 'Failed to generate lyrics' });
       throw error;
@@ -139,21 +113,8 @@ export const useAIStore = create<AIStore>((set, get) => ({
   translateLyrics: async (content: string, targetLanguage: string) => {
     try {
       set({ loading: true, error: null });
-      // In a real implementation, this would call the Google Translate API
-      // For now, we'll simulate the translation
-      const response = await fetch(`https://translation.googleapis.com/language/translate/v2?key=${import.meta.env.VITE_GOOGLE_TRANSLATE_API_KEY}`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          q: content,
-          target: targetLanguage,
-        }),
-      });
-
-      const data = await response.json();
-      return data.data.translations[0].translatedText;
+      const translatedText = await translateLyricsAPI(content, targetLanguage);
+      return translatedText;
     } catch (error) {
       set({ error: 'Failed to translate lyrics' });
       throw error;

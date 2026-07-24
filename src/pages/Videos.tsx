@@ -52,12 +52,7 @@ const Videos = () => {
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    // In a real implementation, we would fetch videos from YouTube Data API
-    setLoading(true);
-    setTimeout(() => {
-      setVideos(MOCK_VIDEOS);
-      setLoading(false);
-    }, 1000);
+    setVideos(MOCK_VIDEOS);
   }, [activeCategory]);
 
   const handleShare = async (video: YouTubeVideo) => {

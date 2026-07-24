@@ -133,6 +133,92 @@ export interface Database {
           created_at?: string
         }
       }
+      playlists: {
+        Row: {
+          id: string
+          name: string
+          user_id: string
+          created_at: string
+        }
+        Insert: {
+          id?: string
+          name: string
+          user_id: string
+          created_at?: string
+        }
+        Update: {
+          id?: string
+          name?: string
+          user_id?: string
+          created_at?: string
+        }
+      }
+      playlist_songs: {
+        Row: {
+          id: string
+          playlist_id: string
+          song_id: string
+          added_at: string
+        }
+        Insert: {
+          id?: string
+          playlist_id: string
+          song_id: string
+          added_at?: string
+        }
+        Update: {
+          id?: string
+          playlist_id?: string
+          song_id?: string
+          added_at?: string
+        }
+      }
+      favorites: {
+        Row: {
+          id: string
+          user_id: string
+          song_id: string
+          created_at: string
+        }
+        Insert: {
+          id?: string
+          user_id: string
+          song_id: string
+          created_at?: string
+        }
+        Update: {
+          id?: string
+          user_id?: string
+          song_id?: string
+          created_at?: string
+        }
+      }
+      generated_lyrics: {
+        Row: {
+          id: string
+          title: string
+          content: string
+          settings: Json
+          user_id: string
+          created_at: string
+        }
+        Insert: {
+          id?: string
+          title: string
+          content: string
+          settings: Json
+          user_id: string
+          created_at?: string
+        }
+        Update: {
+          id?: string
+          title?: string
+          content?: string
+          settings?: Json
+          user_id?: string
+          created_at?: string
+        }
+      }
     }
   }
 }

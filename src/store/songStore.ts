@@ -9,6 +9,8 @@ interface SongState {
   loading: boolean;
   fetchSongs: () => Promise<void>;
   addSong: (song: Omit<Song, 'id' | 'created_at'>) => Promise<void>;
+  updateSong: (songId: string, updates: Partial<Song>) => Promise<void>;
+  deleteSong: (songId: string) => Promise<void>;
   rateSong: (songId: string, score: number) => Promise<void>;
   addComment: (songId: string, content: string) => Promise<void>;
 }
@@ -37,6 +39,28 @@ export const useSongStore = create<SongState>((set, get) => ({
     
     if (error) throw error;
     await get().fetchSongs();
+  },
+  updateSong: async (songId, updates) => {
+    const { error } = await supabase
+      .from('songs')
+      .update(updates)
+      .eq('id', songId);
+
+    if (error) throw error;
+    set(state => ({
+      songs: state.songs.map(s => s.id === songId ? { ...s, ...updates } : s)
+    }));
+  },
+  deleteSong: async (songId) => {
+    const { error } = await supabase
+      .from('songs')
+      .delete()
+      .eq('id', songId);
+
+    if (error) throw error;
+    set(state => ({
+      songs: state.songs.filter(s => s.id !== songId)
+    }));
   },
   rateSong: async (songId, score) => {
     const { data: { user } } = await supabase.auth.getUser();

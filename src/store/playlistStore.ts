@@ -13,6 +13,7 @@ interface PlaylistStore {
   loading: boolean;
   fetchPlaylists: () => Promise<void>;
   createPlaylist: (name: string) => Promise<void>;
+  deletePlaylist: (playlistId: string) => Promise<void>;
   addSongToPlaylist: (playlistId: string, songId: string) => Promise<void>;
   removeSongFromPlaylist: (playlistId: string, songId: string) => Promise<void>;
 }
@@ -44,6 +45,17 @@ export const usePlaylistStore = create<PlaylistStore>((set, get) => ({
     
     if (error) throw error;
     await get().fetchPlaylists();
+  },
+  deletePlaylist: async (playlistId: string) => {
+    const { error } = await supabase
+      .from('playlists')
+      .delete()
+      .eq('id', playlistId);
+
+    if (error) throw error;
+    set(state => ({
+      playlists: state.playlists.filter(p => p.id !== playlistId)
+    }));
   },
   addSongToPlaylist: async (playlistId: string, songId: string) => {
     const { error } = await supabase

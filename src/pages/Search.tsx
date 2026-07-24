@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { useNavigate, useSearchParams, Link } from 'react-router-dom';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
+import { useSearchParams, Link } from 'react-router-dom';
 import { supabase } from '../lib/supabase';
 import { Search as SearchIcon, Music2, Star, Clock } from 'lucide-react';
 import type { Database } from '../lib/database.types';
@@ -8,7 +8,6 @@ type Song = Database['public']['Tables']['songs']['Row'];
 
 const Search = () => {
   const [searchParams, setSearchParams] = useSearchParams();
-  const navigate = useNavigate();
   const [query, setQuery] = useState(searchParams.get('q') || '');
   const [results, setResults] = useState<Song[]>([]);
   const [loading, setLoading] = useState(false);
@@ -16,6 +15,7 @@ const Search = () => {
   const [popularSearches] = useState([
     'Taylor Swift', 'Ed Sheeran', 'Drake', 'Adele', 'The Weeknd'
   ]);
+  const debounceTimer = useRef<ReturnType<typeof setTimeout>>();
 
   useEffect(() => {
     const searches = localStorage.getItem('recentSearches');
@@ -30,15 +30,12 @@ const Search = () => {
     localStorage.setItem('recentSearches', JSON.stringify(updated));
   };
 
-  const handleSearch = async (searchQuery: string) => {
-    setQuery(searchQuery);
+  const performSearch = useCallback(async (searchQuery: string) => {
     if (searchQuery.length < 2) {
       setResults([]);
-      setSearchParams({});
       return;
     }
 
-    setSearchParams({ q: searchQuery });
     setLoading(true);
     try {
       const { data, error } = await supabase
@@ -56,18 +53,32 @@ const Search = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [recentSearches]);
+
+  const handleSearch = useCallback((searchQuery: string) => {
+    setQuery(searchQuery);
+    setSearchParams(searchQuery ? { q: searchQuery } : {});
+
+    if (debounceTimer.current) {
+      clearTimeout(debounceTimer.current);
+    }
+
+    debounceTimer.current = setTimeout(() => {
+      performSearch(searchQuery);
+    }, 300);
+  }, [setSearchParams, performSearch]);
 
   useEffect(() => {
-    if (searchParams.get('q')) {
-      handleSearch(searchParams.get('q') || '');
+    const q = searchParams.get('q');
+    if (q && q.length >= 2) {
+      performSearch(q);
     }
-  }, [searchParams]);
+  }, []);
 
   return (
     <div className="max-w-4xl mx-auto px-4">
       <h1 className="text-3xl font-bold mb-8">Search Songs</h1>
-      
+
       <div className="relative mb-8">
         <input
           type="text"
@@ -80,7 +91,9 @@ const Search = () => {
       </div>
 
       {loading ? (
-        <div className="text-center py-8">Searching...</div>
+        <div className="text-center py-8">
+          <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-purple-500 mx-auto"></div>
+        </div>
       ) : results.length > 0 ? (
         <div className="space-y-4">
           {results.map((song) => (
@@ -120,7 +133,6 @@ const Search = () => {
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-          {/* Recent Searches */}
           <div className="bg-white dark:bg-gray-800 rounded-lg p-6">
             <h2 className="text-lg font-semibold mb-4 flex items-center gap-2">
               <Clock className="w-5 h-5" />
@@ -143,7 +155,6 @@ const Search = () => {
             )}
           </div>
 
-          {/* Popular Searches */}
           <div className="bg-white dark:bg-gray-800 rounded-lg p-6">
             <h2 className="text-lg font-semibold mb-4 flex items-center gap-2">
               <Star className="w-5 h-5" />

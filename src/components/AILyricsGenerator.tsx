@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useAIStore } from '../store/aiStore';
 import { useAuthStore } from '../store/authStore';
+import { useToast } from './Toast';
 import { Wand2, Save, Share2, Languages, Settings } from 'lucide-react';
 
 const LANGUAGES = [
@@ -20,6 +21,7 @@ const MOODS = ['Happy', 'Sad', 'Energetic', 'Romantic', 'Angry', 'Peaceful'];
 
 const AILyricsGenerator = () => {
   const { user } = useAuthStore();
+  const { showToast } = useToast();
   const {
     settings,
     updateSettings,
@@ -40,25 +42,30 @@ const AILyricsGenerator = () => {
     try {
       const lyrics = await generateLyrics(prompt);
       setGeneratedContent(lyrics);
+      showToast('Lyrics generated successfully!', 'success');
     } catch (err) {
-      console.error('Failed to generate lyrics:', err);
+      showToast('Failed to generate lyrics', 'error');
     }
   };
 
   const handleSave = async () => {
     if (!title) {
-      alert('Please enter a title for your lyrics');
+      showToast('Please enter a title for your lyrics', 'error');
       return;
     }
     try {
       await saveLyrics(title, generatedContent);
-      alert('Lyrics saved successfully!');
+      showToast('Lyrics saved successfully!', 'success');
     } catch (err) {
-      console.error('Failed to save lyrics:', err);
+      showToast('Failed to save lyrics', 'error');
     }
   };
 
   const handleShare = async () => {
+    if (!navigator.share) {
+      showToast('Sharing is not supported in this browser', 'info');
+      return;
+    }
     try {
       const shareData = {
         title: title || 'Generated Lyrics',
@@ -67,7 +74,9 @@ const AILyricsGenerator = () => {
       };
       await navigator.share(shareData);
     } catch (err) {
-      console.error('Failed to share:', err);
+      if ((err as Error).name !== 'AbortError') {
+        showToast('Failed to share', 'error');
+      }
     }
   };
 
@@ -75,8 +84,9 @@ const AILyricsGenerator = () => {
     try {
       const translated = await translateLyrics(generatedContent, targetLanguage);
       setGeneratedContent(translated);
+      showToast('Lyrics translated successfully!', 'success');
     } catch (err) {
-      console.error('Failed to translate:', err);
+      showToast('Failed to translate lyrics', 'error');
     }
   };
 
@@ -104,7 +114,12 @@ const AILyricsGenerator = () => {
                 </label>
                 <select
                   value={settings.rhymeScheme}
-                  onChange={(e) => updateSettings({ rhymeScheme: e.target.value as any })}
+                  onChange={(e) => {
+                    const value = e.target.value;
+                    if (value === 'ABAB' || value === 'AABB' || value === 'FREE') {
+                      updateSettings({ rhymeScheme: value });
+                    }
+                  }}
                   className="w-full p-2 rounded border dark:bg-gray-800 dark:border-gray-600"
                 >
                   <option value="ABAB">ABAB</option>
