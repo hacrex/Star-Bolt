@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Videos - Star Lyrix</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&amp;family=JetBrains+Mono:wght@500&amp;family=Source+Serif+4:wght@400&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-primary": "#402d00",
+                        "on-tertiary-fixed": "#1c1b1b",
+                        "on-tertiary-container": "#424242",
+                        "on-primary-container": "#553e00",
+                        "primary-container": "#d4a843",
+                        "on-primary-fixed": "#261a00",
+                        "inverse-on-surface": "#32302b",
+                        "on-secondary-fixed-variant": "#4c463b",
+                        "on-tertiary": "#313030",
+                        "surface-tint": "#eec058",
+                        "surface-container-highest": "#36352f",
+                        "secondary-fixed": "#ece1d2",
+                        "inverse-primary": "#795900",
+                        "error": "#ffb4ab",
+                        "on-background": "#e7e2da",
+                        "surface-bright": "#3b3934",
+                        "surface-variant": "#36352f",
+                        "on-error": "#690005",
+                        "outline": "#9a8f7d",
+                        "outline-variant": "#4e4636",
+                        "on-secondary-container": "#c1b7a9",
+                        "surface-dim": "#14130f",
+                        "secondary": "#cfc5b6",
+                        "on-surface": "#e7e2da",
+                        "tertiary-fixed": "#e5e2e1",
+                        "tertiary-container": "#b0aead",
+                        "on-surface-variant": "#d2c5b1",
+                        "inverse-surface": "#e7e2da",
+                        "on-secondary": "#353025",
+                        "surface-container-high": "#2b2a25",
+                        "primary": "#f2c35b",
+                        "primary-fixed-dim": "#eec058",
+                        "surface-container-low": "#1d1c17",
+                        "on-secondary-fixed": "#201b12",
+                        "error-container": "#93000a",
+                        "secondary-container": "#4f483d",
+                        "surface-container-lowest": "#0f0e0a",
+                        "secondary-fixed-dim": "#cfc5b6",
+                        "on-error-container": "#ffdad6",
+                        "tertiary-fixed-dim": "#c8c6c5",
+                        "background": "#14130f",
+                        "tertiary": "#ccc9c9",
+                        "on-primary-fixed-variant": "#5b4300",
+                        "surface-container": "#21201b",
+                        "primary-fixed": "#ffdf9f",
+                        "on-tertiary-fixed-variant": "#474646",
+                        "surface": "#14130f"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px",
+                        "2xl": "1rem"
+                    },
+                    "spacing": {
+                        "bento-gap": "20px",
+                        "xs": "4px",
+                        "lg": "24px",
+                        "sm": "8px",
+                        "container-padding": "32px",
+                        "md": "16px",
+                        "xl": "40px",
+                        "unit": "4px"
+                    },
+                    "fontFamily": {
+                        "display-lg-mobile": ["Inter"],
+                        "label-mono": ["JetBrains Mono"],
+                        "lyric-display": ["\"Source Serif 4\""],
+                        "body-sm": ["Inter"],
+                        "body-lg": ["Inter"],
+                        "display-md": ["Inter"],
+                        "display-lg": ["Inter"],
+                        "lyric-body": ["\"Source Serif 4\""],
+                        "lyric-display-mobile": ["\"Source Serif 4\""]
+                    },
+                    "fontSize": {
+                        "display-lg-mobile": ["32px", { "lineHeight": "38px", "fontWeight": "700" }],
+                        "label-mono": ["12px", { "lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "500" }],
+                        "lyric-display": ["28px", { "lineHeight": "56px", "letterSpacing": "0em", "fontWeight": "400" }],
+                        "body-sm": ["14px", { "lineHeight": "20px", "fontWeight": "400" }],
+                        "body-lg": ["18px", { "lineHeight": "28px", "fontWeight": "400" }],
+                        "display-md": ["32px", { "lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "600" }],
+                        "display-lg": ["48px", { "lineHeight": "56px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "lyric-body": ["20px", { "lineHeight": "40px", "letterSpacing": "0em", "fontWeight": "400" }],
+                        "lyric-display-mobile": ["22px", { "lineHeight": "44px", "fontWeight": "400" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        body {
+            background-color: theme('colors.background');
+            color: theme('colors.on-surface');
+            -webkit-font-smoothing: antialiased;
+        }
+        .bento-card {
+            background-color: theme('colors.surface-dim');
+            border: 1px solid theme('colors.outline');
+            border-radius: theme('borderRadius.2xl');
+            transition: transform 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+        .bento-card:hover {
+            transform: scale(1.02);
+            border-color: theme('colors.primary');
+            box-shadow: 0 0 20px rgba(212, 168, 67, 0.15);
+        }
+        .gold-glow {
+            box-shadow: 0 0 30px rgba(212, 168, 67, 0.2);
+        }
+    </style>
+</head>
+<body class="min-h-screen pt-24 pb-24 md:pb-0">
+<!-- TopNavBar -->
+<nav class="hidden md:flex bg-background/85 backdrop-blur-xl fixed top-0 w-full z-50 border-b border-outline/10 shadow-sm justify-between items-center px-container-padding h-20 max-w-[1440px] mx-auto left-0 right-0">
+<div class="font-display-md text-display-md font-bold text-primary tracking-tight">Star Lyrix</div>
+<div class="flex gap-lg">
+<a class="text-on-surface-variant font-medium hover:text-primary transition-colors duration-300 font-body-lg text-body-lg" href="#">Discover</a>
+<a class="text-on-surface-variant font-medium hover:text-primary transition-colors duration-300 font-body-lg text-body-lg" href="#">AI Lyrics</a>
+<a class="text-primary font-bold border-b-2 border-primary pb-1 hover:text-primary transition-colors duration-300 font-body-lg text-body-lg" href="#">Videos</a>
+<a class="text-on-surface-variant font-medium hover:text-primary transition-colors duration-300 font-body-lg text-body-lg" href="#">My Lyrics</a>
+<a class="text-on-surface-variant font-medium hover:text-primary transition-colors duration-300 font-body-lg text-body-lg" href="#">Playlists</a>
+</div>
+<div class="flex gap-md text-primary">
+<span class="material-symbols-outlined cursor-pointer hover:text-primary-fixed transition-colors">search</span>
+<span class="material-symbols-outlined cursor-pointer hover:text-primary-fixed transition-colors">account_circle</span>
+</div>
+</nav>
+<!-- Main Content -->
+<main class="max-w-[1440px] mx-auto px-4 md:px-container-padding space-y-xl">
+<!-- Filters -->
+<div class="flex flex-wrap gap-sm pt-md">
+<button class="bg-surface-dim border border-primary text-primary px-4 py-2 rounded-full font-label-mono text-label-mono hover:bg-surface-container transition-colors">All Moods</button>
+<button class="bg-surface-dim border border-outline text-on-surface px-4 py-2 rounded-full font-label-mono text-label-mono hover:border-primary hover:text-primary transition-colors">Dreamy</button>
+<button class="bg-surface-dim border border-outline text-on-surface px-4 py-2 rounded-full font-label-mono text-label-mono hover:border-primary hover:text-primary transition-colors">Ethereal</button>
+<button class="bg-surface-dim border border-outline text-on-surface px-4 py-2 rounded-full font-label-mono text-label-mono hover:border-primary hover:text-primary transition-colors">Calm</button>
+<button class="bg-surface-dim border border-outline text-on-surface px-4 py-2 rounded-full font-label-mono text-label-mono hover:border-primary hover:text-primary transition-colors">Reflective</button>
+</div>
+<!-- Hero: Video of the Week -->
+<section class="bento-card overflow-hidden relative group aspect-[21/9] flex flex-col justify-end">
+<div class="absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-105" data-alt="A cinematic still of a grand, dimly lit concert hall with soft, warm tungsten spotlights focusing on a solitary microphone stand. The atmosphere is immersive and premium, with deep black shadows contrasting against the warm gold light. The aesthetic is luxurious, moody, and highly detailed, reflecting a 'cinema for your ears' concept." style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuBlwmwgRqNkjDExPHUtD79TAkiLp8OW36iviuzAkuLAOIPtNFijmm5dG30DacPnqdiIsfz_Z-WX-R7sXRHdZHTwY0crgmN0iTAvScSuVD7ikL20qoJe8lsAyWKxEY30jfQD2qqQTtoqt1XneKBiUepkDYRn8igsyEYJDfkrzYI79ikZMliPq1cn0Mb5mxBAiNI49zvMuJCSMvV3SE3vv5mP7FnhKSa8GplLlsyxsbTTeqQ6vPWjCKQ-')"></div>
+<div class="absolute inset-0 bg-gradient-to-t from-background via-background/50 to-transparent"></div>
+<div class="absolute inset-0 flex items-center justify-center">
+<button class="bg-primary-container text-on-primary rounded-full p-4 hover:scale-110 transition-transform duration-300 gold-glow">
+<span class="material-symbols-outlined text-4xl" data-weight="fill" style="font-variation-settings: 'FILL' 1;">play_arrow</span>
+</button>
+</div>
+<div class="relative z-10 p-lg md:p-xl flex flex-col md:flex-row justify-between items-end gap-md w-full">
+<div class="w-full md:w-2/3">
+<div class="flex items-center gap-xs mb-sm">
+<span class="bg-primary/20 text-primary px-2 py-1 rounded-full font-label-mono text-label-mono uppercase tracking-widest border border-primary/30">Video of the Week</span>
+<span class="material-symbols-outlined text-primary text-sm" data-weight="fill" style="font-variation-settings: 'FILL' 1;">verified</span>
+</div>
+<h1 class="font-display-lg-mobile md:font-display-lg text-display-lg-mobile md:text-display-lg text-on-surface mb-2">Echoes in the Velvet</h1>
+<p class="font-lyric-body text-lyric-body text-on-surface-variant italic opacity-80">"Lost in the quiet, found in the dark..."</p>
+</div>
+<div class="flex items-center gap-md text-on-surface-variant font-label-mono text-label-mono whitespace-nowrap">
+<div class="flex items-center gap-xs"><span class="material-symbols-outlined text-sm">visibility</span> 1.2M Views</div>
+<div class="flex items-center gap-xs text-primary"><span class="material-symbols-outlined text-sm" data-weight="fill" style="font-variation-settings: 'FILL' 1;">star</span> 4.9/5</div>
+</div>
+</div>
+</section>
+<!-- Grid -->
+<section class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-bento-gap">
+<!-- Card 1 -->
+<article class="bento-card overflow-hidden flex flex-col group cursor-pointer">
+<div class="relative aspect-video overflow-hidden">
+<div class="absolute inset-0 bg-cover bg-center transition-transform duration-500 group-hover:scale-105" data-alt="A close-up shot of a vintage vinyl record spinning under the warm, focused beam of a single gold-hued lamp. The room is enveloped in deep, cinematic darkness, emphasizing the texture of the record grooves. The mood is intimate, reflective, and premium, perfectly capturing the aesthetic of a high-end music appreciation environment." style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuCxMN92vmMC8CsK6FUHL9oYXADTsDgL5rWrlE-gbY-23z4EW-eqHzxGo3tyAmKaL06N-D6-KE3K_Nxk1t1H4sFLx_ZABUPnzVlwL4sUBzIGC1bAaUO3PYCQ_RmWNVsZd0Fy8N30N1cp63DVbP62aaP7i6_RWKM23Ca4NwI11NLzzPRLpZgfZ5YOfhuNpJUyJl0fspKC47UKZXPck3zDGgQC643b1yD4r__WNiwUDakO370kdyWcnNi3')"></div>
+<div class="absolute inset-0 bg-black/20 group-hover:bg-transparent transition-colors duration-300"></div>
+<div class="absolute bottom-2 right-2 bg-background/80 backdrop-blur-sm px-2 py-1 rounded text-on-surface font-label-mono text-label-mono">04:23</div>
+<div class="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+<div class="bg-primary-container/80 backdrop-blur-md rounded-full p-3 text-on-primary">
+<span class="material-symbols-outlined" data-weight="fill" style="font-variation-settings: 'FILL' 1;">play_arrow</span>
+</div>
+</div>
+</div>
+<div class="p-md flex flex-col flex-grow justify-between gap-sm">
+<div>
+<div class="flex items-center justify-between mb-1">
+<h3 class="font-body-lg text-body-lg text-on-surface font-semibold truncate">Midnight Silhouette</h3>
+<span class="material-symbols-outlined text-primary text-sm" data-weight="fill" style="font-variation-settings: 'FILL' 1;">verified</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant truncate">The Luna Collective</p>
+</div>
+<div class="flex items-center justify-between font-label-mono text-label-mono text-on-surface-variant mt-2 border-t border-outline/10 pt-2">
+<span>845K Views</span>
+<span>2 days ago</span>
+<div class="flex text-primary gap-0.5">
+<span class="material-symbols-outlined text-[14px]" data-weight="fill" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-[14px]" data-weight="fill" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-[14px]" data-weight="fill" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-[14px]" data-weight="fill" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-[14px]">star_half</span>
+</div>
+</div>
+</div>
+</article>
+<!-- Card 2 -->
+<article class="bento-card overflow-hidden flex flex-col group cursor-pointer">
+<div class="relative aspect-video overflow-hidden">
+<div class="absolute inset-0 bg-cover bg-center transition-transform duration-500 group-hover:scale-105" data-alt="A breathtaking wide shot of an empty, minimalist recording studio bathed in the soft glow of golden hour light streaming through a large acoustic window. The scene is dominated by deep shadows and rich, warm tones, highlighting an antique grand piano in the center. The atmosphere is serene, creative, and luxurious." style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuBzdOrAr7sVm01NWoMRIuZn-nWKo4WlqQWPazYWKErRaciAKYrOxWyhmRZnEAAk5QwdWLtek9J_6w6GUCs4BDHDiOlEGztiAXE9BgKIL3cYkDcytuwGgQN7t1ucx6FHqSva-k1ALLUVtvZIyF6guwkTv0-Oe_mCvFAbLr-6UPYxc5iFIwteHx3IJ-3tIK3NF0vBiFhbDEx87whH22cHLX7vB3UlqJN8Arb8LeUHGlEfwXrPvntlOFMC')"></div>
+<div class="absolute inset-0 bg-black/20 group-hover:bg-transparent transition-colors duration-300"></div>
+<div class="absolute bottom-2 right-2 bg-background/80 backdrop-blur-sm px-2 py-1 rounded text-on-surface font-label-mono text-label-mono">05:12</div>
+<div class="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+<div class="bg-primary-container/80 backdrop-blur-md rounded-full p-3 text-on-primary">
+<span class="material-symbols-outlined" data-weight="fill" style="font-variation-settings: 'FILL' 1;">play_arrow</span>
+</div>
+</div>
+</div>
+<div class="p-md flex flex-col flex-grow justify-between gap-sm">
+<div>
+<div class="flex items-center justify-between mb-1">
+<h3 class="font-body-lg text-body-lg text-on-surface font-semibold truncate">Golden Hour Strings</h3>
+<span class="material-symbols-outlined text-primary text-sm" data-weight="fill" style="font-variation-settings: 'FILL' 1;">verified</span>
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant truncate">Aria Symphony</p>
+</div>
+<div class="flex items-center justify-between font-label-mono text-label-mono text-on-surface-variant mt-2 border-t border-outline/10 pt-2">
+<span>1.1M Views</span>
+<span>1 week ago</span>
+<div class="flex text-primary gap-0.5">
+<span class="material-symbols-outlined text-[14px]" data-weight="fill" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-[14px]" data-weight="fill" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-[14px]" data-weight="fill" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-[14px]" data-weight="fill" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-[14px]" data-weight="fill" style="font-variation-settings: 'FILL' 1;">star</span>
+</div>
+</div>
+</div>
+</article>
+<!-- Card 3 -->
+<article class="bento-card overflow-hidden flex flex-col group cursor-pointer">
+<div class="relative aspect-video overflow-hidden">
+<div class="absolute inset-0 bg-cover bg-center transition-transform duration-500 group-hover:scale-105" data-alt="A visually striking conceptual art piece of sound waves rendered as glowing, ethereal threads of gold light floating in an endless, pitch-black void. The image is minimal but profound, utilizing deep negative space to emphasize the warmth and intricacy of the illuminated waves. It feels modern, poetic, and highly cinematic." style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuDKh-d2vEUvR3JFI8GyQJVpCMqipt2H9XTBy7DzzY_aRq_yq7-U6KGlloS-w-7DtMVdEZCb_geW60IH9yf1sqAtJSgaTcsjLZh7ggEipWaD3Estca7PLUtsRJOX6-CDP4c7XcMYAbYftCLZ1lpyjMfOXuUAwxvXIrCjsW3PacwKk-Ym1gRJ4h7vDKd4XbQytYza2yZvvaFU9-y_aBrSmhW9nBAxA-LgYQB0rTN3jxQAqCtKPbaEKXdf')"></div>
+<div class="absolute inset-0 bg-black/20 group-hover:bg-transparent transition-colors duration-300"></div>
+<div class="absolute bottom-2 right-2 bg-background/80 backdrop-blur-sm px-2 py-1 rounded text-on-surface font-label-mono text-label-mono">03:45</div>
+<div class="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+<div class="bg-primary-container/80 backdrop-blur-md rounded-full p-3 text-on-primary">
+<span class="material-symbols-outlined" data-weight="fill" style="font-variation-settings: 'FILL' 1;">play_arrow</span>
+</div>
+</div>
+</div>
+<div class="p-md flex flex-col flex-grow justify-between gap-sm">
+<div>
+<div class="flex items-center justify-between mb-1">
+<h3 class="font-body-lg text-body-lg text-on-surface font-semibold truncate">Neon Nostalgia</h3>
+<!-- No verified badge -->
+</div>
+<p class="font-body-sm text-body-sm text-on-surface-variant truncate">Synthweaver</p>
+</div>
+<div class="flex items-center justify-between font-label-mono text-label-mono text-on-surface-variant mt-2 border-t border-outline/10 pt-2">
+<span>420K Views</span>
+<span>3 weeks ago</span>
+<div class="flex text-primary gap-0.5">
+<span class="material-symbols-outlined text-[14px]" data-weight="fill" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-[14px]" data-weight="fill" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-[14px]" data-weight="fill" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-[14px]" data-weight="fill" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="material-symbols-outlined text-[14px]">star_outline</span>
+</div>
+</div>
+</div>
+</article>
+</section>
+</main>
+<!-- BottomNavBar (Mobile Only) -->
+<nav class="md:hidden flex justify-around items-center h-16 pb-safe px-4 bg-background/90 backdrop-blur-lg fixed bottom-0 w-full z-50 border-t border-outline/10 shadow-[0_-4px_20px_rgba(212,168,67,0.05)]">
+<a class="flex flex-col items-center justify-center text-on-surface-variant font-label-mono text-label-mono hover:bg-surface-container-low p-2 rounded transition-colors" href="#">
+<span class="material-symbols-outlined mb-1">explore</span>
+<span>Discover</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant font-label-mono text-label-mono hover:bg-surface-container-low p-2 rounded transition-colors" href="#">
+<span class="material-symbols-outlined mb-1">lyrics</span>
+<span>Lyrics</span>
+</a>
+<!-- Assuming Library maps to Videos/My content for this context, but keeping semantics strict: -->
+<a class="flex flex-col items-center justify-center text-primary font-label-mono text-label-mono hover:bg-surface-container-low p-2 rounded transition-colors scale-110 duration-200" href="#">
+<span class="material-symbols-outlined mb-1" data-weight="fill" style="font-variation-settings: 'FILL' 1;">library_music</span>
+<span>Library</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant font-label-mono text-label-mono hover:bg-surface-container-low p-2 rounded transition-colors" href="#">
+<span class="material-symbols-outlined mb-1">search</span>
+<span>Search</span>
+</a>
+</nav>
+</body></html>

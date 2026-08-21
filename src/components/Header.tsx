@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import {
   BookOpen,
   ListMusic,
@@ -20,6 +20,7 @@ import { useTheme } from '../context/ThemeContext';
 
 const Header = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const { user, signOut } = useAuthStore();
   const { darkMode, toggleDarkMode } = useTheme();
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -38,24 +39,21 @@ const Header = () => {
 
   return (
     <header className="site-header">
-      <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
+      <div className="mx-auto flex h-20 max-w-[1440px] items-center justify-between px-4 sm:px-6 lg:px-8">
         <Link to="/" className="group flex items-center gap-3" onClick={closeMobileMenu}>
-          <span className="flex h-10 w-10 items-center justify-center rounded-xl border border-[var(--border-subtle)] bg-[var(--bg-surface)] text-[var(--gold-light)] shadow-[var(--shadow-glow)] transition-transform duration-200 group-hover:-rotate-6">
+          <span className="flex h-10 w-10 items-center justify-center rounded-xl border border-[rgba(212,168,67,0.22)] bg-[var(--bg-surface)] text-[var(--gold-light)] shadow-[var(--shadow-glow)] transition-transform duration-200 group-hover:-rotate-6">
             <Music2 className="h-5 w-5" aria-hidden="true" />
           </span>
-          <span>
-            <span className="block text-sm font-extrabold tracking-[0.18em] text-[var(--text-primary)]">STARLYRIX</span>
-            <span className="hidden text-[10px] font-medium tracking-[0.12em] text-[var(--text-muted)] sm:block">LYRICS THAT LIGHT UP YOUR WORLD</span>
-          </span>
+          <span className="brand-wordmark">Star Lyrix</span>
         </Link>
 
         <nav className="hidden items-center gap-6 lg:flex" aria-label="Primary navigation">
-          <NavLink href="/">Discover</NavLink>
-          <NavLink href="/search" icon={<BookOpen className="h-3.5 w-3.5" />}>Lyrics</NavLink>
-          <NavLink href="/videos" icon={<Youtube className="h-3.5 w-3.5" />}>Videos</NavLink>
-          <NavLink href="/ai-lyrics" icon={<Wand2 className="h-3.5 w-3.5" />}>AI Tools</NavLink>
-          {user && <NavLink href="/generated-lyrics">My Lyrics</NavLink>}
-          {user && <NavLink href="/playlists" icon={<ListMusic className="h-3.5 w-3.5" />}>Playlists</NavLink>}
+          <NavLink href="/" active={location.pathname === "/"}>Discover</NavLink>
+          <NavLink href="/search" active={location.pathname.startsWith('/search')} icon={<BookOpen className="h-3.5 w-3.5" />}>Lyrics</NavLink>
+          <NavLink href="/videos" active={location.pathname.startsWith('/videos')} icon={<Youtube className="h-3.5 w-3.5" />}>Videos</NavLink>
+          <NavLink href="/ai-lyrics" active={location.pathname.startsWith('/ai-lyrics')} icon={<Wand2 className="h-3.5 w-3.5" />}>AI Lyrics</NavLink>
+          {user && <NavLink href="/generated-lyrics" active={location.pathname.startsWith('/generated-lyrics')}>My Lyrics</NavLink>}
+          {user && <NavLink href="/playlists" active={location.pathname.startsWith('/playlists')} icon={<ListMusic className="h-3.5 w-3.5" />}>Playlists</NavLink>}
         </nav>
 
         <div className="flex items-center gap-1 sm:gap-2">
@@ -119,8 +117,8 @@ const Header = () => {
   );
 };
 
-const NavLink: React.FC<{ href: string; children: React.ReactNode; icon?: React.ReactNode }> = ({ href, children, icon }) => (
-  <Link to={href} className="nav-link inline-flex items-center gap-1.5">
+const NavLink: React.FC<{ href: string; children: React.ReactNode; icon?: React.ReactNode; active?: boolean }> = ({ href, children, icon, active }) => (
+  <Link to={href} aria-current={active ? 'page' : undefined} className={`nav-link inline-flex items-center gap-1.5 ${active ? 'nav-link-active' : ''}`}>
     {icon}
     {children}
   </Link>
