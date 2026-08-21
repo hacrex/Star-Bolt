@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-d
 import { useAuthStore } from './store/authStore';
 import Header from './components/Header';
 import Footer from './components/Footer';
+import MobileBottomNav from './components/MobileBottomNav';
 import Home from './pages/Home';
 import Auth from './pages/Auth';
 import SongDetails from './pages/SongDetails';
@@ -119,6 +120,7 @@ const App = () => {
                 </Suspense>
               </main>
               <Footer />
+              <MobileBottomNav />
             </div>
           </ErrorBoundary>
         </Router>

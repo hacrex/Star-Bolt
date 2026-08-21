@@ -31,34 +31,34 @@ const Playlists = () => {
   };
 
   if (loading) {
-    return <div className="text-center py-8">Loading playlists...</div>;
+    return <div className="reading-room-loading">Loading your playlists...</div>;
   }
 
   return (
-    <div className="max-w-4xl mx-auto">
-      <div className="flex justify-between items-center mb-8">
-        <h1 className="text-3xl font-bold">Your Playlists</h1>
+    <div className="mx-auto max-w-5xl">
+      <div className="mb-8 flex flex-col items-start justify-between gap-4 sm:flex-row sm:items-end">
+        <div><p className="eyebrow">Your library</p><h1 className="mt-2 text-4xl font-bold tracking-[-0.04em] text-[var(--text-primary)]">Your playlists</h1></div>
         <button
           onClick={() => setShowCreateModal(true)}
-          className="flex items-center gap-2 bg-purple-600 text-white py-2 px-4 rounded hover:bg-purple-700 transition-colors"
+          className="btn-primary"
         >
           <Plus className="w-4 h-4" />
-          Create Playlist
+          Create playlist
         </button>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 gap-5 md:grid-cols-2 lg:grid-cols-3">
         {playlists.map((playlist) => (
           <Link
             key={playlist.id}
             to={`/playlists/${playlist.id}`}
-            className="bg-gray-800 rounded-lg p-6 hover:ring-2 hover:ring-purple-500 transition-all"
+            className="surface-card surface-card-hover p-6"
           >
-            <div className="flex items-center gap-3 mb-4">
-              <ListMusic className="w-8 h-8 text-purple-400" />
-              <h2 className="text-xl font-semibold">{playlist.name}</h2>
+            <div className="mb-4 flex items-center gap-3">
+              <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-[rgba(212,168,67,0.1)] text-[var(--gold-light)]"><ListMusic className="h-5 w-5" /></span>
+              <h2 className="text-xl font-semibold text-[var(--text-primary)]">{playlist.name}</h2>
             </div>
-            <p className="text-sm text-gray-400">
+            <p className="text-xs uppercase tracking-[0.12em] text-[var(--text-muted)]">
               Created {new Date(playlist.created_at).toLocaleDateString()}
             </p>
           </Link>
@@ -66,29 +66,29 @@ const Playlists = () => {
       </div>
 
       {showCreateModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4">
-          <div className="bg-gray-800 rounded-lg p-6 max-w-md w-full">
-            <h3 className="text-xl font-bold mb-4">Create New Playlist</h3>
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-4 backdrop-blur-sm">
+          <div className="surface-card w-full max-w-md p-6">
+            <p className="eyebrow">New collection</p><h3 className="mt-2 text-xl font-bold text-[var(--text-primary)]">Create new playlist</h3>
             <form onSubmit={handleCreatePlaylist}>
               <input
                 type="text"
                 value={newPlaylistName}
                 onChange={(e) => setNewPlaylistName(e.target.value)}
                 placeholder="Playlist name"
-                className="w-full p-2 rounded bg-gray-700 border border-gray-600 focus:ring-2 focus:ring-purple-500 mb-4"
+                className="mb-4 min-h-12 w-full rounded-xl border border-[var(--border-subtle)] bg-[var(--bg-elevated)] px-4 text-[var(--text-primary)] placeholder:text-[var(--text-muted)] focus:border-[var(--gold-primary)] focus:outline-none"
                 required
               />
               <div className="flex justify-end gap-3">
                 <button
                   type="button"
                   onClick={() => setShowCreateModal(false)}
-                  className="px-4 py-2 text-gray-400 hover:text-white"
+                  className="btn-secondary !border-0 !bg-transparent !px-3 !py-2 text-sm"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
-                  className="px-4 py-2 bg-purple-600 text-white rounded hover:bg-purple-700"
+                  className="btn-primary text-sm"
                 >
                   Create
                 </button>

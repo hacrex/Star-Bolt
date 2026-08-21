@@ -32,3 +32,12 @@ Only lyrics that Star Lyrix is licensed or authorized to publish should be rende
 ## Responsive behavior
 
 Desktop uses a two-column Reading Room with a sticky playback bar. Tablet collapses the volume controls and keeps the main controls centered. Mobile stacks the album rail above the lyrics canvas, keeps the translation action compact, and converts the playback bar into a full-width sticky mini-player.
+
+
+## Follow-up alignment
+
+The shared shell now includes a Stitch-style mobile bottom navigation for Discover, Lyrics, Library, and Search. Active route state is derived from React Router, and the mobile content area reserves space so the fixed navigation does not cover page content.
+
+The follow-up pass also extends the same surface language to authenticated experiences: profile, playlists, playlist detail, generated lyrics, and authentication now use warm surfaced cards, gold accents, mono metadata labels, softer modal treatment, and serif lyric presentation. These routes continue using their existing authentication and Supabase store flows.
+
+The implementation intentionally keeps unfinished data integrations explicit. The Reading Room player is a UI shell until an authorized audio/synchronization provider is connected; playlist Add remains a coming-soon interaction; and video/search mock content remains clearly separated from the existing Supabase-backed song catalog.
