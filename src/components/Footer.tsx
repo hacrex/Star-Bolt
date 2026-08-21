@@ -1,98 +1,79 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Facebook, Twitter, Instagram, Youtube, Mail, Phone, MapPin } from 'lucide-react';
+import { Facebook, Instagram, Mail, Twitter, Youtube } from 'lucide-react';
 
 const Footer = () => {
   return (
-    <footer className="bg-gray-800 text-gray-300 mt-20">
-      <div className="max-w-7xl mx-auto px-4 py-12">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-          {/* About Us */}
-          <div>
-            <h3 className="text-lg font-semibold mb-4">About Star Lyrix</h3>
-            <p className="text-gray-400">
-              Star Lyrix is your premier destination for song lyrics, connecting music lovers
-              with the words that move them. Discover, share, and explore lyrics from your
-              favorite artists.
-            </p>
-          </div>
-
-          {/* Quick Links */}
-          <div>
-            <h3 className="text-lg font-semibold mb-4">Quick Links</h3>
-            <ul className="space-y-2">
-              <li>
-                <Link to="/" className="hover:text-purple-400 transition-colors">
-                  Home
-                </Link>
-              </li>
-              <li>
-                <Link to="/search" className="hover:text-purple-400 transition-colors">
-                  Search Songs
-                </Link>
-              </li>
-              <li>
-                <Link to="/ai-lyrics" className="hover:text-purple-400 transition-colors">
-                  AI Lyrics Generator
-                </Link>
-              </li>
-              <li>
-                <Link to="/videos" className="hover:text-purple-400 transition-colors">
-                  Videos
-                </Link>
-              </li>
-            </ul>
-          </div>
-
-          {/* Contact Info */}
-          <div>
-            <h3 className="text-lg font-semibold mb-4">Contact Us</h3>
-            <ul className="space-y-3">
-              <li className="flex items-center gap-2">
-                <Mail className="w-4 h-4" />
-                <span>support@starlyrix.com</span>
-              </li>
-              <li className="flex items-center gap-2">
-                <Phone className="w-4 h-4" />
-                <span>+1 (555) 123-4567</span>
-              </li>
-              <li className="flex items-center gap-2">
-                <MapPin className="w-4 h-4" />
-                <span>123 Music Street, LA 90001</span>
-              </li>
-            </ul>
-          </div>
-
-          {/* Social Media */}
-          <div>
-            <h3 className="text-lg font-semibold mb-4">Follow Us</h3>
-            <div className="flex gap-4">
-              <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" 
-                className="hover:text-purple-400 transition-colors">
-                <Facebook className="w-6 h-6" />
-              </a>
-              <a href="https://twitter.com" target="_blank" rel="noopener noreferrer"
-                className="hover:text-purple-400 transition-colors">
-                <Twitter className="w-6 h-6" />
-              </a>
-              <a href="https://instagram.com" target="_blank" rel="noopener noreferrer"
-                className="hover:text-purple-400 transition-colors">
-                <Instagram className="w-6 h-6" />
-              </a>
-              <a href="https://youtube.com" target="_blank" rel="noopener noreferrer"
-                className="hover:text-purple-400 transition-colors">
-                <Youtube className="w-6 h-6" />
-              </a>
+    <footer className="mt-auto border-t border-[var(--border-subtle)] bg-[var(--bg-surface)] text-[var(--text-secondary)]">
+      <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
+        <div className="grid gap-10 md:grid-cols-[1.4fr_repeat(3,1fr)]">
+          <div className="max-w-sm">
+            <div className="mb-4 flex items-center gap-3">
+              <span className="flex h-9 w-9 items-center justify-center rounded-xl border border-[var(--border-subtle)] text-[var(--gold-light)]">
+                <span className="text-sm font-black">S</span>
+              </span>
+              <span className="text-sm font-extrabold tracking-[0.18em] text-[var(--text-primary)]">STARLYRIX</span>
             </div>
+            <p className="text-sm leading-7 text-[var(--text-secondary)]">
+              A warm, community-driven home for the lyrics, stories, and sounds that stay with us.
+            </p>
+            <a href="mailto:support@starlyrix.com" className="mt-5 inline-flex items-center gap-2 text-sm font-semibold text-[var(--gold-light)] hover:text-[var(--text-primary)]">
+              <Mail className="h-4 w-4" aria-hidden="true" />
+              support@starlyrix.com
+            </a>
           </div>
+
+          <FooterColumn title="Explore" links={[
+            ['Lyrics', '/search'],
+            ['Artists', '/search'],
+            ['Genres', '/search'],
+            ['YouTube', '/videos'],
+          ]} />
+          <FooterColumn title="Tools" links={[
+            ['AI Lyrics Generator', '/ai-lyrics'],
+            ['My Lyrics', '/generated-lyrics'],
+            ['Playlists', '/playlists'],
+            ['Contribute', '/add-song'],
+          ]} />
+          <FooterColumn title="Legal" links={[
+            ['Terms', '/'],
+            ['Privacy', '/'],
+            ['Copyright & DMCA', '/'],
+            ['Community Guidelines', '/'],
+          ]} />
         </div>
 
-        <div className="border-t border-gray-700 mt-8 pt-8 text-center">
-          <p>&copy; {new Date().getFullYear()} Star Lyrix. All rights reserved.</p>
+        <div className="mt-10 flex flex-col gap-5 border-t border-[var(--border-subtle)] pt-6 sm:flex-row sm:items-center sm:justify-between">
+          <p className="text-xs text-[var(--text-muted)]">© {new Date().getFullYear()} Star Lyrix. Lyrics that light up your world.</p>
+          <div className="flex items-center gap-2" aria-label="Social links">
+            <SocialLink href="https://youtube.com/@starlyrix" label="YouTube"><Youtube className="h-4 w-4" /></SocialLink>
+            <SocialLink href="https://instagram.com" label="Instagram"><Instagram className="h-4 w-4" /></SocialLink>
+            <SocialLink href="https://twitter.com" label="X / Twitter"><Twitter className="h-4 w-4" /></SocialLink>
+            <SocialLink href="https://facebook.com" label="Facebook"><Facebook className="h-4 w-4" /></SocialLink>
+          </div>
         </div>
       </div>
     </footer>
   );
 };
+
+const FooterColumn: React.FC<{ title: string; links: [string, string][] }> = ({ title, links }) => (
+  <div>
+    <h2 className="mb-4 text-xs font-extrabold uppercase tracking-[0.16em] text-[var(--text-primary)]">{title}</h2>
+    <ul className="space-y-3 text-sm">
+      {links.map(([label, href]) => (
+        <li key={label}>
+          <Link to={href} className="transition-colors hover:text-[var(--gold-light)]">{label}</Link>
+        </li>
+      ))}
+    </ul>
+  </div>
+);
+
+const SocialLink: React.FC<{ href: string; label: string; children: React.ReactNode }> = ({ href, label, children }) => (
+  <a href={href} target="_blank" rel="noopener noreferrer" aria-label={label} className="icon-button">
+    {children}
+  </a>
+);
 
 export default Footer;

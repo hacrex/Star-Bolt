@@ -1,7 +1,7 @@
 import React from 'react';
 import { useParams } from 'react-router-dom';
 import { supabase } from '../lib/supabase';
-import { Star, MessageSquare, Send } from 'lucide-react';
+import { MessageSquare, Music2, Send, Star } from 'lucide-react';
 import { useAuthStore } from '../store/authStore';
 import { useSongStore } from '../store/songStore';
 import { useToast } from '../components/Toast';
@@ -100,123 +100,76 @@ const SongDetails = () => {
   };
 
   if (loading) {
-    return <div className="text-center py-8">Loading song details...</div>;
+    return <div className="py-16 text-center text-[var(--text-secondary)]">Loading your reading room...</div>;
   }
 
   if (error || !song) {
     return (
-      <div className="text-center py-8 text-red-500">
+      <div className="mx-auto max-w-xl py-16 text-center text-[var(--gold-light)]">
         {error || 'Song not found'}
       </div>
     );
   }
 
   return (
-    <div className="max-w-4xl mx-auto">
-      <div className="bg-gray-800 rounded-lg overflow-hidden mb-8">
-        {song.thumbnail_url && (
-          <img
-            src={song.thumbnail_url}
-            alt={song.title}
-            className="w-full h-64 object-cover"
-          />
-        )}
-        <div className="p-6">
-          <h1 className="text-3xl font-bold mb-2">{song.title}</h1>
-          <p className="text-xl text-gray-400 mb-4">{song.artist}</p>
-          {song.album && (
-            <p className="text-gray-500 mb-2">Album: {song.album}</p>
-          )}
-          {song.release_date && (
-            <p className="text-gray-500">
-              Released: {new Date(song.release_date).toLocaleDateString()}
-            </p>
-          )}
-
-          {user && (
-            <div className="mt-4 pt-4 border-t border-gray-700">
-              <p className="text-sm text-gray-400 mb-2">Rate this song:</p>
-              <div className="flex gap-1">
-                {[1, 2, 3, 4, 5].map((star) => (
-                  <button
-                    key={star}
-                    onClick={() => handleRate(star)}
-                    className="p-1 hover:scale-110 transition-transform"
-                  >
-                    <Star
-                      className={`w-6 h-6 ${
-                        star <= userRating
-                          ? 'text-yellow-400 fill-current'
-                          : 'text-gray-500'
-                      }`}
-                    />
-                  </button>
-                ))}
-              </div>
+    <div className="mx-auto max-w-5xl">
+      <div className="surface-card mb-8 overflow-hidden">
+        <div className="grid lg:grid-cols-[260px_1fr]">
+          <div className="relative min-h-64 bg-[var(--bg-elevated)]">
+            {song.thumbnail_url ? <img src={song.thumbnail_url} alt={song.title} className="h-full min-h-64 w-full object-cover" /> : <div className="flex h-full min-h-64 items-center justify-center"><Music2 className="h-14 w-14 text-[var(--gold-muted)]" /></div>}
+            <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent lg:bg-gradient-to-r" />
+          </div>
+          <div className="p-6 sm:p-8">
+            <p className="eyebrow">The reading room</p>
+            <h1 className="mt-3 text-3xl font-bold tracking-[-0.03em] text-[var(--text-primary)] sm:text-4xl">{song.title}</h1>
+            <p className="mt-2 text-xl text-[var(--gold-light)]">{song.artist}</p>
+            <div className="mt-5 flex flex-wrap gap-2 text-xs uppercase tracking-[0.1em] text-[var(--text-muted)]">
+              {song.album && <span className="rounded-full border border-[var(--border-subtle)] px-3 py-1.5">{song.album}</span>}
+              {song.release_date && <span className="rounded-full border border-[var(--border-subtle)] px-3 py-1.5">{new Date(song.release_date).toLocaleDateString()}</span>}
+              <span className="rounded-full border border-[var(--border-subtle)] px-3 py-1.5">Authorized content</span>
             </div>
-          )}
+            <p className="mt-6 max-w-xl text-sm leading-7 text-[var(--text-secondary)]">Read along with the words that make this song yours. Translations, sharing, and synchronized playback can build on this space as the catalog grows.</p>
+
+            {user && (
+              <div className="mt-6 border-t border-[var(--border-subtle)] pt-5">
+                <p className="mb-2 text-xs font-bold uppercase tracking-[0.14em] text-[var(--text-muted)]">Rate this song</p>
+                <div className="flex gap-1" aria-label="Rate this song from one to five stars">
+                  {[1, 2, 3, 4, 5].map((star) => (
+                    <button type="button" key={star} onClick={() => handleRate(star)} className="rounded-lg p-1 transition-transform hover:scale-110" aria-label={`${star} star${star > 1 ? 's' : ''}`}>
+                      <Star className={`h-6 w-6 ${star <= userRating ? 'fill-current text-[var(--gold-light)]' : 'text-[var(--text-muted)]'}`} />
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
         </div>
       </div>
 
       {lyrics ? (
-        <div className="bg-gray-800 rounded-lg p-6 mb-8">
-          <h2 className="text-2xl font-bold mb-4">Lyrics</h2>
-          <pre className="whitespace-pre-wrap font-sans text-gray-300">
-            {lyrics}
-          </pre>
-        </div>
+        <section className="surface-card mb-8 p-6 sm:p-10">
+          <div className="mb-8 flex flex-wrap items-end justify-between gap-4 border-b border-[var(--border-subtle)] pb-5">
+            <div><p className="eyebrow">Words & meaning</p><h2 className="section-heading mt-2">Lyrics</h2></div>
+            <div className="flex items-center gap-2 text-xs text-[var(--text-muted)]"><span className="rounded-full border border-[var(--border-subtle)] px-3 py-1.5">Translation ready</span><span className="rounded-full border border-[var(--border-subtle)] px-3 py-1.5">Reading mode</span></div>
+          </div>
+          <pre className="lyrics-copy whitespace-pre-wrap">{lyrics}</pre>
+          <p className="mt-8 border-t border-[var(--border-subtle)] pt-5 text-xs leading-6 text-[var(--text-muted)]">Only display lyrics you are licensed or authorized to publish. Community corrections and translations should pass through review before being marked verified.</p>
+        </section>
       ) : (
-        <div className="bg-gray-800 rounded-lg p-6 mb-8 text-center text-gray-400">
-          No lyrics available yet
-        </div>
+        <section className="surface-card mb-8 p-10 text-center text-[var(--text-secondary)]">No lyrics available yet.</section>
       )}
 
-      <div className="bg-gray-800 rounded-lg p-6">
-        <h2 className="text-2xl font-bold mb-4 flex items-center gap-2">
-          <MessageSquare className="w-6 h-6" />
-          Comments ({comments.length})
-        </h2>
-
+      <section className="surface-card p-6 sm:p-8">
+        <h2 className="mb-5 flex items-center gap-2 text-xl font-semibold text-[var(--text-primary)]"><MessageSquare className="h-5 w-5 text-[var(--gold-light)]" /> Community notes <span className="text-sm font-normal text-[var(--text-muted)]">({comments.length})</span></h2>
         {user && (
-          <form onSubmit={handleAddComment} className="mb-6 flex gap-2">
-            <input
-              type="text"
-              value={newComment}
-              onChange={(e) => setNewComment(e.target.value)}
-              placeholder="Add a comment..."
-              className="flex-1 p-3 rounded-lg bg-gray-700 border border-gray-600 focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-              maxLength={500}
-            />
-            <button
-              type="submit"
-              disabled={submitting || !newComment.trim()}
-              className="px-4 py-3 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors disabled:opacity-50"
-            >
-              <Send className="w-5 h-5" />
-            </button>
+          <form onSubmit={handleAddComment} className="mb-6 flex flex-col gap-2 sm:flex-row">
+            <label htmlFor="song-comment" className="sr-only">Add a comment</label>
+            <input id="song-comment" type="text" value={newComment} onChange={(e) => setNewComment(e.target.value)} placeholder="Share a thought about this song..." className="min-h-12 flex-1 rounded-xl border border-[var(--border-subtle)] bg-[var(--bg-elevated)] px-4 text-[var(--text-primary)] placeholder:text-[var(--text-muted)] focus:border-[var(--gold-primary)] focus:outline-none" maxLength={500} />
+            <button type="submit" disabled={submitting || !newComment.trim()} className="btn-primary min-h-12 disabled:cursor-not-allowed disabled:opacity-50"><Send className="h-4 w-4" /> Post note</button>
           </form>
         )}
-
-        {comments.length > 0 ? (
-          <div className="space-y-4">
-            {comments.map((comment) => (
-              <div key={comment.id} className="border-b border-gray-700 pb-4">
-                <div className="flex justify-between items-start mb-2">
-                  <span className="font-medium text-purple-400">
-                    {comment.user.username}
-                  </span>
-                  <span className="text-sm text-gray-500">
-                    {new Date(comment.created_at).toLocaleDateString()}
-                  </span>
-                </div>
-                <p className="text-gray-300">{comment.content}</p>
-              </div>
-            ))}
-          </div>
-        ) : (
-          <p className="text-center text-gray-400">No comments yet</p>
-        )}
-      </div>
+        {comments.length > 0 ? <div className="space-y-4">{comments.map((comment) => <div key={comment.id} className="border-b border-[var(--border-subtle)] pb-4 last:border-0"><div className="flex items-start justify-between gap-4"><span className="font-semibold text-[var(--gold-light)]">{comment.user.username}</span><span className="text-xs text-[var(--text-muted)]">{new Date(comment.created_at).toLocaleDateString()}</span></div><p className="mt-2 text-sm leading-6 text-[var(--text-secondary)]">{comment.content}</p></div>)}</div> : <p className="text-sm text-[var(--text-muted)]">No community notes yet.</p>}
+      </section>
     </div>
   );
 };

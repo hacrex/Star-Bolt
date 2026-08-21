@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { Play, Share2, ExternalLink, TrendingUp, Clock, Hash } from 'lucide-react';
-import { useTheme } from '../context/ThemeContext';
 
 interface YouTubeVideo {
   id: string;
@@ -46,10 +45,8 @@ const CATEGORIES = [
 ];
 
 const Videos = () => {
-  const { darkMode } = useTheme();
   const [activeCategory, setActiveCategory] = useState('trending');
   const [videos, setVideos] = useState<YouTubeVideo[]>(MOCK_VIDEOS);
-  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     setVideos(MOCK_VIDEOS);
@@ -70,16 +67,16 @@ const Videos = () => {
   };
 
   return (
-    <div className="max-w-7xl mx-auto px-4 py-8">
+    <div className="mx-auto max-w-7xl">
       <div className="flex items-center justify-between mb-8">
-        <h1 className="text-3xl font-bold">Star Lyrix Videos</h1>
+        <div><p className="eyebrow">From the Star Lyrix channel</p><h1 className="mt-2 text-3xl font-bold tracking-[-0.03em] text-[var(--text-primary)] sm:text-4xl">Videos worth replaying</h1><p className="mt-3 max-w-xl text-sm leading-6 text-[var(--text-secondary)]">Explore lyric videos, tutorials, and Shorts in one calm, visual space.</p></div>
         <a
           href="https://youtube.com/@starlyrix"
           target="_blank"
           rel="noopener noreferrer"
-          className="flex items-center gap-2 text-red-600 hover:text-red-700"
+          className="btn-secondary text-sm"
         >
-          Visit Our Channel
+          Visit channel
           <ExternalLink className="w-4 h-4" />
         </a>
       </div>
@@ -92,8 +89,8 @@ const Videos = () => {
             onClick={() => setActiveCategory(id)}
             className={`flex items-center gap-2 px-4 py-2 rounded-full transition-colors ${
               activeCategory === id
-                ? 'bg-purple-600 text-white'
-                : 'bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700'
+                ? 'bg-[var(--gold-primary)] text-[#17120a]'
+                : 'bg-[var(--bg-surface)] text-[var(--text-secondary)] hover:bg-[var(--bg-elevated)] hover:text-[var(--text-primary)]'
             }`}
           >
             <Icon className="w-4 h-4" />
@@ -103,9 +100,9 @@ const Videos = () => {
       </div>
 
       {/* Featured Playlist */}
-      <div className="mb-12">
-        <h2 className="text-2xl font-bold mb-4">Featured Playlist</h2>
-        <div className="aspect-video w-full rounded-xl overflow-hidden bg-gray-100 dark:bg-gray-800">
+      <div className="surface-card mb-12 overflow-hidden">
+        <div className="p-5 sm:p-6"><p className="eyebrow">Start here</p><h2 className="section-heading mt-2">Featured playlist</h2></div>
+        <div className="aspect-video w-full overflow-hidden bg-[var(--bg-elevated)]">
           <iframe
             width="100%"
             height="100%"
@@ -119,85 +116,75 @@ const Videos = () => {
       </div>
 
       {/* Video Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {loading ? (
-          // Loading skeletons
-          Array.from({ length: 6 }).map((_, i) => (
-            <div key={i} className="animate-pulse">
-              <div className="aspect-video bg-gray-200 dark:bg-gray-700 rounded-lg mb-3"></div>
-              <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-3/4 mb-2"></div>
-              <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-1/2"></div>
-            </div>
-          ))
-        ) : (
-          videos.map((video) => (
-            <div key={video.id} className="group">
-              <div className="relative aspect-video rounded-lg overflow-hidden mb-3">
+      <div className="grid grid-cols-1 gap-5 md:grid-cols-2 lg:grid-cols-3">
+        {videos.map((video) => (
+            <article key={video.id} className="surface-card surface-card-hover group overflow-hidden">
+              <div className="relative aspect-video overflow-hidden">
                 <img
                   src={video.thumbnail}
                   alt={video.title}
-                  className="w-full h-full object-cover"
+                  className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-[1.03]"
                 />
-                <div className="absolute inset-0 bg-black bg-opacity-40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                <div className="absolute inset-0 flex items-center justify-center bg-black/40 opacity-0 transition-opacity group-hover:opacity-100">
                   <a
                     href={`https://youtube.com/watch?v=${video.id}`}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="bg-red-600 text-white p-4 rounded-full hover:bg-red-700 transition-colors"
+                    className="flex h-12 w-12 items-center justify-center rounded-full bg-[var(--gold-primary)] text-[#17120a] transition-transform hover:scale-105"
                   >
                     <Play className="w-6 h-6" />
                   </a>
                 </div>
-                <div className="absolute bottom-2 right-2 bg-black bg-opacity-75 text-white text-sm px-2 py-1 rounded">
+                <div className="absolute bottom-3 right-3 rounded bg-black/75 px-2 py-1 text-xs text-white">
                   {video.duration}
                 </div>
               </div>
-              <h3 className="font-semibold mb-2 line-clamp-2">{video.title}</h3>
-              <div className="flex items-center justify-between text-sm text-gray-600 dark:text-gray-400">
+              <div className="p-4"><h3 className="line-clamp-2 font-semibold text-[var(--text-primary)]">{video.title}</h3>
+              <div className="mt-3 flex items-center justify-between text-xs text-[var(--text-secondary)]">
                 <div className="flex items-center gap-4">
                   <span>{video.views} views</span>
                   <span>{new Date(video.publishedAt).toLocaleDateString()}</span>
                 </div>
                 <button
                   onClick={() => handleShare(video)}
-                  className="p-2 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-full transition-colors"
+                  className="icon-button"
                   title="Share"
                 >
                   <Share2 className="w-4 h-4" />
                 </button>
               </div>
-            </div>
-          ))
-        )}
+              </div>
+            </article>
+          ))}
       </div>
 
       {/* YouTube Shorts Section */}
-      <div className="mt-12">
-        <h2 className="text-2xl font-bold mb-4">Short & Sweet</h2>
+      <div className="mt-14">
+        <div className="mb-5"><p className="eyebrow">Quick listens</p><h2 className="section-heading mt-2">Short & sweet</h2></div>
         <div className="flex gap-4 overflow-x-auto pb-4 scrollbar-hide">
           {videos.map((video) => (
             <div
               key={`short-${video.id}`}
-              className="flex-shrink-0 w-[200px] group"
+              className="group w-[200px] flex-shrink-0"
             >
-              <div className="relative aspect-[9/16] rounded-lg overflow-hidden mb-2">
+              <div className="relative mb-2 aspect-[9/16] overflow-hidden rounded-xl border border-[var(--border-subtle)] bg-[var(--bg-surface)]">
                 <img
                   src={video.thumbnail}
                   alt={video.title}
-                  className="w-full h-full object-cover"
+                  className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-[1.03]"
                 />
-                <div className="absolute inset-0 bg-black bg-opacity-40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                <div className="absolute inset-0 flex items-center justify-center bg-black/40 opacity-0 transition-opacity group-hover:opacity-100">
                   <a
                     href={`https://youtube.com/shorts/${video.id}`}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="bg-red-600 text-white p-3 rounded-full hover:bg-red-700 transition-colors"
+                    className="flex h-10 w-10 items-center justify-center rounded-full bg-[var(--gold-primary)] text-[#17120a]"
                   >
                     <Play className="w-5 h-5" />
                   </a>
                 </div>
               </div>
-              <h3 className="text-sm font-medium line-clamp-2">{video.title}</h3>
+              <h3 className="line-clamp-2 text-sm font-medium text-[var(--text-primary)]">{video.title}</h3>
             </div>
           ))}
         </div>

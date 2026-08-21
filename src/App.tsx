@@ -31,16 +31,14 @@ class ErrorBoundary extends React.Component<
   render() {
     if (this.state.hasError) {
       return (
-        <div className="text-center py-20">
-          <h2 className="text-2xl font-bold mb-4">Something went wrong</h2>
-          <p className="text-gray-600 dark:text-gray-400 mb-4">
+        <div className="mx-auto max-w-xl py-20 text-center">
+          <span className="eyebrow">Star Lyrix</span>
+          <h2 className="mt-3 text-2xl font-bold text-[var(--text-primary)]">Something went wrong</h2>
+          <p className="mt-3 mb-6 text-[var(--text-secondary)]">
             {this.state.error?.message || 'An unexpected error occurred'}
           </p>
-          <button
-            onClick={() => window.location.reload()}
-            className="bg-purple-600 text-white py-2 px-4 rounded hover:bg-purple-700"
-          >
-            Reload Page
+          <button type="button" onClick={() => window.location.reload()} className="btn-primary">
+            Reload page
           </button>
         </div>
       );
@@ -54,8 +52,8 @@ function ProtectedRoute({ children }: { children: React.ReactNode }) {
 
   if (loading) {
     return (
-      <div className="flex justify-center py-20">
-        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-purple-500"></div>
+      <div className="flex justify-center py-20" role="status" aria-label="Loading">
+        <div className="h-10 w-10 animate-spin rounded-full border-2 border-[var(--gold-primary)] border-t-transparent"></div>
       </div>
     );
   }
@@ -85,9 +83,9 @@ const App = () => {
       <ToastProvider>
         <Router>
           <ErrorBoundary>
-            <div className="min-h-screen bg-white dark:bg-gray-900 text-gray-900 dark:text-white flex flex-col">
+            <div className="app-shell flex flex-col">
               <Header />
-              <main className="max-w-7xl mx-auto px-4 py-8 flex-grow w-full">
+              <main className="site-main flex-grow">
                 <Suspense fallback={<LoadingSpinner />}>
                   <Routes>
                     <Route path="/" element={<Home />} />

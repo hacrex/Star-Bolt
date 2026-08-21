@@ -9,27 +9,23 @@ const SearchBar = () => {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (query.trim()) {
-      navigate(`/search?q=${encodeURIComponent(query)}`);
+      navigate(`/search?q=${encodeURIComponent(query.trim())}`);
     }
   };
 
   return (
-    <form onSubmit={handleSubmit} className="relative max-w-2xl mx-auto">
-      <div className="relative">
-        <input
-          type="text"
-          value={query}
-          onChange={(e) => setQuery(e.target.value)}
-          placeholder="Search for songs, artists, or lyrics..."
-          className="w-full px-4 py-3 pl-12 bg-gray-800 border border-gray-700 rounded-full focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-        />
-        <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
-      </div>
-      
-      <button
-        type="submit"
-        className="absolute right-4 top-1/2 -translate-y-1/2 bg-purple-600 text-white px-4 py-1 rounded-full hover:bg-purple-700 transition-colors"
-      >
+    <form onSubmit={handleSubmit} className="relative mx-auto w-full max-w-2xl" role="search">
+      <label htmlFor="global-search" className="sr-only">Search songs, artists, or lyrics</label>
+      <Search className="pointer-events-none absolute left-5 top-1/2 h-5 w-5 -translate-y-1/2 text-[var(--gold-muted)]" aria-hidden="true" />
+      <input
+        id="global-search"
+        type="search"
+        value={query}
+        onChange={(e) => setQuery(e.target.value)}
+        placeholder="Search songs, artists, or lyrics..."
+        className="h-14 w-full rounded-2xl border border-[var(--border-subtle)] bg-[var(--bg-surface)] py-3 pl-14 pr-28 text-[var(--text-primary)] shadow-[var(--shadow-card)] placeholder:text-[var(--text-muted)] focus:border-[var(--gold-primary)] focus:outline-none focus:ring-2 focus:ring-[rgba(212,168,67,0.18)]"
+      />
+      <button type="submit" className="btn-primary absolute right-2 top-2 h-10 !rounded-xl !px-4 text-sm">
         Search
       </button>
     </form>

@@ -1,71 +1,61 @@
-import React, { useRef } from 'react';
-import { Play, ChevronLeft, ChevronRight } from 'lucide-react';
+import React from 'react';
+import { ChevronLeft, ChevronRight, Play } from 'lucide-react';
 
 const FeaturedCarousel: React.FC = () => {
-  const scrollRef = useRef<HTMLDivElement>(null);
+  const scrollRef = React.useRef<HTMLDivElement>(null);
 
   const videos = [
     {
       id: 1,
-      title: "Shape of You",
-      artist: "Ed Sheeran",
-      thumbnail: "https://images.unsplash.com/photo-1470225620780-dba8ba36b745?w=800&q=80",
+      title: 'Shape of You',
+      artist: 'Ed Sheeran',
+      category: 'Lyric video',
+      thumbnail: 'https://images.unsplash.com/photo-1470225620780-dba8ba36b745?w=1200&q=85',
     },
     {
       id: 2,
-      title: "Blinding Lights",
-      artist: "The Weeknd",
-      thumbnail: "https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=800&q=80",
+      title: 'Blinding Lights',
+      artist: 'The Weeknd',
+      category: 'Featured this week',
+      thumbnail: 'https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f?w=1200&q=85',
     },
   ];
 
   const scroll = (direction: 'left' | 'right') => {
     if (!scrollRef.current) return;
-    const scrollAmount = scrollRef.current.offsetWidth * 0.5;
     scrollRef.current.scrollBy({
-      left: direction === 'left' ? -scrollAmount : scrollAmount,
+      left: direction === 'left' ? -scrollRef.current.offsetWidth * 0.72 : scrollRef.current.offsetWidth * 0.72,
       behavior: 'smooth',
     });
   };
 
   return (
-    <section className="mb-12">
-      <h2 className="text-2xl font-bold mb-6 dark:text-white text-gray-900">Featured Lyric Videos</h2>
-      <div className="relative group">
-        <div ref={scrollRef} className="flex overflow-x-auto scrollbar-hide scroll-smooth">
+    <section>
+      <div className="mb-5 flex items-end justify-between gap-4">
+        <div><p className="eyebrow">From the channel</p><h2 className="section-heading mt-2">Featured lyric videos</h2></div>
+        <span className="hidden text-xs uppercase tracking-[0.14em] text-[var(--text-muted)] sm:block">Swipe to explore</span>
+      </div>
+      <div className="group relative">
+        <div ref={scrollRef} className="flex snap-x gap-4 overflow-x-auto scroll-smooth scrollbar-hide">
           {videos.map((video) => (
-            <div key={video.id} className="min-w-full md:min-w-[50%] lg:min-w-[33.333%] p-2">
-              <div className="relative group/card cursor-pointer">
-                <img
-                  src={video.thumbnail}
-                  alt={video.title}
-                  className="w-full h-64 object-cover rounded-lg"
-                />
-                <div className="absolute inset-0 bg-black bg-opacity-40 group-hover/card:bg-opacity-50 transition-all duration-300 rounded-lg flex items-center justify-center">
-                  <Play className="w-12 h-12 text-white opacity-0 group-hover/card:opacity-100 transition-opacity duration-300" />
+            <article key={video.id} className="surface-card surface-card-hover relative min-w-[88%] snap-start overflow-hidden sm:min-w-[60%] lg:min-w-[42%]">
+              <div className="relative h-64 overflow-hidden sm:h-72">
+                <img src={video.thumbnail} alt={`${video.title} by ${video.artist}`} className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-[1.02]" />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/10 to-transparent" />
+                <div className="absolute bottom-0 left-0 right-0 p-5 text-white">
+                  <span className="text-xs font-bold uppercase tracking-[0.14em] text-[var(--gold-light)]">{video.category}</span>
+                  <h3 className="mt-2 text-2xl font-semibold">{video.title}</h3>
+                  <p className="mt-1 text-sm text-white/75">{video.artist}</p>
                 </div>
-                <div className="absolute bottom-0 left-0 right-0 p-4 text-white">
-                  <h3 className="text-lg font-semibold">{video.title}</h3>
-                  <p className="text-sm text-gray-300">{video.artist}</p>
-                </div>
+                <button type="button" aria-label={`Play ${video.title}`} className="absolute left-5 top-5 flex h-12 w-12 items-center justify-center rounded-full bg-[var(--gold-primary)] text-[#17120a] shadow-lg transition-transform duration-200 hover:scale-105">
+                  <Play className="ml-0.5 h-5 w-5 fill-current" aria-hidden="true" />
+                </button>
               </div>
-            </div>
+            </article>
           ))}
         </div>
-        <button
-          onClick={() => scroll('left')}
-          aria-label="Previous"
-          className="absolute left-0 top-1/2 -translate-y-1/2 bg-black bg-opacity-50 p-2 rounded-full hover:bg-opacity-75 transition-all opacity-0 group-hover:opacity-100"
-        >
-          <ChevronLeft className="w-6 h-6 text-white" />
-        </button>
-        <button
-          onClick={() => scroll('right')}
-          aria-label="Next"
-          className="absolute right-0 top-1/2 -translate-y-1/2 bg-black bg-opacity-50 p-2 rounded-full hover:bg-opacity-75 transition-all opacity-0 group-hover:opacity-100"
-        >
-          <ChevronRight className="w-6 h-6 text-white" />
-        </button>
+        <button type="button" onClick={() => scroll('left')} aria-label="Previous featured videos" className="icon-button absolute -left-3 top-1/2 hidden -translate-y-1/2 bg-[var(--bg-surface)] shadow-lg group-hover:flex sm:flex"><ChevronLeft className="h-5 w-5" /></button>
+        <button type="button" onClick={() => scroll('right')} aria-label="Next featured videos" className="icon-button absolute -right-3 top-1/2 hidden -translate-y-1/2 bg-[var(--bg-surface)] shadow-lg group-hover:flex sm:flex"><ChevronRight className="h-5 w-5" /></button>
       </div>
     </section>
   );
