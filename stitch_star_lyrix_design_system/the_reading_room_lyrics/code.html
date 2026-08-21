@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Star Lyrix - Reading Room</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@500&amp;family=Source+Serif+4:wght@400;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "on-primary": "#402d00",
+                      "on-tertiary-fixed": "#1c1b1b",
+                      "on-tertiary-container": "#424242",
+                      "on-primary-container": "#553e00",
+                      "primary-container": "#d4a843",
+                      "on-primary-fixed": "#261a00",
+                      "inverse-on-surface": "#32302b",
+                      "on-secondary-fixed-variant": "#4c463b",
+                      "on-tertiary": "#313030",
+                      "surface-tint": "#eec058",
+                      "surface-container-highest": "#36352f",
+                      "secondary-fixed": "#ece1d2",
+                      "inverse-primary": "#795900",
+                      "error": "#ffb4ab",
+                      "on-background": "#e7e2da",
+                      "surface-bright": "#3b3934",
+                      "surface-variant": "#36352f",
+                      "on-error": "#690005",
+                      "outline": "#9a8f7d",
+                      "outline-variant": "#4e4636",
+                      "on-secondary-container": "#c1b7a9",
+                      "surface-dim": "#14130f",
+                      "secondary": "#cfc5b6",
+                      "on-surface": "#e7e2da",
+                      "tertiary-fixed": "#e5e2e1",
+                      "tertiary-container": "#b0aead",
+                      "on-surface-variant": "#d2c5b1",
+                      "inverse-surface": "#e7e2da",
+                      "on-secondary": "#353025",
+                      "surface-container-high": "#2b2a25",
+                      "primary": "#f2c35b",
+                      "primary-fixed-dim": "#eec058",
+                      "surface-container-low": "#1d1c17",
+                      "on-secondary-fixed": "#201b12",
+                      "error-container": "#93000a",
+                      "secondary-container": "#4f483d",
+                      "surface-container-lowest": "#0f0e0a",
+                      "secondary-fixed-dim": "#cfc5b6",
+                      "on-error-container": "#ffdad6",
+                      "tertiary-fixed-dim": "#c8c6c5",
+                      "background": "#14130f",
+                      "tertiary": "#ccc9c9",
+                      "on-primary-fixed-variant": "#5b4300",
+                      "surface-container": "#21201b",
+                      "primary-fixed": "#ffdf9f",
+                      "on-tertiary-fixed-variant": "#474646",
+                      "surface": "#14130f"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.25rem",
+                      "lg": "0.5rem",
+                      "xl": "0.75rem",
+                      "full": "9999px"
+              },
+              "spacing": {
+                      "bento-gap": "20px",
+                      "xs": "4px",
+                      "lg": "24px",
+                      "sm": "8px",
+                      "container-padding": "32px",
+                      "md": "16px",
+                      "xl": "40px",
+                      "unit": "4px"
+              },
+              "fontFamily": {
+                      "display-lg-mobile": [
+                              "Inter"
+                      ],
+                      "label-mono": [
+                              "JetBrains Mono"
+                      ],
+                      "lyric-display": [
+                              "\"Source Serif 4\""
+                      ],
+                      "body-sm": [
+                              "Inter"
+                      ],
+                      "body-lg": [
+                              "Inter"
+                      ],
+                      "display-md": [
+                              "Inter"
+                      ],
+                      "display-lg": [
+                              "Inter"
+                      ],
+                      "lyric-body": [
+                              "\"Source Serif 4\""
+                      ],
+                      "lyric-display-mobile": [
+                              "\"Source Serif 4\""
+                      ]
+              },
+              "fontSize": {
+                      "display-lg-mobile": [
+                              "32px",
+                              {
+                                      "lineHeight": "38px",
+                                      "fontWeight": "700"
+                              }
+                      ],
+                      "label-mono": [
+                              "12px",
+                              {
+                                      "lineHeight": "16px",
+                                      "letterSpacing": "0.05em",
+                                      "fontWeight": "500"
+                              }
+                      ],
+                      "lyric-display": [
+                              "28px",
+                              {
+                                      "lineHeight": "56px",
+                                      "letterSpacing": "0em",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "body-sm": [
+                              "14px",
+                              {
+                                      "lineHeight": "20px",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "body-lg": [
+                              "18px",
+                              {
+                                      "lineHeight": "28px",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "display-md": [
+                              "32px",
+                              {
+                                      "lineHeight": "40px",
+                                      "letterSpacing": "-0.01em",
+                                      "fontWeight": "600"
+                              }
+                      ],
+                      "display-lg": [
+                              "48px",
+                              {
+                                      "lineHeight": "56px",
+                                      "letterSpacing": "-0.02em",
+                                      "fontWeight": "700"
+                              }
+                      ],
+                      "lyric-body": [
+                              "20px",
+                              {
+                                      "lineHeight": "40px",
+                                      "letterSpacing": "0em",
+                                      "fontWeight": "400"
+                              }
+                      ],
+                      "lyric-display-mobile": [
+                              "22px",
+                              {
+                                      "lineHeight": "44px",
+                                      "fontWeight": "400"
+                              }
+                      ]
+              }
+      },
+          },
+        }
+      </script>
+<style>
+        body {
+            background-color: #0A0A0A;
+            color: #F5F0E8;
+        }
+        .mask-image-v {
+            mask-image: linear-gradient(to bottom, transparent, black 10%, black 90%, transparent);
+            -webkit-mask-image: linear-gradient(to bottom, transparent, black 10%, black 90%, transparent);
+        }
+        .glass-panel {
+            background: rgba(20, 20, 20, 0.7);
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
+            border: 1px solid rgba(168, 159, 145, 0.1);
+        }
+        .gold-glow {
+            box-shadow: 0 0 40px rgba(212, 168, 67, 0.15);
+        }
+        
+        /* Custom scrollbar for lyrics */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: rgba(168, 159, 145, 0.2);
+            border-radius: 10px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: rgba(212, 168, 67, 0.5);
+        }
+    </style>
+</head>
+<body class="font-body-lg text-body-lg min-h-screen flex flex-col relative overflow-hidden">
+<!-- Top Navigation Bar -->
+<header class="fixed top-0 w-full z-50 bg-background/85 backdrop-blur-xl border-b border-outline/10 shadow-sm">
+<div class="flex justify-between items-center px-container-padding h-20 max-w-[1440px] mx-auto">
+<div class="font-display-md text-display-md font-bold text-primary tracking-tight">Star Lyrix</div>
+<nav class="hidden md:flex gap-lg">
+<a class="text-on-surface-variant font-medium hover:text-primary transition-colors duration-300" href="#">Discover</a>
+<a class="text-on-surface-variant font-medium hover:text-primary transition-colors duration-300" href="#">AI Lyrics</a>
+<a class="text-on-surface-variant font-medium hover:text-primary transition-colors duration-300" href="#">Videos</a>
+<a class="text-primary font-bold border-b-2 border-primary pb-1 hover:text-primary transition-colors duration-300" href="#">My Lyrics</a>
+<a class="text-on-surface-variant font-medium hover:text-primary transition-colors duration-300" href="#">Playlists</a>
+</nav>
+<div class="flex items-center gap-md text-on-surface-variant">
+<button aria-label="Search" class="hover:text-primary transition-colors duration-300">
+<span class="material-symbols-outlined" data-icon="search">search</span>
+</button>
+<button aria-label="Account" class="hover:text-primary transition-colors duration-300">
+<span class="material-symbols-outlined" data-icon="account_circle">account_circle</span>
+</button>
+</div>
+</div>
+</header>
+<!-- Main Content Canvas -->
+<main class="flex-1 flex flex-col md:flex-row mt-20 pb-24 max-w-[1440px] w-full mx-auto px-4 md:px-container-padding gap-bento-gap h-[calc(100vh-80px-96px)]">
+<!-- Left Column: Album Art & Info -->
+<aside class="w-full md:w-[400px] flex-shrink-0 flex flex-col gap-lg overflow-y-auto hide-scrollbar pt-8">
+<div class="relative w-full aspect-square rounded-2xl overflow-hidden shadow-[0_20px_50px_rgba(0,0,0,0.5)] gold-glow group">
+<img alt="Album Cover" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" data-alt="A moody, high-end cinematic album cover featuring a solitary figure silhouetted against a deep amber sunset, shot with dramatic low-light photography. The scene evokes a sense of nostalgic warmth and introspection, perfectly aligned with a premium, low-light aesthetic. Soft golden hour lighting pierces through heavy shadows, creating striking contrast. The composition is minimal and deeply atmospheric, reminiscent of classic editorial portraiture." src="https://lh3.googleusercontent.com/aida-public/AB6AXuA830nXN1A0tu5BeUFH8g6hlti0GHmNrknOWZWD_GuR250aAh16XerMVnNGPOIFsA5W07v8K7W4iGvPHkvNpzT8PWGW2C1JsfoXrnp49GvbXFEjQbsMg5sooAmAFDz576QOY5U51qCKwb9sUaYN-os7eTo5cP4drYEbr4JR0j8kE77Vi-HDccVk2CbB7lHO7kSKqdTepQfoDIhJeCA4DCNNXgSjl-DxGzRSnbZWeXSVxN7mTsAcEk5U"/>
+<div class="absolute inset-0 bg-gradient-to-t from-[#0A0A0A] via-transparent to-transparent opacity-80"></div>
+</div>
+<div class="flex flex-col gap-xs">
+<h1 class="font-display-lg text-display-lg-mobile md:text-display-lg text-on-surface tracking-tight">Midnight City Lights</h1>
+<p class="font-body-lg text-primary">The Synthweavers <span class="text-on-surface-variant ml-2 text-sm">2023</span></p>
+</div>
+<div class="flex gap-md mt-4">
+<button class="flex-1 bg-surface-container-low hover:bg-surface-container border border-outline/20 hover:border-primary/50 text-on-surface rounded-xl py-3 flex items-center justify-center gap-2 transition-all duration-300">
+<span class="material-symbols-outlined" data-icon="favorite" data-weight="fill" style="font-variation-settings: 'FILL' 1;">favorite</span>
+<span class="font-label-mono text-label-mono uppercase tracking-wider">Save</span>
+</button>
+<button class="flex-1 bg-surface-container-low hover:bg-surface-container border border-outline/20 hover:border-primary/50 text-on-surface rounded-xl py-3 flex items-center justify-center gap-2 transition-all duration-300">
+<span class="material-symbols-outlined" data-icon="playlist_add">playlist_add</span>
+<span class="font-label-mono text-label-mono uppercase tracking-wider">Add</span>
+</button>
+<button class="w-12 h-12 bg-surface-container-low hover:bg-surface-container border border-outline/20 hover:border-primary/50 text-on-surface rounded-xl flex items-center justify-center transition-all duration-300 flex-shrink-0">
+<span class="material-symbols-outlined" data-icon="share">share</span>
+</button>
+</div>
+<!-- Metadata Bento Box -->
+<div class="glass-panel rounded-xl p-md flex flex-col gap-sm mt-auto">
+<div class="flex justify-between items-center border-b border-outline/10 pb-2">
+<span class="font-label-mono text-label-mono text-on-surface-variant uppercase">Produced By</span>
+<span class="font-body-sm text-on-surface">Echo Sound Labs</span>
+</div>
+<div class="flex justify-between items-center border-b border-outline/10 pb-2">
+<span class="font-label-mono text-label-mono text-on-surface-variant uppercase">Written By</span>
+<span class="font-body-sm text-on-surface">J. Weaver, M. Synth</span>
+</div>
+<div class="flex justify-between items-center">
+<span class="font-label-mono text-label-mono text-on-surface-variant uppercase">Label</span>
+<span class="font-body-sm text-on-surface">Neon Records</span>
+</div>
+</div>
+</aside>
+<!-- Right Column: Lyrics Canvas -->
+<section class="flex-1 flex flex-col relative h-full min-h-[500px]">
+<!-- Lyrics Header -->
+<div class="flex justify-between items-center py-6 px-4 md:px-8 border-b border-outline/10 z-10">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-primary text-xl" data-icon="lyrics">lyrics</span>
+<span class="font-label-mono text-label-mono uppercase tracking-widest text-on-surface-variant">The Reading Room</span>
+</div>
+<button class="flex items-center gap-2 text-on-surface-variant hover:text-primary transition-colors bg-surface-container-low px-4 py-2 rounded-full border border-outline/10">
+<span class="material-symbols-outlined text-sm" data-icon="translate">translate</span>
+<span class="font-label-mono text-label-mono uppercase">Translate</span>
+</button>
+</div>
+<!-- Scrolling Lyrics -->
+<div class="flex-1 overflow-y-auto px-4 md:px-12 py-12 mask-image-v font-lyric-body text-lyric-body md:text-lyric-display-mobile text-center scroll-smooth" style="font-family: Georgia, serif; line-height: 2.0;">
+<div class="max-w-2xl mx-auto space-y-12">
+<!-- Verse 1 -->
+<div>
+<div class="font-label-mono text-label-mono text-on-surface-variant uppercase tracking-[0.2em] mb-6 text-left border-l-2 border-outline/20 pl-4 opacity-50">Verse 1</div>
+<p class="text-on-surface-variant/60 transition-all duration-500 hover:text-on-surface/80 cursor-pointer mb-2">Driving down the coastal highway</p>
+<p class="text-on-surface-variant/60 transition-all duration-500 hover:text-on-surface/80 cursor-pointer mb-2">Neon bleeding through the rain</p>
+<p class="text-on-surface-variant/60 transition-all duration-500 hover:text-on-surface/80 cursor-pointer mb-2">Shadows dancing on the dashboard</p>
+<p class="text-on-surface-variant/60 transition-all duration-500 hover:text-on-surface/80 cursor-pointer mb-2">While the radio plays our pain</p>
+</div>
+<!-- Chorus -->
+<div>
+<div class="font-label-mono text-label-mono text-primary uppercase tracking-[0.2em] mb-6 text-left border-l-2 border-primary/50 pl-4">Chorus</div>
+<p class="text-on-surface-variant/60 transition-all duration-500 hover:text-on-surface/80 cursor-pointer mb-2">Oh, these midnight city lights</p>
+<!-- Active Line -->
+<div class="relative py-2 my-4 transform scale-[1.02] transition-all duration-500">
+<div class="absolute left-[-20px] top-0 bottom-0 w-[3px] bg-primary rounded-full shadow-[0_0_10px_#D4A843]"></div>
+<p class="text-primary text-[22px] font-semibold drop-shadow-[0_0_15px_rgba(212,168,67,0.3)]">They don't shine as bright as you</p>
+</div>
+<p class="text-on-surface-variant/60 transition-all duration-500 hover:text-on-surface/80 cursor-pointer mb-2">In the silence of the skyline</p>
+<p class="text-on-surface-variant/60 transition-all duration-500 hover:text-on-surface/80 cursor-pointer mb-2">I'm just looking for a clue</p>
+</div>
+<!-- Verse 2 -->
+<div>
+<div class="font-label-mono text-label-mono text-on-surface-variant uppercase tracking-[0.2em] mb-6 text-left border-l-2 border-outline/20 pl-4 opacity-50">Verse 2</div>
+<p class="text-on-surface-variant/60 transition-all duration-500 hover:text-on-surface/80 cursor-pointer mb-2">Coffee cold in the cup holder</p>
+<p class="text-on-surface-variant/60 transition-all duration-500 hover:text-on-surface/80 cursor-pointer mb-2">Time is moving like a ghost</p>
+<p class="text-on-surface-variant/60 transition-all duration-500 hover:text-on-surface/80 cursor-pointer mb-2">Every turn feels so familiar</p>
+<p class="text-on-surface-variant/60 transition-all duration-500 hover:text-on-surface/80 cursor-pointer mb-2">But it's you I miss the most</p>
+</div>
+<!-- Chorus -->
+<div>
+<div class="font-label-mono text-label-mono text-on-surface-variant uppercase tracking-[0.2em] mb-6 text-left border-l-2 border-outline/20 pl-4 opacity-50">Chorus</div>
+<p class="text-on-surface-variant/60 transition-all duration-500 hover:text-on-surface/80 cursor-pointer mb-2">Oh, these midnight city lights</p>
+<p class="text-on-surface-variant/60 transition-all duration-500 hover:text-on-surface/80 cursor-pointer mb-2">They don't shine as bright as you</p>
+<p class="text-on-surface-variant/60 transition-all duration-500 hover:text-on-surface/80 cursor-pointer mb-2">In the silence of the skyline</p>
+<p class="text-on-surface-variant/60 transition-all duration-500 hover:text-on-surface/80 cursor-pointer mb-2">I'm just looking for a clue</p>
+</div>
+</div>
+</div>
+</section>
+</main>
+<!-- Sticky Play Controls -->
+<div class="fixed bottom-0 w-full z-50 glass-panel border-t border-outline/10 shadow-[0_-10px_40px_rgba(0,0,0,0.8)] pb-safe hidden md:block">
+<div class="max-w-[1440px] mx-auto px-container-padding h-24 flex items-center justify-between gap-8">
+<!-- Now Playing Mini -->
+<div class="flex items-center gap-4 w-1/4 min-w-[200px]">
+<img alt="Thumbnail" class="w-14 h-14 rounded-lg object-cover" data-alt="A small thumbnail version of the moody, cinematic album cover featuring a silhouetted figure against an amber sunset." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBg68T8YKxP2k7qmAtzIlQAuNchB4nmnaYSiaFDysGTfu0g5rqy7nQt2PyxYyL5E-9KENteNhv_vCJ5XuRRm_lCsSW2HM3ORKF_rnltaBZgkf3g3_M8IGSvOHJNC9XpWTGCDl5VC1T4LJXN0GeP6kis7N9SM4KckCTeJhGFGSfHXvrJMi4J_9Gv66YqpQodE9oii1hrShYaULcSXMIFtvcRnJbOhBFkYNDcqAtBAfOLr_7ovTJD5ACJ"/>
+<div class="flex flex-col">
+<span class="font-body-sm font-semibold text-on-surface line-clamp-1">Midnight City Lights</span>
+<span class="font-label-mono text-[10px] text-on-surface-variant uppercase">The Synthweavers</span>
+</div>
+</div>
+<!-- Controls -->
+<div class="flex-1 flex flex-col items-center gap-2 max-w-xl">
+<div class="flex items-center gap-6">
+<button class="text-on-surface-variant hover:text-primary transition-colors">
+<span class="material-symbols-outlined text-xl" data-icon="shuffle">shuffle</span>
+</button>
+<button class="text-on-surface hover:text-primary transition-colors">
+<span class="material-symbols-outlined text-3xl" data-icon="skip_previous" data-weight="fill" style="font-variation-settings: 'FILL' 1;">skip_previous</span>
+</button>
+<button class="w-12 h-12 rounded-full bg-primary text-on-primary flex items-center justify-center hover:scale-105 transition-transform shadow-[0_0_20px_rgba(212,168,67,0.3)]">
+<span class="material-symbols-outlined text-3xl" data-icon="pause" data-weight="fill" style="font-variation-settings: 'FILL' 1;">pause</span>
+</button>
+<button class="text-on-surface hover:text-primary transition-colors">
+<span class="material-symbols-outlined text-3xl" data-icon="skip_next" data-weight="fill" style="font-variation-settings: 'FILL' 1;">skip_next</span>
+</button>
+<button class="text-on-surface-variant hover:text-primary transition-colors">
+<span class="material-symbols-outlined text-xl" data-icon="repeat">repeat</span>
+</button>
+</div>
+<!-- Progress Bar -->
+<div class="w-full flex items-center gap-3">
+<span class="font-label-mono text-[10px] text-on-surface-variant w-8 text-right">1:24</span>
+<div class="flex-1 h-1 bg-surface-container rounded-full relative group cursor-pointer">
+<div class="absolute left-0 top-0 h-full bg-primary rounded-full w-[35%]"></div>
+<div class="absolute left-[35%] top-1/2 -translate-y-1/2 w-3 h-3 bg-primary rounded-full opacity-0 group-hover:opacity-100 transition-opacity shadow-[0_0_10px_#D4A843]"></div>
+</div>
+<span class="font-label-mono text-[10px] text-on-surface-variant w-8">4:05</span>
+</div>
+</div>
+<!-- Right Actions -->
+<div class="flex items-center justify-end gap-4 w-1/4 min-w-[200px]">
+<button class="text-primary relative">
+<span class="material-symbols-outlined" data-icon="lyrics">lyrics</span>
+<span class="absolute -bottom-2 left-1/2 -translate-x-1/2 w-1 h-1 bg-primary rounded-full"></span>
+</button>
+<button class="text-on-surface-variant hover:text-primary transition-colors">
+<span class="material-symbols-outlined" data-icon="queue_music">queue_music</span>
+</button>
+<div class="flex items-center gap-2 w-24">
+<span class="material-symbols-outlined text-sm text-on-surface-variant" data-icon="volume_up">volume_up</span>
+<div class="flex-1 h-1 bg-surface-container rounded-full relative cursor-pointer">
+<div class="absolute left-0 top-0 h-full bg-on-surface-variant rounded-full w-[80%]"></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<!-- Mobile Bottom Nav Shell -->
+<nav class="md:hidden fixed bottom-0 w-full z-50 bg-background/90 backdrop-blur-lg border-t border-outline/10 shadow-[0_-4px_20px_rgba(212,168,67,0.05)] pb-safe">
+<div class="flex justify-around items-center h-16 px-4">
+<a class="flex flex-col items-center justify-center text-on-surface-variant hover:bg-surface-container-low w-full h-full rounded-lg transition-colors" href="#">
+<span class="material-symbols-outlined mb-1" data-icon="explore">explore</span>
+<span class="font-label-mono text-label-mono">Discover</span>
+</a>
+<a class="flex flex-col items-center justify-center text-primary w-full h-full rounded-lg transition-colors scale-110 duration-200" href="#">
+<span class="material-symbols-outlined mb-1" data-icon="lyrics">lyrics</span>
+<span class="font-label-mono text-label-mono">Lyrics</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant hover:bg-surface-container-low w-full h-full rounded-lg transition-colors" href="#">
+<span class="material-symbols-outlined mb-1" data-icon="library_music">library_music</span>
+<span class="font-label-mono text-label-mono">Library</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant hover:bg-surface-container-low w-full h-full rounded-lg transition-colors" href="#">
+<span class="material-symbols-outlined mb-1" data-icon="search">search</span>
+<span class="font-label-mono text-label-mono">Search</span>
+</a>
+</div>
+</nav>
+</body></html>
