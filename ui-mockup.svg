@@ -1,0 +1,210 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 900" font-family="Inter, -apple-system, sans-serif">
+  <defs>
+    <linearGradient id="heroGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#0A0A0A"/>
+      <stop offset="50%" style="stop-color:#1C1510"/>
+      <stop offset="100%" style="stop-color:#0A0A0A"/>
+    </linearGradient>
+    <linearGradient id="goldGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#D4A843"/>
+      <stop offset="100%" style="stop-color:#E8C675"/>
+    </linearGradient>
+    <linearGradient id="cardHover" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#1C1C1C"/>
+      <stop offset="100%" style="stop-color:#141414"/>
+    </linearGradient>
+    <filter id="glow">
+      <feGaussianBlur stdDeviation="2" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    <clipPath id="roundedCard">
+      <rect width="100%" height="100%" rx="16" ry="16"/>
+    </clipPath>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1280" height="900" fill="#0A0A0A"/>
+
+  <!-- Header -->
+  <rect width="1280" height="64" fill="rgba(10,10,10,0.85)" y="0"/>
+  <line x1="0" y1="64" x2="1280" y2="64" stroke="rgba(212,168,67,0.15)" stroke-width="1"/>
+
+  <!-- Logo -->
+  <text x="32" y="42" font-size="22" font-weight="700" fill="#D4A843" filter="url(#glow)">&#9733;</text>
+  <text x="52" y="42" font-size="18" font-weight="700" fill="#F5F0E8">STARLYRIX</text>
+
+  <!-- Nav Items -->
+  <text x="200" y="42" font-size="14" fill="#A89F91" font-weight="500">Discover</text>
+  <text x="280" y="42" font-size="14" fill="#F5F0E8" font-weight="600">AI Lyrics</text>
+  <text x="365" y="42" font-size="14" fill="#A89F91" font-weight="500">Videos</text>
+  <text x="430" y="42" font-size="14" fill="#A89F91" font-weight="500">My Lyrics</text>
+  <text x="510" y="42" font-size="14" fill="#A89F91" font-weight="500">Playlists</text>
+  <text x="590" y="42" font-size="14" fill="#A89F91" font-weight="500">Search</text>
+
+  <!-- Header Right -->
+  <circle cx="1180" cy="32" r="16" fill="#1C1C1C" stroke="#242424" stroke-width="1"/>
+  <text x="1175" y="37" font-size="14" fill="#A89F91">&#9789;</text>
+  <circle cx="1220" cy="32" r="16" fill="#D4A843"/>
+  <text x="1213" y="37" font-size="12" fill="#0A0A0A" font-weight="600">K</text>
+
+  <!-- Hero Section -->
+  <rect x="0" y="64" width="1280" height="200" fill="url(#heroGrad)"/>
+  <text x="640" y="120" text-anchor="middle" font-size="36" font-weight="700" fill="#F5F0E8">Lyrics That Light Up Your World</text>
+  <text x="640" y="150" text-anchor="middle" font-size="16" fill="#A89F91">Create, Share, and Discover Lyrics with AI</text>
+
+  <!-- Search Bar -->
+  <rect x="340" y="170" width="600" height="48" rx="24" fill="#141414" stroke="#242424" stroke-width="1"/>
+  <text x="370" y="200" font-size="14" fill="#6B6560">&#128269; Search songs, artists, lyrics...</text>
+  <rect x="820" y="178" width="100" height="32" rx="16" fill="#D4A843"/>
+  <text x="848" y="200" font-size="13" fill="#0A0A0A" font-weight="600">Search</text>
+
+  <!-- CTA Buttons -->
+  <rect x="440" y="225" width="140" height="36" rx="18" fill="transparent" stroke="#D4A843" stroke-width="1.5"/>
+  <text x="475" y="248" font-size="12" fill="#D4A843" font-weight="500">Explore Lyrics</text>
+  <rect x="595" y="225" width="140" height="36" rx="18" fill="transparent" stroke="#D4A843" stroke-width="1.5"/>
+  <text x="623" y="248" font-size="12" fill="#D4A843" font-weight="500">Watch Star Lyrix</text>
+  <rect x="750" y="225" width="140" height="36" rx="18" fill="#D4A843"/>
+  <text x="777" y="248" font-size="12" fill="#0A0A0A" font-weight="600">Create Lyrics</text>
+
+  <!-- Bento Grid Section -->
+  <text x="32" y="310" font-size="20" font-weight="700" fill="#F5F0E8">Featured Lyric Videos</text>
+  <text x="1220" y="310" font-size="14" fill="#D4A843" text-anchor="end">View All &#8594;</text>
+
+  <!-- Featured Card (Large) -->
+  <rect x="32" y="325" width="400" height="240" rx="16" fill="#141414" stroke="#242424" stroke-width="1"/>
+  <rect x="32" y="325" width="400" height="160" rx="16" fill="#1C1510"/>
+  <text x="232" y="410" text-anchor="middle" font-size="48" fill="#D4A843">&#9654;</text>
+  <text x="395" y="460" text-anchor="end" font-size="11" fill="#F5F0E8" font-weight="500">4:32</text>
+  <rect x="44" y="500" width="376" height="1" fill="#242424"/>
+  <text x="48" y="525" font-size="16" font-weight="600" fill="#F5F0E8">Arijit Singh - Kesariya</text>
+  <text x="48" y="548" font-size="13" fill="#A89F91">Brahmastra - 2022 - Romantic</text>
+
+  <!-- Trending Cards (Small) -->
+  <rect x="448" y="325" width="200" height="112" rx="12" fill="#141414" stroke="#242424" stroke-width="1"/>
+  <rect x="448" y="325" width="200" height="72" rx="12" fill="#1C1510"/>
+  <text x="548" y="375" text-anchor="middle" font-size="24" fill="#D4A843">&#9654;</text>
+  <text x="460" y="415" font-size="13" font-weight="600" fill="#F5F0E8">Tum Hi Ho</text>
+  <text x="460" y="430" font-size="11" fill="#A89F91">Arijit Singh</text>
+
+  <rect x="664" y="325" width="200" height="112" rx="12" fill="#141414" stroke="#242424" stroke-width="1"/>
+  <rect x="664" y="325" width="200" height="72" rx="12" fill="#1C1510"/>
+  <text x="764" y="375" text-anchor="middle" font-size="24" fill="#D4A843">&#9654;</text>
+  <text x="676" y="415" font-size="13" font-weight="600" fill="#F5F0E8">Chaiyya Chaiyya</text>
+  <text x="676" y="430" font-size="11" fill="#A89F91">Sukhwinder Singh</text>
+
+  <rect x="880" y="325" width="200" height="112" rx="12" fill="#141414" stroke="#242424" stroke-width="1"/>
+  <rect x="880" y="325" width="200" height="72" rx="12" fill="#1C1510"/>
+  <text x="980" y="375" text-anchor="middle" font-size="24" fill="#D4A843">&#9654;</text>
+  <text x="892" y="415" font-size="13" font-weight="600" fill="#F5F0E8">Pasoori</text>
+  <text x="892" y="430" font-size="11" fill="#A89F91">Shae Gill</text>
+
+  <rect x="1096" y="325" width="152" height="112" rx="12" fill="#141414" stroke="#242424" stroke-width="1"/>
+  <rect x="1096" y="325" width="152" height="72" rx="12" fill="#1C1510"/>
+  <text x="1172" y="375" text-anchor="middle" font-size="24" fill="#D4A843">&#9654;</text>
+  <text x="1108" y="415" font-size="13" font-weight="600" fill="#F5F0E8">Apna Bana Le</text>
+  <text x="1108" y="430" font-size="11" fill="#A89F91">Arijit Singh</text>
+
+  <!-- Second Row Bento -->
+  <rect x="448" y="450" width="200" height="115" rx="12" fill="#141414" stroke="#242424" stroke-width="1"/>
+  <rect x="448" y="450" width="200" height="75" rx="12" fill="#1C1510"/>
+  <text x="548" y="500" text-anchor="middle" font-size="24" fill="#D4A843">&#9654;</text>
+  <text x="460" y="540" font-size="13" font-weight="600" fill="#F5F0E8">Kun Faya Kun</text>
+  <text x="460" y="555" font-size="11" fill="#A89F91">A.R. Rahman</text>
+
+  <rect x="664" y="450" width="200" height="115" rx="12" fill="#141414" stroke="#242424" stroke-width="1"/>
+  <rect x="664" y="450" width="200" height="75" rx="12" fill="#1C1510"/>
+  <text x="764" y="500" text-anchor="middle" font-size="24" fill="#D4A843">&#9654;</text>
+  <text x="676" y="540" font-size="13" font-weight="600" fill="#F5F0E8">Agar Tum Saath Ho</text>
+  <text x="676" y="555" font-size="11" fill="#A89F91">Arijit Singh</text>
+
+  <rect x="880" y="450" width="200" height="115" rx="12" fill="#141414" stroke="#242424" stroke-width="1"/>
+  <rect x="880" y="450" width="200" height="75" rx="12" fill="#1C1510"/>
+  <text x="980" y="500" text-anchor="middle" font-size="24" fill="#D4A843">&#9654;</text>
+  <text x="892" y="540" font-size="13" font-weight="600" fill="#F5F0E8">Malhari</text>
+  <text x="892" y="555" font-size="11" fill="#A89F91">Vishal Dadlani</text>
+
+  <rect x="1096" y="450" width="152" height="115" rx="12" fill="#141414" stroke="#242424" stroke-width="1"/>
+  <rect x="1096" y="450" width="152" height="75" rx="12" fill="#1C1510"/>
+  <text x="1172" y="500" text-anchor="middle" font-size="24" fill="#D4A843">&#9654;</text>
+  <text x="1108" y="540" font-size="13" font-weight="600" fill="#F5F0E8">Galti Se Mistake</text>
+  <text x="1108" y="555" font-size="11" fill="#A89F91">Amaal Mallik</text>
+
+  <!-- Trending Now Section -->
+  <text x="32" y="610" font-size="20" font-weight="700" fill="#F5F0E8">Trending Now</text>
+  <text x="1220" y="610" font-size="14" fill="#D4A843" text-anchor="end">View All &#8594;</text>
+
+  <!-- Trending Cards Row -->
+  <rect x="32" y="625" width="280" height="80" rx="12" fill="#141414" stroke="#242424" stroke-width="1"/>
+  <rect x="44" y="637" width="56" height="56" rx="8" fill="#1C1510"/>
+  <text x="72" y="672" text-anchor="middle" font-size="20" fill="#D4A843">&#9834;</text>
+  <text x="112" y="660" font-size="14" font-weight="600" fill="#F5F0E8">Tu Hai Kahan</text>
+  <text x="112" y="680" font-size="12" fill="#A89F91">AUR</text>
+  <text x="292" y="680" font-size="11" fill="#D4A843" text-anchor="end">&#9733; 4.8</text>
+
+  <rect x="328" y="625" width="280" height="80" rx="12" fill="#141414" stroke="#242424" stroke-width="1"/>
+  <rect x="340" y="637" width="56" height="56" rx="8" fill="#1C1510"/>
+  <text x="368" y="672" text-anchor="middle" font-size="20" fill="#D4A843">&#9834;</text>
+  <text x="408" y="660" font-size="14" font-weight="600" fill="#F5F0E8">Heeriye</text>
+  <text x="408" y="680" font-size="12" fill="#A89F91">Jasleen Royal</text>
+  <text x="588" y="680" font-size="11" fill="#D4A843" text-anchor="end">&#9733; 4.7</text>
+
+  <rect x="624" y="625" width="280" height="80" rx="12" fill="#141414" stroke="#242424" stroke-width="1"/>
+  <rect x="636" y="637" width="56" height="56" rx="8" fill="#1C1510"/>
+  <text x="664" y="672" text-anchor="middle" font-size="20" fill="#D4A843">&#9834;</text>
+  <text x="704" y="660" font-size="14" font-weight="600" fill="#F5F0E8">Excuses</text>
+  <text x="704" y="680" font-size="12" fill="#A89F91">Guru Randhawa</text>
+  <text x="884" y="680" font-size="11" fill="#D4A843" text-anchor="end">&#9733; 4.6</text>
+
+  <rect x="920" y="625" width="280" height="80" rx="12" fill="#141414" stroke="#242424" stroke-width="1"/>
+  <rect x="932" y="637" width="56" height="56" rx="8" fill="#1C1510"/>
+  <text x="960" y="672" text-anchor="middle" font-size="20" fill="#D4A843">&#9834;</text>
+  <text x="1000" y="660" font-size="14" font-weight="600" fill="#F5F0E8">Phir Aur Kya Chahiye</text>
+  <text x="1000" y="680" font-size="12" fill="#A89F91">Arijit Singh</text>
+  <text x="1180" y="680" font-size="11" fill="#D4A843" text-anchor="end">&#9733; 4.9</text>
+
+  <!-- Genre Chips -->
+  <text x="32" y="745" font-size="18" font-weight="700" fill="#F5F0E8">Browse by Genre</text>
+
+  <rect x="32" y="760" width="90" height="36" rx="18" fill="#1C1C1C" stroke="#242424" stroke-width="1"/>
+  <text x="77" y="783" text-anchor="middle" font-size="12" fill="#D4A843" font-weight="500">Pop</text>
+
+  <rect x="134" y="760" width="90" height="36" rx="18" fill="#1C1C1C" stroke="#242424" stroke-width="1"/>
+  <text x="179" y="783" text-anchor="middle" font-size="12" fill="#A89F91">Bollywood</text>
+
+  <rect x="236" y="760" width="90" height="36" rx="18" fill="#1C1C1C" stroke="#242424" stroke-width="1"/>
+  <text x="281" y="783" text-anchor="middle" font-size="12" fill="#A89F91">Hip-Hop</text>
+
+  <rect x="338" y="760" width="90" height="36" rx="18" fill="#1C1C1C" stroke="#242424" stroke-width="1"/>
+  <text x="383" y="783" text-anchor="middle" font-size="12" fill="#A89F91">K-Pop</text>
+
+  <rect x="440" y="760" width="90" height="36" rx="18" fill="#1C1C1C" stroke="#242424" stroke-width="1"/>
+  <text x="485" y="783" text-anchor="middle" font-size="12" fill="#A89F91">Rock</text>
+
+  <rect x="542" y="760" width="90" height="36" rx="18" fill="#1C1C1C" stroke="#242424" stroke-width="1"/>
+  <text x="587" y="783" text-anchor="middle" font-size="12" fill="#A89F91">Punjabi</text>
+
+  <rect x="644" y="760" width="90" height="36" rx="18" fill="#1C1C1C" stroke="#242424" stroke-width="1"/>
+  <text x="689" y="783" text-anchor="middle" font-size="12" fill="#A89F91">Indie</text>
+
+  <rect x="746" y="760" width="90" height="36" rx="18" fill="#1C1C1C" stroke="#242424" stroke-width="1"/>
+  <text x="791" y="783" text-anchor="middle" font-size="12" fill="#A89F91">Classical</text>
+
+  <rect x="848" y="760" width="90" height="36" rx="18" fill="#1C1C1C" stroke="#242424" stroke-width="1"/>
+  <text x="893" y="783" text-anchor="middle" font-size="12" fill="#A89F91">EDM</text>
+
+  <rect x="950" y="760" width="90" height="36" rx="18" fill="#1C1C1C" stroke="#242424" stroke-width="1"/>
+  <text x="995" y="783" text-anchor="middle" font-size="12" fill="#A89F91">R&B</text>
+
+  <!-- Footer -->
+  <rect x="0" y="830" width="1280" height="70" fill="#0A0A0A"/>
+  <line x1="0" y1="830" x2="1280" y2="830" stroke="#242424" stroke-width="1"/>
+  <text x="32" y="870" font-size="12" fill="#6B6560">&#169; 2026 Star Lyrix. All rights reserved.</text>
+  <text x="1248" y="870" font-size="12" fill="#6B6560" text-anchor="end">YouTube &#183; Instagram &#183; X &#183; Facebook</text>
+
+  <!-- Floating Action Button (Mobile hint) -->
+  <circle cx="1230" cy="780" r="28" fill="#D4A843" filter="url(#glow)"/>
+  <text x="1222" y="786" font-size="20" fill="#0A0A0A">+</text>
+</svg>
