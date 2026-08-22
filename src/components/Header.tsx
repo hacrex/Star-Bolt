@@ -9,6 +9,7 @@ import {
   Moon,
   Music2,
   Search,
+  Sparkles,
   Sun,
   User,
   Wand2,
@@ -17,6 +18,7 @@ import {
 } from 'lucide-react';
 import { useAuthStore } from '../store/authStore';
 import { useTheme } from '../context/ThemeContext';
+import CommandPalette from './CommandPalette';
 
 const Header = () => {
   const navigate = useNavigate();
@@ -24,6 +26,22 @@ const Header = () => {
   const { user, signOut } = useAuthStore();
   const { darkMode, toggleDarkMode } = useTheme();
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [commandOpen, setCommandOpen] = useState(false);
+
+  React.useEffect(() => {
+    const onKeyDown = (event: KeyboardEvent) => {
+      if ((event.metaKey || event.ctrlKey) && event.key.toLowerCase() === 'k') {
+        event.preventDefault();
+        setCommandOpen(true);
+      }
+      if (event.key === '/' && !['INPUT', 'TEXTAREA', 'SELECT'].includes((event.target as HTMLElement)?.tagName)) {
+        event.preventDefault();
+        setCommandOpen(true);
+      }
+    };
+    window.addEventListener('keydown', onKeyDown);
+    return () => window.removeEventListener('keydown', onKeyDown);
+  }, []);
 
   const handleSignOut = async () => {
     try {
@@ -57,9 +75,9 @@ const Header = () => {
         </nav>
 
         <div className="flex items-center gap-1 sm:gap-2">
-          <Link to="/search" className="icon-button" aria-label="Search songs and artists">
-            <Search className="h-5 w-5" aria-hidden="true" />
-          </Link>
+          <button type="button" className="header-command-trigger" onClick={() => setCommandOpen(true)} aria-label="Open command search">
+            <Search className="h-4 w-4" aria-hidden="true" /><span className="hidden xl:inline">Search</span><kbd className="hidden xl:inline">/</kbd>
+          </button>
           <button
             type="button"
             onClick={toggleDarkMode}
@@ -68,6 +86,8 @@ const Header = () => {
           >
             {darkMode ? <Sun className="h-5 w-5" aria-hidden="true" /> : <Moon className="h-5 w-5" aria-hidden="true" />}
           </button>
+
+          <Link to="/ai-lyrics" className="header-create-link"><Sparkles className="h-3.5 w-3.5" /> <span className="hidden sm:inline">Create</span></Link>
 
           {user ? (
             <div className="hidden items-center gap-2 sm:flex">
@@ -98,6 +118,8 @@ const Header = () => {
           </button>
         </div>
       </div>
+
+      <CommandPalette open={commandOpen} onClose={() => setCommandOpen(false)} />
 
       {mobileOpen && (
         <nav id="mobile-navigation" className="border-t border-[var(--border-subtle)] bg-[var(--bg-deep)] px-4 py-4 lg:hidden" aria-label="Mobile navigation">

@@ -2,7 +2,7 @@ import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { usePlaylistStore } from '../store/playlistStore';
 import { useAuthStore } from '../store/authStore';
-import { Plus, ListMusic, Trash2 } from 'lucide-react';
+import { ArrowRight, Plus, ListMusic, Trash2 } from 'lucide-react';
 
 const Playlists = () => {
   const navigate = useNavigate();
@@ -49,8 +49,9 @@ const Playlists = () => {
 
   return (
     <div className="mx-auto max-w-5xl">
-      <div className="mb-8 flex flex-col items-start justify-between gap-4 sm:flex-row sm:items-end">
-        <div><p className="eyebrow">Your library</p><h1 className="mt-2 text-4xl font-bold tracking-[-0.04em] text-[var(--text-primary)]">Your playlists</h1></div>
+              <div className="mb-8 flex flex-col items-start justify-between gap-4 sm:flex-row sm:items-end">
+        <div><p className="eyebrow">Your library · your rules</p><h1 className="mt-2 text-4xl font-bold tracking-[-0.04em] text-[var(--text-primary)]">Your shelves</h1><p className="mt-3 max-w-xl text-sm leading-6 text-[var(--text-secondary)]">Collect the lines, moods, and main-character moments you want to return to.</p></div>
+
         <button
           onClick={() => setShowCreateModal(true)}
           className="btn-primary"
@@ -60,7 +61,7 @@ const Playlists = () => {
         </button>
       </div>
 
-      <div className="grid grid-cols-1 gap-5 md:grid-cols-2 lg:grid-cols-3">
+      {playlists.length === 0 ? <div className="surface-card empty-state-card min-h-72"><span className="empty-state-icon"><ListMusic className="h-5 w-5" /></span><h2>Your first shelf is waiting.</h2><p>Make a home for late-night lines, soft-launch anthems, or anything you cannot stop replaying.</p><button type="button" className="btn-primary" onClick={() => setShowCreateModal(true)}><Plus className="h-4 w-4" /> Create your first shelf</button><Link to="/search" className="mt-2 inline-flex items-center gap-1 text-sm font-semibold text-[var(--gold-light)]">Find songs to add <ArrowRight className="h-4 w-4" /></Link></div> : <div className="grid grid-cols-1 gap-5 md:grid-cols-2 lg:grid-cols-3">
         {playlists.map((playlist) => (
           <article key={playlist.id} className="surface-card surface-card-hover relative p-6">
             <Link to={`/playlists/${playlist.id}`} className="block pr-8">
@@ -75,7 +76,7 @@ const Playlists = () => {
             </button>
           </article>
         ))}
-      </div>
+      </div>}
 
       {showCreateModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-4 backdrop-blur-sm">

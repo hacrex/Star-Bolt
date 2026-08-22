@@ -27,6 +27,7 @@ import { useSongStore } from '../store/songStore';
 import { usePlaylistStore } from '../store/playlistStore';
 import { useToast } from '../components/Toast';
 import type { Database, PlaybackCue } from '../lib/database.types';
+import { languageLabel, rememberSong } from '../lib/discovery';
 
 type Song = Database['public']['Tables']['songs']['Row'];
 type Playback = Database['public']['Tables']['song_playback']['Row'];
@@ -69,7 +70,13 @@ const SongDetails = () => {
   const [submitting, setSubmitting] = React.useState(false);
   const [userRating, setUserRating] = React.useState(0);
   const [activeLine, setActiveLine] = React.useState<number | null>(null);
-  const [isSaved, setIsSaved] = React.useState(false);
+  const [isSaved, setIsSaved] = React.useState(() => {
+    try {
+      return JSON.parse(localStorage.getItem('star-lyrix-saved') || '[]').includes(id);
+    } catch {
+      return false;
+    }
+  });
   const [isPlaying, setIsPlaying] = React.useState(false);
   const [progress, setProgress] = React.useState(0);
   const [currentTime, setCurrentTime] = React.useState(0);
@@ -80,6 +87,8 @@ const SongDetails = () => {
   const [playlistPickerOpen, setPlaylistPickerOpen] = React.useState(false);
   const [newPlaylistName, setNewPlaylistName] = React.useState('');
   const [playlistActionLoading, setPlaylistActionLoading] = React.useState(false);
+  const [activeReaction, setActiveReaction] = React.useState<string | null>(null);
+  const [reactionCounts, setReactionCounts] = React.useState<Record<string, number>>({ 'felt this': 12, beautiful: 8, 'need translation': 4 });
 
   React.useEffect(() => {
     const fetchSongDetails = async () => {
@@ -144,11 +153,32 @@ const SongDetails = () => {
     setIsPlaying(false);
     setCurrentTime(0);
     setProgress(0);
+    setActiveReaction(null);
+    setReactionCounts({ 'felt this': 12, beautiful: 8, 'need translation': 4 });
+    setIsSaved(() => {
+      try {
+        return JSON.parse(localStorage.getItem('star-lyrix-saved') || '[]').includes(id);
+      } catch {
+        return false;
+      }
+    });
+    try {
+      const savedReactions = localStorage.getItem(`star-lyrix-reactions-${id}`);
+      if (savedReactions) setReactionCounts(JSON.parse(savedReactions));
+    } catch {
+      // Local reaction state is enhancement-only.
+    }
     if (audioRef.current) {
       audioRef.current.pause();
       audioRef.current.currentTime = 0;
     }
   }, [id]);
+
+  React.useEffect(() => {
+    if (song) {
+      rememberSong({ id: song.id, title: song.title, artist: song.artist, thumbnailUrl: song.thumbnail_url, language: song.language });
+    }
+  }, [song]);
 
   const lyricSections = React.useMemo<LyricSection[]>(() => {
     const blocks = lyrics
@@ -161,6 +191,35 @@ const SongDetails = () => {
       lines,
     }));
   }, [lyrics]);
+
+  const flatLines = React.useMemo(() => lyricSections.flatMap((section) => section.lines), [lyricSections]);
+
+  const handleShareQuote = async () => {
+    const line = flatLines[syncedLine ?? activeLine ?? 0];
+    if (!line || !song) {
+      showToast('Choose a lyric line to share', 'info');
+      return;
+    }
+    const quote = `“${line}” — ${song.title} by ${song.artist}`;
+    try {
+      if (navigator.share) await navigator.share({ title: `${song.title} · Star Lyrix`, text: quote, url: window.location.href });
+      else if (navigator.clipboard) { await navigator.clipboard.writeText(quote); showToast('Lyric moment copied', 'success'); }
+    } catch {
+      // Sharing can be cancelled without showing an error.
+    }
+  };
+
+  const handleReaction = (reaction: string) => {
+    setActiveReaction((current) => {
+      let nextCounts: Record<string, number>;
+      if (current === reaction) nextCounts = { ...reactionCounts, [reaction]: Math.max(0, reactionCounts[reaction] - 1) };
+      else if (current) nextCounts = { ...reactionCounts, [current]: Math.max(0, reactionCounts[current] - 1), [reaction]: reactionCounts[reaction] + 1 };
+      else nextCounts = { ...reactionCounts, [reaction]: reactionCounts[reaction] + 1 };
+      setReactionCounts(nextCounts);
+      try { localStorage.setItem(`star-lyrix-reactions-${id}`, JSON.stringify(nextCounts)); } catch { /* Ignore private browsing storage errors. */ }
+      return current === reaction ? null : reaction;
+    });
+  };
 
   const handleRate = async (score: number) => {
     if (!user || !id) {
@@ -219,8 +278,16 @@ const SongDetails = () => {
   };
 
   const handleSave = () => {
-    setIsSaved((saved) => !saved);
-    showToast(isSaved ? 'Removed from your library' : 'Saved to your library', 'success');
+    const nextSaved = !isSaved;
+    setIsSaved(nextSaved);
+    try {
+      const savedIds = JSON.parse(localStorage.getItem('star-lyrix-saved') || '[]') as string[];
+      const nextIds = nextSaved ? Array.from(new Set([...savedIds, id])) : savedIds.filter((savedId) => savedId !== id);
+      localStorage.setItem('star-lyrix-saved', JSON.stringify(nextIds));
+    } catch {
+      // The visual state remains useful if storage is unavailable.
+    }
+    showToast(nextSaved ? 'Saved to your library' : 'Removed from your library', 'success');
   };
 
   const handleOpenPlaylistPicker = async () => {
@@ -342,9 +409,10 @@ const SongDetails = () => {
           </div>
 
           <div className="reading-room-heading">
-            <p className="eyebrow">Now reading</p>
+            <div><p className="eyebrow">Now reading · {languageLabel(song.language)}</p>
             <h1>{song.title}</h1>
             <p className="reading-room-artist">{song.artist} <span>{song.release_date ? new Date(song.release_date).getFullYear() : '—'}</span></p>
+            </div>
           </div>
 
           <div className="reading-room-actions">
@@ -387,11 +455,7 @@ const SongDetails = () => {
               <Languages className="h-5 w-5 text-[var(--gold-light)]" aria-hidden="true" />
               <div><p className="eyebrow">Words & meaning</p><h2 id="reading-room-title">The Reading Room</h2></div>
             </div>
-            <button type="button" className={`reading-room-translate ${showTranslation ? 'is-active' : ''}`} onClick={() => setShowTranslation((visible) => !visible)}>
-              <Languages className="h-4 w-4" />
-              <span>{showTranslation ? 'Original' : 'Translate'}</span>
-              <ChevronDown className={`h-4 w-4 transition-transform ${showTranslation ? 'rotate-180' : ''}`} />
-            </button>
+            <div className="flex items-center gap-2"><button type="button" className="reading-room-quote-action" onClick={() => void handleShareQuote()}><Share2 className="h-4 w-4" /><span className="hidden sm:inline">Share a line</span></button><button type="button" className={`reading-room-translate ${showTranslation ? 'is-active' : ''}`} onClick={() => setShowTranslation((visible) => !visible)}><Languages className="h-4 w-4" /><span>{showTranslation ? 'Original' : 'Translate'}</span><ChevronDown className={`h-4 w-4 transition-transform ${showTranslation ? 'rotate-180' : ''}`} /></button></div>
           </header>
 
           {showTranslation && (
@@ -425,6 +489,7 @@ const SongDetails = () => {
                 })}
               </div>
               <p className="reading-room-rights-note">Only display lyrics you are licensed or authorized to publish. Community corrections and translations should pass through review before being marked verified.</p>
+              <div className="lyric-reaction-rail" aria-label="React to this lyric room"><span className="font-mono text-[0.6rem] uppercase tracking-[0.14em] text-[var(--text-muted)]">This line feels like</span>{['felt this', 'beautiful', 'need translation'].map((reaction) => <button type="button" key={reaction} className={`reaction-pill ${activeReaction === reaction ? 'is-active' : ''}`} onClick={() => handleReaction(reaction)}>{reaction} <span>{reactionCounts[reaction]}</span></button>)}</div>
             </div>
           ) : (
             <div className="reading-room-empty"><Music2 className="h-8 w-8 text-[var(--gold-muted)]" /><p>No lyrics available yet.</p></div>
