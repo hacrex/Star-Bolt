@@ -52,3 +52,17 @@ Contributors can add playback metadata from the authenticated Add Song route. Th
 ## Playlist management
 
 Playlist actions now use the existing Supabase-backed store and RLS policies end to end. Users can create playlists, add a song from the Reading Room through a playlist picker, create a new playlist and add the current song in one action, remove songs from playlist detail, and delete playlists from the library. The UI keeps link and button controls separate for keyboard and screen-reader correctness, and duplicate junction rows surface as a friendly already-added message.
+
+
+## Full prototype coverage
+
+The React implementation now maps the four checked-in Stitch HTML prototypes as follows:
+
+| Stitch prototype | React route | Implemented reference behavior |
+|---|---|---|
+| `star_lyrix_home` | `/` | Cinema for your Ears Bento hero, featured cinematic card, Lyric of the Day card, three supporting discovery cards, mood chips, archive CTA panel, and latest-song cards. |
+| `search_infinite_field` | `/search` | Centered infinite search field, recent/trending context, songs-to-revisit state, lyric-video cards, artist discovery rail, and popular-right-now chips. |
+| `cinema_video_gallery` | `/videos` | Mood filters, Video of the Week hero, gold play treatment, editorial video grid, view/rating metadata, and Short & Sweet rail. |
+| `the_reading_room_lyrics` | `/songs/:id` | Album/metadata rail, Reading Room lyrics canvas, masked serif reading flow, active cue highlighting, translation state, community notes, and sticky player. |
+
+The home route intentionally no longer composes the earlier `FeaturedArtist`, `CategorySection`, `TrendingSection`, or `TopNewSongs` legacy blocks. The Stitch Bento canvas is the canonical discovery surface; dynamic Supabase songs still populate the latest-song area without changing the reference hierarchy.
