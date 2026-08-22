@@ -12,7 +12,7 @@ interface PlaylistStore {
   playlists: Playlist[];
   loading: boolean;
   fetchPlaylists: () => Promise<void>;
-  createPlaylist: (name: string) => Promise<void>;
+  createPlaylist: (name: string) => Promise<Playlist>;
   deletePlaylist: (playlistId: string) => Promise<void>;
   addSongToPlaylist: (playlistId: string, songId: string) => Promise<void>;
   removeSongFromPlaylist: (playlistId: string, songId: string) => Promise<void>;
@@ -36,15 +36,20 @@ export const usePlaylistStore = create<PlaylistStore>((set, get) => ({
     }
   },
   createPlaylist: async (name: string) => {
+    const normalizedName = name.trim();
+    if (!normalizedName) throw new Error('Playlist name is required');
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) throw new Error('Must be logged in to create playlists');
 
-    const { error } = await supabase
+    const { data, error } = await supabase
       .from('playlists')
-      .insert([{ name, user_id: user.id }]);
-    
+      .insert([{ name: normalizedName, user_id: user.id }])
+      .select('*')
+      .single();
+
     if (error) throw error;
     await get().fetchPlaylists();
+    return data;
   },
   deletePlaylist: async (playlistId: string) => {
     const { error } = await supabase
@@ -58,6 +63,8 @@ export const usePlaylistStore = create<PlaylistStore>((set, get) => ({
     }));
   },
   addSongToPlaylist: async (playlistId: string, songId: string) => {
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) throw new Error('Must be logged in to manage playlists');
     const { error } = await supabase
       .from('playlist_songs')
       .insert([{ playlist_id: playlistId, song_id: songId }]);

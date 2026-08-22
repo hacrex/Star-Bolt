@@ -6,6 +6,12 @@ export type Json =
   | { [key: string]: Json | undefined }
   | Json[]
 
+export interface PlaybackCue {
+  startMs: number
+  endMs?: number
+  text: string
+}
+
 export interface Database {
   public: {
     Tables: {
@@ -27,6 +33,38 @@ export interface Database {
           username?: string
           avatar_url?: string | null
           created_at?: string
+        }
+      }
+      song_playback: {
+        Row: {
+          song_id: string
+          audio_url: string
+          audio_source: string
+          audio_authorized: boolean
+          duration_seconds: number
+          synced_lyrics: Json
+          updated_at: string
+          created_by: string | null
+        }
+        Insert: {
+          song_id: string
+          audio_url: string
+          audio_source?: string
+          audio_authorized?: boolean
+          duration_seconds: number
+          synced_lyrics?: Json
+          updated_at?: string
+          created_by?: string | null
+        }
+        Update: {
+          song_id?: string
+          audio_url?: string
+          audio_source?: string
+          audio_authorized?: boolean
+          duration_seconds?: number
+          synced_lyrics?: Json
+          updated_at?: string
+          created_by?: string | null
         }
       }
       songs: {

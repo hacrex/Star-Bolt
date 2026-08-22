@@ -18,24 +18,18 @@ const Profile = () => {
   }
 
   return (
-    <div className="max-w-2xl mx-auto">
-      <div className="bg-gray-800 rounded-lg p-8">
-        <div className="flex items-center gap-4 mb-6">
-          <div className="w-20 h-20 bg-gray-700 rounded-full flex items-center justify-center">
-            <User className="w-10 h-10 text-gray-400" />
-          </div>
-          <div>
-            <h1 className="text-2xl font-bold">{profile.username}</h1>
-            <p className="text-gray-400">{user.email}</p>
+    <div className="mx-auto max-w-2xl">
+      <div className="surface-card overflow-hidden">
+        <div className="relative border-b border-[var(--border-subtle)] bg-[var(--bg-elevated)] p-8">
+          <div className="pointer-events-none absolute right-0 top-0 h-40 w-40 rounded-full bg-[rgba(212,168,67,0.12)] blur-3xl" />
+          <div className="relative flex items-center gap-4">
+            <div className="flex h-20 w-20 items-center justify-center rounded-full border border-[rgba(212,168,67,0.35)] bg-[var(--bg-surface)] text-[var(--gold-light)] shadow-[var(--shadow-glow)]">
+              <User className="h-10 w-10" />
+            </div>
+            <div><p className="eyebrow">Your account</p><h1 className="mt-2 text-3xl font-bold text-[var(--text-primary)]">{profile.username}</h1><p className="mt-1 text-sm text-[var(--text-secondary)]">{user.email}</p></div>
           </div>
         </div>
-        
-        <div className="border-t border-gray-700 pt-6">
-          <h2 className="text-xl font-semibold mb-4">Account Details</h2>
-          <p className="text-gray-400">
-            Member since: {new Date(profile.created_at).toLocaleDateString()}
-          </p>
-        </div>
+        <div className="p-8"><p className="eyebrow">Account details</p><h2 className="mt-2 text-xl font-semibold text-[var(--text-primary)]">Your Star Lyrix profile</h2><p className="mt-4 text-sm leading-7 text-[var(--text-secondary)]">Member since {new Date(profile.created_at).toLocaleDateString()}. Your playlists, generated lyrics, ratings, and community notes live here.</p></div>
       </div>
     </div>
   );

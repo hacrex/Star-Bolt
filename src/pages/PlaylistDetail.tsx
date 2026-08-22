@@ -74,46 +74,44 @@ const PlaylistDetail = () => {
   };
 
   if (loading) {
-    return <div className="text-center py-8">Loading playlist...</div>;
+    return <div className="reading-room-loading">Opening playlist...</div>;
   }
 
   return (
-    <div className="max-w-4xl mx-auto">
-      <Link to="/playlists" className="inline-flex items-center gap-2 text-gray-400 hover:text-white mb-6">
+    <div className="mx-auto max-w-5xl">
+      <Link to="/playlists" className="reading-room-back mb-6">
+
         <ArrowLeft className="w-4 h-4" />
-        Back to Playlists
+        Back to playlists
       </Link>
 
-      <div className="flex items-center gap-3 mb-8">
-        <ListMusic className="w-10 h-10 text-purple-400" />
-        <h1 className="text-3xl font-bold">{playlistName}</h1>
-      </div>
+      <div className="mb-8 flex items-end gap-4"><span className="flex h-14 w-14 items-center justify-center rounded-2xl bg-[rgba(212,168,67,0.1)] text-[var(--gold-light)]"><ListMusic className="h-7 w-7" /></span><div><p className="eyebrow">Your collection</p><h1 className="mt-2 text-4xl font-bold tracking-[-0.04em] text-[var(--text-primary)]">{playlistName}</h1></div></div>
 
       {songs.length > 0 ? (
-        <div className="space-y-3">
+        <div className="grid gap-3">
           {songs.map((ps) => (
             <div
               key={ps.id}
-              className="flex items-center gap-4 bg-gray-800 rounded-lg p-4 hover:bg-gray-750 transition-colors"
+              className="surface-card surface-card-hover flex items-center gap-4 p-4"
             >
               {ps.song.thumbnail_url ? (
                 <img
                   src={ps.song.thumbnail_url}
                   alt={ps.song.title}
-                  className="w-12 h-12 object-cover rounded"
+                  className="h-12 w-12 rounded-md object-cover"
                 />
               ) : (
-                <div className="w-12 h-12 bg-gray-700 rounded flex items-center justify-center">
-                  <Music2 className="w-6 h-6 text-gray-400" />
+                <div className="flex h-12 w-12 items-center justify-center rounded-md bg-[var(--bg-elevated)] text-[var(--gold-muted)]">
+                  <Music2 className="h-6 w-6" />
                 </div>
               )}
               <Link to={`/songs/${ps.song.id}`} className="flex-1">
-                <h3 className="font-semibold">{ps.song.title}</h3>
-                <p className="text-sm text-gray-400">{ps.song.artist}</p>
+                <h3 className="font-semibold text-[var(--text-primary)]">{ps.song.title}</h3>
+                <p className="text-sm text-[var(--text-secondary)]">{ps.song.artist}</p>
               </Link>
               <button
                 onClick={() => handleRemoveSong(ps.id)}
-                className="p-2 text-gray-400 hover:text-red-400 transition-colors"
+                className="icon-button hover:!text-red-300"
                 title="Remove from playlist"
               >
                 <Trash2 className="w-4 h-4" />
@@ -122,10 +120,10 @@ const PlaylistDetail = () => {
           ))}
         </div>
       ) : (
-        <div className="text-center py-12 text-gray-400">
+        <div className="surface-card py-12 text-center text-[var(--text-secondary)]">
           <ListMusic className="w-12 h-12 mx-auto mb-4 opacity-50" />
           <p>This playlist is empty</p>
-          <Link to="/search" className="text-purple-400 hover:text-purple-300 mt-2 inline-block">
+          <Link to="/search" className="mt-2 inline-block text-[var(--gold-light)] hover:text-[var(--text-primary)]">
             Find songs to add
           </Link>
         </div>

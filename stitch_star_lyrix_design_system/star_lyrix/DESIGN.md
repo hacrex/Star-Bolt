@@ -196,3 +196,8 @@ The shape language is consistent and "soft-rounded."
 ### Chips/Tags
 - Small, pill-shaped, using JetBrains Mono for the label.
 - Background: #141414; Border: 1px solid #A89F91.
+
+
+## React implementation mapping
+
+The live React implementation mapping, route coverage, Reading Room interaction contract, responsive behavior, and content-rights notes are documented in [`IMPLEMENTATION.md`](./IMPLEMENTATION.md). The reference prototypes in the sibling folders remain visual targets; the application source of truth is the corresponding React page under `src/pages/`.

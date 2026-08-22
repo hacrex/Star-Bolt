@@ -58,10 +58,9 @@ const Auth = () => {
   };
 
   return (
-    <div className="max-w-md mx-auto">
-      <h1 className="text-3xl font-bold mb-8 text-center">
-        {isLogin ? 'Sign In' : 'Create Account'}
-      </h1>
+    <div className="mx-auto max-w-md">
+      <div className="surface-card p-6 sm:p-8">
+        <div className="mb-8 text-center"><p className="eyebrow">Welcome to Star Lyrix</p><h1 className="mt-3 text-3xl font-bold tracking-[-0.04em] text-[var(--text-primary)]">{isLogin ? 'Sign in' : 'Create account'}</h1><p className="mt-3 text-sm leading-6 text-[var(--text-secondary)]">{isLogin ? 'Return to the songs and lines you love.' : 'Make a home for the words that stay with you.'}</p></div>
 
       <form onSubmit={handleSubmit} className="space-y-4">
         <div>
@@ -71,7 +70,7 @@ const Auth = () => {
             type="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            className="w-full p-2 rounded bg-gray-800 border border-gray-700 focus:ring-2 focus:ring-purple-500"
+            className="min-h-12 w-full rounded-xl border border-[var(--border-subtle)] bg-[var(--bg-elevated)] px-4 text-[var(--text-primary)] placeholder:text-[var(--text-muted)] focus:border-[var(--gold-primary)] focus:outline-none"
             required
           />
         </div>
@@ -84,7 +83,7 @@ const Auth = () => {
               type="text"
               value={username}
               onChange={(e) => setUsername(e.target.value)}
-              className="w-full p-2 rounded bg-gray-800 border border-gray-700 focus:ring-2 focus:ring-purple-500"
+              className="min-h-12 w-full rounded-xl border border-[var(--border-subtle)] bg-[var(--bg-elevated)] px-4 text-[var(--text-primary)] placeholder:text-[var(--text-muted)] focus:border-[var(--gold-primary)] focus:outline-none"
               minLength={3}
               maxLength={30}
               pattern="[a-zA-Z0-9_-]+"
@@ -101,23 +100,23 @@ const Auth = () => {
             type="password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            className="w-full p-2 rounded bg-gray-800 border border-gray-700 focus:ring-2 focus:ring-purple-500"
+            className="min-h-12 w-full rounded-xl border border-[var(--border-subtle)] bg-[var(--bg-elevated)] px-4 text-[var(--text-primary)] placeholder:text-[var(--text-muted)] focus:border-[var(--gold-primary)] focus:outline-none"
             minLength={6}
             required
           />
           {!isLogin && (
-            <p className="text-xs text-gray-500 mt-1">Must be at least 6 characters</p>
+            <p className="mt-1 text-xs text-[var(--text-muted)]">Must be at least 6 characters</p>
           )}
         </div>
 
         {error && (
-          <div className="text-red-500 text-sm">{error}</div>
+          <div className="rounded-xl border border-red-400/30 bg-red-400/10 px-4 py-3 text-sm text-red-200">{error}</div>
         )}
 
         <button
           type="submit"
           disabled={loading}
-          className="w-full bg-purple-600 text-white py-2 px-4 rounded hover:bg-purple-700 transition-colors disabled:opacity-50"
+          className="btn-primary min-h-12 w-full disabled:cursor-not-allowed disabled:opacity-50"
         >
           {loading ? 'Please wait...' : isLogin ? 'Sign In' : 'Create Account'}
         </button>
@@ -127,11 +126,12 @@ const Auth = () => {
         {isLogin ? "Don't have an account? " : "Already have an account? "}
         <button
           onClick={handleToggle}
-          className="text-purple-400 hover:text-purple-300"
+          className="font-semibold text-[var(--gold-light)] hover:text-[var(--text-primary)]"
         >
           {isLogin ? 'Sign Up' : 'Sign In'}
         </button>
       </p>
+      </div>
     </div>
   );
 };

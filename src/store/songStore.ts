@@ -8,7 +8,7 @@ interface SongState {
   songs: Song[];
   loading: boolean;
   fetchSongs: () => Promise<void>;
-  addSong: (song: Omit<Song, 'id' | 'created_at'>) => Promise<void>;
+  addSong: (song: Omit<Song, 'id' | 'created_at'>) => Promise<Song>;
   updateSong: (songId: string, updates: Partial<Song>) => Promise<void>;
   deleteSong: (songId: string) => Promise<void>;
   rateSong: (songId: string, score: number) => Promise<void>;
@@ -33,12 +33,15 @@ export const useSongStore = create<SongState>((set, get) => ({
     }
   },
   addSong: async (song) => {
-    const { error } = await supabase
+    const { data, error } = await supabase
       .from('songs')
-      .insert([song]);
-    
+      .insert([song])
+      .select('*')
+      .single();
+
     if (error) throw error;
     await get().fetchSongs();
+    return data;
   },
   updateSong: async (songId, updates) => {
     const { error } = await supabase

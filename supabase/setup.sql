@@ -218,3 +218,30 @@ CREATE POLICY "Users can update own generated lyrics" ON public.generated_lyrics
 
 CREATE POLICY "Users can delete own generated lyrics" ON public.generated_lyrics
   FOR DELETE USING (auth.uid() = user_id);
+
+
+-- 10. Authorized Reading Room playback and synchronized lyric cues
+CREATE TABLE IF NOT EXISTS public.song_playback (
+  song_id uuid PRIMARY KEY REFERENCES public.songs(id) ON DELETE CASCADE,
+  audio_url text NOT NULL,
+  audio_source text NOT NULL DEFAULT 'authorized-upload',
+  audio_authorized boolean NOT NULL DEFAULT false,
+  duration_seconds integer NOT NULL CHECK (duration_seconds > 0),
+  synced_lyrics jsonb NOT NULL DEFAULT '[]'::jsonb,
+  created_by uuid REFERENCES public.users(id),
+  updated_at timestamptz NOT NULL DEFAULT now()
+);
+
+ALTER TABLE public.song_playback ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY "Authorized playback is viewable by everyone" ON public.song_playback
+  FOR SELECT USING (audio_authorized = true);
+
+CREATE POLICY "Creators can insert authorized playback" ON public.song_playback
+  FOR INSERT WITH CHECK (auth.role() = 'authenticated' AND auth.uid() = created_by);
+
+CREATE POLICY "Creators can update playback" ON public.song_playback
+  FOR UPDATE USING (auth.uid() = created_by) WITH CHECK (auth.uid() = created_by);
+
+CREATE POLICY "Creators can delete playback" ON public.song_playback
+  FOR DELETE USING (auth.uid() = created_by);

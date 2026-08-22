@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { Play, Share2, ExternalLink, TrendingUp, Clock, Hash } from 'lucide-react';
+import React, { useEffect, useState } from 'react';
+import { ExternalLink, Eye, Play, Share2, Star } from 'lucide-react';
 
 interface YouTubeVideo {
   id: string;
@@ -8,189 +8,64 @@ interface YouTubeVideo {
   views: string;
   publishedAt: string;
   duration: string;
+  artist: string;
+  verified?: boolean;
 }
 
 const MOCK_VIDEOS: YouTubeVideo[] = [
-  {
-    id: 'dQw4w9WgXcQ',
-    title: 'How to Write Better Lyrics - Star Lyrix Tutorial',
-    thumbnail: 'https://images.unsplash.com/photo-1516280440614-37939bbacd81?w=1200&q=80',
-    views: '1.2M',
-    publishedAt: '2025-02-10',
-    duration: '10:23'
-  },
-  {
-    id: 'xvFZjo5PgG0',
-    title: 'Using AI to Generate Creative Lyrics - Pro Tips',
-    thumbnail: 'https://images.unsplash.com/photo-1511379938547-c1f69419868d?w=1200&q=80',
-    views: '856K',
-    publishedAt: '2025-02-08',
-    duration: '8:45'
-  },
-  {
-    id: 'yPYZpwSpKmA',
-    title: 'Songwriting Masterclass with Star Lyrix',
-    thumbnail: 'https://images.unsplash.com/photo-1514320291840-2e0a9bf2a9ae?w=1200&q=80',
-    views: '623K',
-    publishedAt: '2025-02-05',
-    duration: '15:30'
-  },
-  // Add more mock videos as needed
+  { id: 'dQw4w9WgXcQ', title: 'Midnight Silhouette', artist: 'The Luna Collective', thumbnail: 'https://images.unsplash.com/photo-1516280440614-37939bbacd81?w=1200&q=85', views: '845K', publishedAt: '2 days ago', duration: '04:23', verified: true },
+  { id: 'xvFZjo5PgG0', title: 'Golden Hour Strings', artist: 'Aria Symphony', thumbnail: 'https://images.unsplash.com/photo-1511379938547-c1f69419868d?w=1200&q=85', views: '1.1M', publishedAt: '1 week ago', duration: '05:12', verified: true },
+  { id: 'yPYZpwSpKmA', title: 'Neon Nostalgia', artist: 'Synthweaver', thumbnail: 'https://images.unsplash.com/photo-1514320291840-2e0a9bf2a9ae?w=1200&q=85', views: '420K', publishedAt: '3 weeks ago', duration: '03:45' },
 ];
 
-const CATEGORIES = [
-  { id: 'trending', name: 'Trending', icon: TrendingUp },
-  { id: 'latest', name: 'Latest', icon: Clock },
-  { id: 'tutorials', name: 'Tutorials', icon: Hash },
-];
+const MOODS = ['All Moods', 'Dreamy', 'Ethereal', 'Calm', 'Reflective'];
 
 const Videos = () => {
-  const [activeCategory, setActiveCategory] = useState('trending');
-  const [videos, setVideos] = useState<YouTubeVideo[]>(MOCK_VIDEOS);
+  const [activeMood, setActiveMood] = useState('All Moods');
+  const [videos, setVideos] = useState(MOCK_VIDEOS);
 
   useEffect(() => {
     setVideos(MOCK_VIDEOS);
-  }, [activeCategory]);
+  }, [activeMood]);
 
   const handleShare = async (video: YouTubeVideo) => {
-    const shareText = `🎶 Check out this latest Star Lyrix video! Watch here: https://youtube.com/watch?v=${video.id}`;
-    
+    const url = `https://youtube.com/watch?v=${video.id}`;
     try {
-      await navigator.share({
-        title: video.title,
-        text: shareText,
-        url: `https://youtube.com/watch?v=${video.id}`,
-      });
-    } catch (error) {
-      console.error('Error sharing:', error);
+      if (navigator.share) await navigator.share({ title: video.title, text: `${video.title} by ${video.artist}`, url });
+      else if (navigator.clipboard) await navigator.clipboard.writeText(url);
+    } catch {
+      // Sharing can be cancelled without surfacing an error.
     }
   };
 
+  const featured = videos[0];
+
   return (
-    <div className="mx-auto max-w-7xl">
-      <div className="flex items-center justify-between mb-8">
-        <div><p className="eyebrow">From the Star Lyrix channel</p><h1 className="mt-2 text-3xl font-bold tracking-[-0.03em] text-[var(--text-primary)] sm:text-4xl">Videos worth replaying</h1><p className="mt-3 max-w-xl text-sm leading-6 text-[var(--text-secondary)]">Explore lyric videos, tutorials, and Shorts in one calm, visual space.</p></div>
-        <a
-          href="https://youtube.com/@starlyrix"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="btn-secondary text-sm"
-        >
-          Visit channel
-          <ExternalLink className="w-4 h-4" />
-        </a>
+    <div className="mx-auto max-w-[1440px] space-y-8">
+      <div className="flex flex-col items-start justify-between gap-4 sm:flex-row sm:items-end">
+        <div><p className="eyebrow">Cinema for your ears</p><h1 className="mt-2 text-4xl font-bold tracking-[-0.04em] text-[var(--text-primary)] sm:text-5xl">Videos worth replaying</h1></div>
+        <a href="https://youtube.com/@starlyrix" target="_blank" rel="noopener noreferrer" className="btn-secondary text-sm"><ExternalLink className="h-4 w-4" /> Visit channel</a>
       </div>
 
-      {/* Categories */}
-      <div className="flex gap-4 mb-8 overflow-x-auto pb-2">
-        {CATEGORIES.map(({ id, name, icon: Icon }) => (
-          <button
-            key={id}
-            onClick={() => setActiveCategory(id)}
-            className={`flex items-center gap-2 px-4 py-2 rounded-full transition-colors ${
-              activeCategory === id
-                ? 'bg-[var(--gold-primary)] text-[#17120a]'
-                : 'bg-[var(--bg-surface)] text-[var(--text-secondary)] hover:bg-[var(--bg-elevated)] hover:text-[var(--text-primary)]'
-            }`}
-          >
-            <Icon className="w-4 h-4" />
-            {name}
-          </button>
-        ))}
+      <div className="flex flex-wrap gap-2">
+        {MOODS.map((mood) => <button type="button" key={mood} onClick={() => setActiveMood(mood)} className={`mood-chip ${activeMood === mood ? 'is-active' : ''}`}>{mood}</button>)}
       </div>
 
-      {/* Featured Playlist */}
-      <div className="surface-card mb-12 overflow-hidden">
-        <div className="p-5 sm:p-6"><p className="eyebrow">Start here</p><h2 className="section-heading mt-2">Featured playlist</h2></div>
-        <div className="aspect-video w-full overflow-hidden bg-[var(--bg-elevated)]">
-          <iframe
-            width="100%"
-            height="100%"
-            src="https://www.youtube.com/embed/videoseries?list=PLv7V_-HyQYkDg-wST4bBwJqLl_JH-uXQK"
-            title="Star Lyrix Featured Playlist"
-            frameBorder="0"
-            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-            allowFullScreen
-          ></iframe>
-        </div>
-      </div>
+      <section className="video-featured-hero" style={{ backgroundImage: `url(${featured.thumbnail})` }}>
+        <div className="video-featured-overlay" />
+        <a href={`https://youtube.com/watch?v=${featured.id}`} target="_blank" rel="noopener noreferrer" className="video-featured-play" aria-label={`Play ${featured.title}`}><Play className="ml-1 h-8 w-8 fill-current" /></a>
+        <div className="video-featured-copy"><div className="flex flex-wrap items-center gap-2"><span className="gold-chip">Video of the week</span>{featured.verified && <Star className="h-4 w-4 fill-current text-[var(--gold-light)]" aria-label="Verified video" />}</div><h2>{featured.title}</h2><p>“Lost in the quiet, found in the dark…”</p><div className="video-featured-meta"><span><Eye className="h-4 w-4" /> {featured.views} views</span><span><Star className="h-4 w-4 fill-current" /> 4.9/5</span></div></div>
+      </section>
 
-      {/* Video Grid */}
-      <div className="grid grid-cols-1 gap-5 md:grid-cols-2 lg:grid-cols-3">
-        {videos.map((video) => (
-            <article key={video.id} className="surface-card surface-card-hover group overflow-hidden">
-              <div className="relative aspect-video overflow-hidden">
-                <img
-                  src={video.thumbnail}
-                  alt={video.title}
-                  className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-[1.03]"
-                />
-                <div className="absolute inset-0 flex items-center justify-center bg-black/40 opacity-0 transition-opacity group-hover:opacity-100">
-                  <a
-                    href={`https://youtube.com/watch?v=${video.id}`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="flex h-12 w-12 items-center justify-center rounded-full bg-[var(--gold-primary)] text-[#17120a] transition-transform hover:scale-105"
-                  >
-                    <Play className="w-6 h-6" />
-                  </a>
-                </div>
-                <div className="absolute bottom-3 right-3 rounded bg-black/75 px-2 py-1 text-xs text-white">
-                  {video.duration}
-                </div>
-              </div>
-              <div className="p-4"><h3 className="line-clamp-2 font-semibold text-[var(--text-primary)]">{video.title}</h3>
-              <div className="mt-3 flex items-center justify-between text-xs text-[var(--text-secondary)]">
-                <div className="flex items-center gap-4">
-                  <span>{video.views} views</span>
-                  <span>{new Date(video.publishedAt).toLocaleDateString()}</span>
-                </div>
-                <button
-                  onClick={() => handleShare(video)}
-                  className="icon-button"
-                  title="Share"
-                >
-                  <Share2 className="w-4 h-4" />
-                </button>
-              </div>
-              </div>
-            </article>
-          ))}
-      </div>
+      <section className="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
+        {videos.map((video) => <VideoCard key={video.id} video={video} onShare={handleShare} />)}
+      </section>
 
-      {/* YouTube Shorts Section */}
-      <div className="mt-14">
-        <div className="mb-5"><p className="eyebrow">Quick listens</p><h2 className="section-heading mt-2">Short & sweet</h2></div>
-        <div className="flex gap-4 overflow-x-auto pb-4 scrollbar-hide">
-          {videos.map((video) => (
-            <div
-              key={`short-${video.id}`}
-              className="group w-[200px] flex-shrink-0"
-            >
-              <div className="relative mb-2 aspect-[9/16] overflow-hidden rounded-xl border border-[var(--border-subtle)] bg-[var(--bg-surface)]">
-                <img
-                  src={video.thumbnail}
-                  alt={video.title}
-                  className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-[1.03]"
-                />
-                <div className="absolute inset-0 flex items-center justify-center bg-black/40 opacity-0 transition-opacity group-hover:opacity-100">
-                  <a
-                    href={`https://youtube.com/shorts/${video.id}`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="flex h-10 w-10 items-center justify-center rounded-full bg-[var(--gold-primary)] text-[#17120a]"
-                  >
-                    <Play className="w-5 h-5" />
-                  </a>
-                </div>
-              </div>
-              <h3 className="line-clamp-2 text-sm font-medium text-[var(--text-primary)]">{video.title}</h3>
-            </div>
-          ))}
-        </div>
-      </div>
+      <section className="pt-4"><div className="mb-5"><p className="eyebrow">Quick listens</p><h2 className="section-heading mt-2">Short & sweet</h2></div><div className="flex gap-4 overflow-x-auto pb-4 scrollbar-hide">{videos.map((video) => <a key={`short-${video.id}`} href={`https://youtube.com/shorts/${video.id}`} target="_blank" rel="noopener noreferrer" className="group w-[200px] shrink-0"><div className="relative mb-2 aspect-[9/16] overflow-hidden rounded-xl border border-[var(--border-subtle)]"><img src={video.thumbnail} alt={video.title} className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-[1.04]" /><div className="absolute inset-0 flex items-center justify-center bg-black/35 opacity-0 transition-opacity group-hover:opacity-100"><span className="flex h-10 w-10 items-center justify-center rounded-full bg-[var(--gold-primary)] text-[#17120a]"><Play className="h-4 w-4 fill-current" /></span></div></div><h3 className="line-clamp-2 text-sm font-medium text-[var(--text-primary)]">{video.title}</h3></a>)}</div></section>
     </div>
   );
 };
+
+const VideoCard: React.FC<{ video: YouTubeVideo; onShare: (video: YouTubeVideo) => void }> = ({ video, onShare }) => <article className="surface-card surface-card-hover group overflow-hidden"><div className="relative aspect-video overflow-hidden"><img src={video.thumbnail} alt={video.title} className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-[1.04]" /><div className="absolute inset-0 flex items-center justify-center bg-black/30 opacity-0 transition-opacity group-hover:opacity-100"><a href={`https://youtube.com/watch?v=${video.id}`} target="_blank" rel="noopener noreferrer" className="flex h-12 w-12 items-center justify-center rounded-full bg-[var(--gold-primary)] text-[#17120a]"><Play className="h-5 w-5 fill-current" /></a></div><span className="absolute bottom-3 right-3 rounded bg-black/75 px-2 py-1 font-mono text-[0.65rem] text-white">{video.duration}</span></div><div className="p-4"><div className="flex items-center justify-between gap-2"><h3 className="truncate text-lg font-semibold text-[var(--text-primary)]">{video.title}</h3>{video.verified && <Star className="h-4 w-4 shrink-0 fill-current text-[var(--gold-light)]" />}</div><p className="mt-1 truncate text-sm text-[var(--text-secondary)]">{video.artist}</p><div className="mt-4 flex items-center justify-between border-t border-[var(--border-subtle)] pt-3 font-mono text-[0.62rem] uppercase tracking-[0.08em] text-[var(--text-muted)]"><span>{video.views} views</span><span>{video.publishedAt}</span><button type="button" className="icon-button !p-1" title="Share" aria-label={`Share ${video.title}`} onClick={() => onShare(video)}><Share2 className="h-3.5 w-3.5" /></button></div></div></article>;
 
 export default Videos;
