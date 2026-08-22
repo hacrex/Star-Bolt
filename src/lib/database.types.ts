@@ -75,6 +75,7 @@ export interface Database {
           album: string | null
           release_date: string | null
           thumbnail_url: string | null
+          language: string
           created_at: string
           created_by: string
         }
@@ -85,6 +86,7 @@ export interface Database {
           album?: string | null
           release_date?: string | null
           thumbnail_url?: string | null
+          language?: string
           created_at?: string
           created_by: string
         }
@@ -95,8 +97,41 @@ export interface Database {
           album?: string | null
           release_date?: string | null
           thumbnail_url?: string | null
+          language?: string
           created_at?: string
           created_by?: string
+        }
+      }
+      test_catalog_assets: {
+        Row: {
+          id: string
+          song_id: string
+          language: string
+          bucket_id: string
+          storage_path: string
+          content_type: string
+          created_by: string
+          created_at: string
+        }
+        Insert: {
+          id?: string
+          song_id: string
+          language: string
+          bucket_id?: string
+          storage_path: string
+          content_type?: string
+          created_by: string
+          created_at?: string
+        }
+        Update: {
+          id?: string
+          song_id?: string
+          language?: string
+          bucket_id?: string
+          storage_path?: string
+          content_type?: string
+          created_by?: string
+          created_at?: string
         }
       }
       lyrics: {

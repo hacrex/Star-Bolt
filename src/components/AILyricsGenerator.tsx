@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useAIStore } from '../store/aiStore';
 import { useAuthStore } from '../store/authStore';
 import { useToast } from './Toast';
-import { Wand2, Save, Share2, Languages, Settings } from 'lucide-react';
+import { Languages, Save, Settings2, Share2, Sparkles, Wand2 } from 'lucide-react';
 
 const LANGUAGES = [
   { code: 'en', name: 'English' },
@@ -22,16 +22,7 @@ const MOODS = ['Happy', 'Sad', 'Energetic', 'Romantic', 'Angry', 'Peaceful'];
 const AILyricsGenerator = () => {
   const { user } = useAuthStore();
   const { showToast } = useToast();
-  const {
-    settings,
-    updateSettings,
-    generateLyrics,
-    saveLyrics,
-    translateLyrics,
-    loading,
-    error
-  } = useAIStore();
-
+  const { settings, updateSettings, generateLyrics, saveLyrics, translateLyrics, loading, error } = useAIStore();
   const [prompt, setPrompt] = useState('');
   const [generatedContent, setGeneratedContent] = useState('');
   const [title, setTitle] = useState('');
@@ -39,44 +30,39 @@ const AILyricsGenerator = () => {
   const [targetLanguage, setTargetLanguage] = useState('en');
 
   const handleGenerate = async () => {
+    if (!prompt.trim()) return;
     try {
-      const lyrics = await generateLyrics(prompt);
+      const lyrics = await generateLyrics(prompt.trim());
       setGeneratedContent(lyrics);
       showToast('Lyrics generated successfully!', 'success');
-    } catch (err) {
+    } catch {
       showToast('Failed to generate lyrics', 'error');
     }
   };
 
   const handleSave = async () => {
-    if (!title) {
+    if (!title.trim()) {
       showToast('Please enter a title for your lyrics', 'error');
       return;
     }
     try {
-      await saveLyrics(title, generatedContent);
+      await saveLyrics(title.trim(), generatedContent);
       showToast('Lyrics saved successfully!', 'success');
-    } catch (err) {
+    } catch {
       showToast('Failed to save lyrics', 'error');
     }
   };
 
   const handleShare = async () => {
-    if (!navigator.share) {
-      showToast('Sharing is not supported in this browser', 'info');
-      return;
-    }
+    const shareData = { title: title || 'Generated Lyrics', text: generatedContent, url: window.location.href };
     try {
-      const shareData = {
-        title: title || 'Generated Lyrics',
-        text: generatedContent,
-        url: window.location.href,
-      };
-      await navigator.share(shareData);
-    } catch (err) {
-      if ((err as Error).name !== 'AbortError') {
-        showToast('Failed to share', 'error');
+      if (navigator.share) await navigator.share(shareData);
+      else if (navigator.clipboard) {
+        await navigator.clipboard.writeText(generatedContent);
+        showToast('Lyrics copied to clipboard', 'success');
       }
+    } catch (shareError) {
+      if (shareError instanceof Error && shareError.name !== 'AbortError') showToast('Failed to share', 'error');
     }
   };
 
@@ -85,193 +71,60 @@ const AILyricsGenerator = () => {
       const translated = await translateLyrics(generatedContent, targetLanguage);
       setGeneratedContent(translated);
       showToast('Lyrics translated successfully!', 'success');
-    } catch (err) {
+    } catch {
       showToast('Failed to translate lyrics', 'error');
     }
   };
 
   return (
-    <div className="max-w-4xl mx-auto p-6">
-      <div className="bg-white dark:bg-gray-800 rounded-lg shadow-xl p-6">
-        <div className="flex justify-between items-center mb-6">
-          <h1 className="text-3xl font-bold">AI Lyrics Generator</h1>
-          <button
-            onClick={() => setShowSettings(!showSettings)}
-            className="flex items-center gap-2 px-4 py-2 rounded-lg bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors"
-          >
-            <Settings className="w-5 h-5" />
-            Settings
-          </button>
+    <div className="ai-studio-page">
+      <header className="ai-studio-header">
+        <div>
+          <p className="eyebrow">The lyric studio</p>
+          <h1 className="section-heading mt-2">Write the feeling down.</h1>
+          <p className="mt-3 max-w-2xl text-sm leading-7 text-[var(--text-secondary)]">Shape a mood, a memory, or a cinematic moment into lyrics that feel like yours.</p>
         </div>
+        <button type="button" onClick={() => setShowSettings((visible) => !visible)} className={`btn-secondary ${showSettings ? 'is-active' : ''}`} aria-expanded={showSettings}>
+          <Settings2 className="h-4 w-4" /> Settings
+        </button>
+      </header>
 
-        {showSettings && (
-          <div className="mb-6 p-4 bg-gray-50 dark:bg-gray-700 rounded-lg">
-            <h2 className="text-xl font-semibold mb-4">Generation Settings</h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div>
-                <label className="block text-sm font-medium mb-1">
-                  Rhyme Scheme
-                </label>
-                <select
-                  value={settings.rhymeScheme}
-                  onChange={(e) => {
-                    const value = e.target.value;
-                    if (value === 'ABAB' || value === 'AABB' || value === 'FREE') {
-                      updateSettings({ rhymeScheme: value });
-                    }
-                  }}
-                  className="w-full p-2 rounded border dark:bg-gray-800 dark:border-gray-600"
-                >
-                  <option value="ABAB">ABAB</option>
-                  <option value="AABB">AABB</option>
-                  <option value="FREE">Free Style</option>
-                </select>
-              </div>
+      <div className="ai-studio-layout">
+        <section className="surface-card ai-studio-prompt-card">
+          <div className="ai-studio-card-kicker"><Sparkles className="h-4 w-4 text-[var(--gold-light)]" /><span>Begin anywhere</span></div>
+          <label htmlFor="lyric-prompt" className="mt-6 block font-mono text-xs uppercase tracking-[0.14em] text-[var(--text-muted)]">What would you like to write about?</label>
+          <textarea id="lyric-prompt" value={prompt} onChange={(event) => setPrompt(event.target.value)} placeholder="A late-night drive through a city that still remembers us..." className="ai-studio-prompt-input" rows={7} maxLength={1200} />
+          <div className="mt-3 flex items-center justify-between gap-3 text-xs text-[var(--text-muted)]"><span>{prompt.length}/1200</span><span className="font-mono uppercase tracking-[0.12em]">{settings.genre} / {settings.mood}</span></div>
+          <button type="button" onClick={() => void handleGenerate()} disabled={loading || !prompt.trim()} className="btn-primary mt-6 min-h-12 w-full justify-center disabled:cursor-not-allowed disabled:opacity-50"><Wand2 className="h-4 w-4" />{loading ? 'Writing…' : 'Generate lyrics'}</button>
+          {error && <div className="mt-5 rounded-xl border border-red-400/30 bg-red-400/10 px-4 py-3 text-sm leading-6 text-red-200">{error}</div>}
+        </section>
 
-              <div>
-                <label className="block text-sm font-medium mb-1">
-                  Syllables per Line
-                </label>
-                <input
-                  type="number"
-                  value={settings.syllablesPerLine}
-                  onChange={(e) => updateSettings({ syllablesPerLine: parseInt(e.target.value) })}
-                  min="4"
-                  max="16"
-                  className="w-full p-2 rounded border dark:bg-gray-800 dark:border-gray-600"
-                />
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium mb-1">
-                  Genre
-                </label>
-                <select
-                  value={settings.genre}
-                  onChange={(e) => updateSettings({ genre: e.target.value })}
-                  className="w-full p-2 rounded border dark:bg-gray-800 dark:border-gray-600"
-                >
-                  {GENRES.map((genre) => (
-                    <option key={genre} value={genre.toLowerCase()}>
-                      {genre}
-                    </option>
-                  ))}
-                </select>
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium mb-1">
-                  Mood
-                </label>
-                <select
-                  value={settings.mood}
-                  onChange={(e) => updateSettings({ mood: e.target.value })}
-                  className="w-full p-2 rounded border dark:bg-gray-800 dark:border-gray-600"
-                >
-                  {MOODS.map((mood) => (
-                    <option key={mood} value={mood.toLowerCase()}>
-                      {mood}
-                    </option>
-                  ))}
-                </select>
-              </div>
-            </div>
+        <aside className={`glass-panel ai-studio-settings ${showSettings ? 'is-open' : ''}`} aria-hidden={!showSettings}>
+          <div className="ai-studio-card-kicker"><Settings2 className="h-4 w-4 text-[var(--gold-light)]" /><span>Generation settings</span></div>
+          <div className="mt-6 grid gap-5">
+            <StudioSelect label="Rhyme scheme" value={settings.rhymeScheme} onChange={(value) => { if (value === 'ABAB' || value === 'AABB' || value === 'FREE') updateSettings({ rhymeScheme: value }); }} options={[['ABAB', 'ABAB'], ['AABB', 'AABB'], ['FREE', 'Free style']]} />
+            <label className="block"><span className="ai-studio-field-label">Syllables per line</span><input type="number" min="4" max="16" value={settings.syllablesPerLine} onChange={(event) => updateSettings({ syllablesPerLine: parseInt(event.target.value, 10) || 8 })} className="ai-studio-control" /></label>
+            <StudioSelect label="Genre" value={settings.genre} onChange={(value) => updateSettings({ genre: value })} options={GENRES.map((genre) => [genre.toLowerCase(), genre])} />
+            <StudioSelect label="Mood" value={settings.mood} onChange={(value) => updateSettings({ mood: value })} options={MOODS.map((mood) => [mood.toLowerCase(), mood])} />
           </div>
-        )}
-
-        <div className="mb-6">
-          <label className="block text-sm font-medium mb-1">
-            What would you like to write about?
-          </label>
-          <textarea
-            value={prompt}
-            onChange={(e) => setPrompt(e.target.value)}
-            placeholder="Enter your topic or theme..."
-            className="w-full p-3 rounded-lg border dark:bg-gray-800 dark:border-gray-600 min-h-[100px]"
-          />
-        </div>
-
-        <div className="flex gap-4 mb-6">
-          <button
-            onClick={handleGenerate}
-            disabled={loading || !prompt}
-            className="flex-1 flex items-center justify-center gap-2 bg-purple-600 text-white py-2 px-4 rounded-lg hover:bg-purple-700 transition-colors disabled:opacity-50"
-          >
-            <Wand2 className="w-5 h-5" />
-            Generate Lyrics
-          </button>
-        </div>
-
-        {error && (
-          <div className="mb-6 p-4 bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400 rounded-lg">
-            {error}
-          </div>
-        )}
-
-        {generatedContent && (
-          <div className="space-y-4">
-            <div className="flex gap-4 items-center">
-              <input
-                type="text"
-                value={title}
-                onChange={(e) => setTitle(e.target.value)}
-                placeholder="Enter title for your lyrics..."
-                className="flex-1 p-2 rounded border dark:bg-gray-800 dark:border-gray-600"
-              />
-              
-              <select
-                value={targetLanguage}
-                onChange={(e) => setTargetLanguage(e.target.value)}
-                className="p-2 rounded border dark:bg-gray-800 dark:border-gray-600"
-              >
-                {LANGUAGES.map((lang) => (
-                  <option key={lang.code} value={lang.code}>
-                    {lang.name}
-                  </option>
-                ))}
-              </select>
-            </div>
-
-            <div className="bg-gray-50 dark:bg-gray-700 rounded-lg p-6">
-              <pre className="whitespace-pre-wrap font-sans">
-                {generatedContent}
-              </pre>
-            </div>
-
-            <div className="flex gap-4">
-              {user && (
-                <button
-                  onClick={handleSave}
-                  disabled={loading || !title}
-                  className="flex items-center gap-2 bg-green-600 text-white py-2 px-4 rounded-lg hover:bg-green-700 transition-colors disabled:opacity-50"
-                >
-                  <Save className="w-5 h-5" />
-                  Save Lyrics
-                </button>
-              )}
-
-              <button
-                onClick={handleShare}
-                className="flex items-center gap-2 bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 transition-colors"
-              >
-                <Share2 className="w-5 h-5" />
-                Share
-              </button>
-
-              <button
-                onClick={handleTranslate}
-                disabled={loading || targetLanguage === settings.language}
-                className="flex items-center gap-2 bg-purple-600 text-white py-2 px-4 rounded-lg hover:bg-purple-700 transition-colors disabled:opacity-50"
-              >
-                <Languages className="w-5 h-5" />
-                Translate
-              </button>
-            </div>
-          </div>
-        )}
+          <div className="mt-8 border-t border-[var(--border-subtle)] pt-5"><p className="eyebrow">Studio note</p><p className="mt-2 text-sm leading-6 text-[var(--text-secondary)]">Your settings guide the first draft. Edit, save, or translate the result into your own direction.</p></div>
+        </aside>
       </div>
+
+      {generatedContent && (
+        <section className="surface-card ai-studio-output-card">
+          <div className="ai-studio-output-header">
+            <div className="min-w-0 flex-1"><p className="eyebrow">Draft one</p><input type="text" value={title} onChange={(event) => setTitle(event.target.value)} placeholder="Give this song a title" className="ai-studio-title-input" aria-label="Generated lyrics title" /><div className="mt-3 flex flex-wrap gap-2"><span className="search-chip">{settings.genre}</span><span className="search-chip">{settings.mood}</span><span className="search-chip">{settings.rhymeScheme}</span><span className="search-chip">{settings.syllablesPerLine} syllables</span></div></div>
+            <div className="flex flex-wrap justify-end gap-2"><button type="button" className="icon-button" onClick={() => void handleShare()} aria-label="Share generated lyrics"><Share2 className="h-4 w-4" /></button>{user && <button type="button" className="btn-secondary text-xs" onClick={() => void handleSave()} disabled={loading || !title.trim()}><Save className="h-4 w-4" /> Save</button>}</div>
+          </div>
+          <div className="ai-studio-lyrics-canvas"><div className="ai-studio-lyrics-rule" /><pre>{generatedContent}</pre></div>
+          <div className="flex flex-wrap items-center justify-between gap-3 border-t border-[var(--border-subtle)] pt-5"><p className="text-xs leading-5 text-[var(--text-muted)]">Generated drafts are starting points. Keep the lines that sound like you.</p><div className="flex items-center gap-2"><select value={targetLanguage} onChange={(event) => setTargetLanguage(event.target.value)} className="ai-studio-control ai-studio-language-select" aria-label="Translation language">{LANGUAGES.map((language) => <option key={language.code} value={language.code}>{language.name}</option>)}</select><button type="button" className="btn-secondary text-xs" onClick={() => void handleTranslate()} disabled={loading || targetLanguage === settings.language}><Languages className="h-4 w-4" /> Translate</button></div></div>
+        </section>
+      )}
     </div>
   );
 };
+
+const StudioSelect: React.FC<{ label: string; value: string; onChange: (value: string) => void; options: string[][] }> = ({ label, value, onChange, options }) => <label className="block"><span className="ai-studio-field-label">{label}</span><select value={value} onChange={(event) => onChange(event.target.value)} className="ai-studio-control">{options.map(([optionValue, optionLabel]) => <option key={optionValue} value={optionValue}>{optionLabel}</option>)}</select></label>;
 
 export default AILyricsGenerator;
