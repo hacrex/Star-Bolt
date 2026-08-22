@@ -1,5 +1,5 @@
 import React from 'react';
-import { ArrowUpRight, BookOpen, Compass, Library, Search, Sparkles, X } from 'lucide-react';
+import { ArrowUpRight, BookOpen, Compass, Languages, Library, Search, Sparkles, X } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
 type Command = {
@@ -14,6 +14,7 @@ const COMMANDS: Command[] = [
   { label: 'Read lyrics', hint: 'Open the infinite field', href: '/search', icon: BookOpen },
   { label: 'Create lyrics', hint: 'Open your lyric studio', href: '/ai-lyrics', icon: Sparkles },
   { label: 'Your library', hint: 'Playlists and saved work', href: '/playlists', icon: Library },
+  { label: 'Translate & collaborate', hint: 'Open an approved lyric source', href: '/search', icon: Languages },
 ];
 
 const CommandPalette: React.FC<{ open: boolean; onClose: () => void }> = ({ open, onClose }) => {

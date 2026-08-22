@@ -258,6 +258,53 @@ export interface Database {
           updated_at?: string
         }
       }
+      translation_versions: {
+        Row: {
+          id: string
+          translation_id: string
+          version_number: number
+          translated_text: string
+          submitted_by: string
+          status: string
+          verified: boolean
+          rights_status: string
+          rights_holder: string | null
+          license_reference: string | null
+          allowed_display: boolean
+          change_note: string | null
+          created_at: string
+        }
+        Insert: {
+          id?: string
+          translation_id: string
+          version_number: number
+          translated_text: string
+          submitted_by: string
+          status?: string
+          verified?: boolean
+          rights_status?: string
+          rights_holder?: string | null
+          license_reference?: string | null
+          allowed_display?: boolean
+          change_note?: string | null
+          created_at?: string
+        }
+        Update: {
+          id?: string
+          translation_id?: string
+          version_number?: number
+          translated_text?: string
+          submitted_by?: string
+          status?: string
+          verified?: boolean
+          rights_status?: string
+          rights_holder?: string | null
+          license_reference?: string | null
+          allowed_display?: boolean
+          change_note?: string | null
+          created_at?: string
+        }
+      }
       comments: {
         Row: {
           id: string

@@ -72,3 +72,10 @@ The Reading Room now loads public authorized translations and shows a rights-awa
 ## Phase 2 animated lyric synchronization
 
 The Reading Room now uses `AnimatedLyricLine` for cue-aware line focus, past-line depth, keyboard selection, auto-centering, and a gold progress underline driven by structured cue timing. `LyricSyncStatus` exposes manual, ready, and live authorized-sync states with a cue count and progress rail. These components remain dependent on `song_playback.audio_authorized` and existing structured cues; they do not introduce autoplay or guessed media. Non-essential pulse/focus animation is disabled under `prefers-reduced-motion`.
+
+
+## Phase 3 collaborative translation and version control
+
+The protected route `/translate/:lyricsId` is the collaboration surface. It loads an accessible lyric source, lets a signed-in contributor choose a target language, edit a translation, provide a change note, and confirm rights before submission. The UI clearly communicates that new work is pending and cannot replace public content until reviewed.
+
+Migration `20260822000004_add_translation_versions.sql` creates immutable `translation_versions` snapshots and a transaction-locked database trigger that assigns version numbers. The `translationStore` owns public/pending translation reads, version-history reads, and pending submissions. The Reading Room exposes the collaboration entry point only when a lyric record is available, while Supabase RLS remains the source of truth for eligibility and approval.

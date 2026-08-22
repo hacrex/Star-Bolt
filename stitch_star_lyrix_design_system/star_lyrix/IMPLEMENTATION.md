@@ -115,3 +115,10 @@ The same schema is mirrored in `supabase/setup.sql`. Public lyric reads now requ
 The Reading Room now composes `AnimatedLyricLine` and `LyricSyncStatus`. Active cues receive a subtle focus entrance, a gold progress underline driven by the current cue interval, past-line depth treatment, and automatic centering inside the lyric scroll container. `LyricSyncStatus` communicates manual reading, ready-to-sync, and live lyric-sync states with an accessible cue count and progress rail.
 
 The animation contract remains purposeful and rights-safe: it only responds to the existing authorized playback state and structured cue data, uses transform/opacity plus a small progress scale, avoids autoplay, keeps lyric buttons keyboard reachable, and disables non-essential pulse/focus animation under `prefers-reduced-motion`. Browser QA verified that the unavailable-content fallback and console remain clean when no authorized song is present.
+
+
+## Phase 3 collaborative translation and version control
+
+The protected route `/translate/:lyricsId` now provides a two-column collaboration workspace: the authorized source lyric on the left and a target-language editor on the right. Contributors can select Hindi, English, or Tamil targets, record rights status and change notes, and submit a translation only when the source lyric is marked translation-eligible. New and revised work remains pending and hidden until review.
+
+Migration `supabase/migrations/20260822000004_add_translation_versions.sql` adds `translation_versions` as immutable snapshots linked to a canonical `translations` row. A security-definer trigger assigns monotonically increasing version numbers under a transaction lock. Public users can see only authorized approved snapshots; contributors can manage their own pending snapshots, and no client action can self-approve or self-verify content. The workspace displays the current translation, version labels, pending state, and change notes while preserving the existing warm editorial interaction language.

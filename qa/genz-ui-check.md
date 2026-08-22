@@ -31,3 +31,8 @@ The Reading Room route `/songs/1` continues to render the graceful unavailable-s
 ## Phase 2 final browser verification
 
 After the final micro-interaction polish, `/songs/1` still renders the graceful unavailable-content state. The browser console contains only the existing React Router future-flag advisories and no runtime errors from `AnimatedLyricLine`, `LyricSyncStatus`, or the updated Reading Room controls.
+
+
+## Phase 3 translation workspace QA
+
+The protected route `/translate/1` redirected signed-out users to `/auth` through the existing ProtectedRoute guard. The Auth shell and persistent Now Reading context rendered correctly. The browser console contained only the existing React Router future-flag advisories and no new runtime errors.

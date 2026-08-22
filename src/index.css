@@ -1862,3 +1862,170 @@
     box-shadow: 0 0 0 5px rgba(212, 168, 67, 0.08), 0 0 24px rgba(212, 168, 67, 0.34);
   }
 }
+
+
+@layer components {
+  .reading-room-collaborate {
+    display: inline-flex;
+    min-height: 2.5rem;
+    align-items: center;
+    gap: 0.45rem;
+    border: 1px solid rgba(212, 168, 67, 0.24);
+    border-radius: 999px;
+    background: rgba(212, 168, 67, 0.08);
+    color: var(--gold-light);
+    padding: 0.55rem 0.8rem;
+    font-family: var(--font-mono);
+    font-size: 0.62rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .reading-room-collaborate:hover {
+    border-color: rgba(242, 195, 91, 0.6);
+    background: rgba(212, 168, 67, 0.16);
+  }
+}
+
+
+@layer components {
+  .translation-workspace-page {
+    color: var(--text-primary);
+  }
+
+  .translation-workspace-hero {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 2rem;
+    padding: clamp(1.4rem, 4vw, 2.5rem);
+    background:
+      radial-gradient(circle at 85% 20%, rgba(212, 168, 67, 0.12), transparent 18rem),
+      var(--bg-surface);
+  }
+
+  .translation-workspace-hero h1 {
+    max-width: 13ch;
+    margin-top: 0.65rem;
+    font-size: clamp(2.2rem, 5vw, 4.25rem);
+    font-weight: 700;
+    letter-spacing: -0.06em;
+    line-height: 0.98;
+  }
+
+  .translation-workspace-lock {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    flex: 0 0 auto;
+    border: 1px solid rgba(212, 168, 67, 0.24);
+    border-radius: 999px;
+    background: rgba(212, 168, 67, 0.08);
+    color: var(--gold-light);
+    padding: 0.65rem 0.85rem;
+    font-family: var(--font-mono);
+    font-size: 0.62rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .translation-source-card,
+  .translation-editor-card,
+  .translation-history-card {
+    padding: clamp(1.1rem, 3vw, 2rem);
+  }
+
+  .translation-source-card h2,
+  .translation-editor-card h2,
+  .translation-history-card h2 {
+    margin-top: 0.5rem;
+    color: var(--text-primary);
+    font-size: clamp(1.3rem, 2vw, 1.75rem);
+    letter-spacing: -0.03em;
+  }
+
+  .translation-source-copy {
+    min-height: 22rem;
+    max-height: 36rem;
+    overflow-y: auto;
+    border-left: 2px solid rgba(212, 168, 67, 0.42);
+    padding: 0.4rem 1.2rem;
+    color: var(--text-secondary);
+    font-family: var(--font-lyrics);
+    font-size: 1.2rem;
+    line-height: 2;
+    white-space: pre-line;
+  }
+
+  .language-badge,
+  .translation-status-pill,
+  .translation-version-number {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    border: 1px solid rgba(212, 168, 67, 0.24);
+    border-radius: 999px;
+    background: rgba(212, 168, 67, 0.08);
+    color: var(--gold-light);
+    padding: 0.4rem 0.6rem;
+    font-family: var(--font-mono);
+    font-size: 0.58rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .translation-success-message {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.55rem;
+    border: 1px solid rgba(140, 181, 143, 0.3);
+    border-radius: 0.75rem;
+    background: rgba(140, 181, 143, 0.1);
+    color: #c5e0c6;
+    padding: 0.8rem 0.9rem;
+    font-size: 0.78rem;
+    line-height: 1.5;
+  }
+
+  .translation-current-row {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: start;
+    gap: 1rem;
+    border: 1px solid rgba(212, 168, 67, 0.16);
+    border-radius: 0.9rem;
+    background: rgba(212, 168, 67, 0.04);
+    padding: 1rem;
+  }
+
+  .translation-version-row {
+    border-bottom: 1px solid var(--border-subtle);
+    padding: 0.4rem 0 1rem;
+  }
+
+  .translation-version-row:last-child {
+    border-bottom: 0;
+    padding-bottom: 0;
+  }
+
+  .translation-version-number {
+    border-color: rgba(154, 143, 125, 0.2);
+    background: var(--bg-elevated);
+    color: var(--text-secondary);
+  }
+
+  @media (max-width: 767px) {
+    .translation-workspace-hero {
+      display: grid;
+      gap: 1.2rem;
+    }
+
+    .translation-workspace-lock {
+      justify-self: start;
+    }
+
+    .translation-current-row {
+      grid-template-columns: 1fr;
+    }
+  }
+}

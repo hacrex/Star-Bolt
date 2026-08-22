@@ -20,6 +20,7 @@ const AILyricsGenerator = React.lazy(() => import('./components/AILyricsGenerato
 const GeneratedLyrics = React.lazy(() => import('./pages/GeneratedLyrics'));
 const Videos = React.lazy(() => import('./pages/Videos'));
 const PlaylistDetail = React.lazy(() => import('./pages/PlaylistDetail'));
+const TranslationWorkspace = React.lazy(() => import('./pages/TranslationWorkspace'));
 
 class ErrorBoundary extends React.Component<
   { children: React.ReactNode },
@@ -117,10 +118,9 @@ const App = () => {
                       path="/playlists/:id"
                       element={<ProtectedRoute><PlaylistDetail /></ProtectedRoute>}
                     />
-                    <Route
-                      path="/generated-lyrics"
-                      element={<ProtectedRoute><GeneratedLyrics /></ProtectedRoute>}
-                    />
+                                        <Route path="/generated-lyrics" element={<ProtectedRoute><GeneratedLyrics /></ProtectedRoute>} />
+                    <Route path="/translate/:lyricsId" element={<ProtectedRoute><TranslationWorkspace /></ProtectedRoute>} />
+
                     <Route path="*" element={<Navigate to="/" replace />} />
                   </Routes>
                 </Suspense>

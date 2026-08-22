@@ -498,7 +498,7 @@ const SongDetails = () => {
               <Languages className="h-5 w-5 text-[var(--gold-light)]" aria-hidden="true" />
               <div><p className="eyebrow">Words & meaning</p><h2 id="reading-room-title">The Reading Room</h2></div>
             </div>
-            <div className="flex items-center gap-2"><button type="button" className="reading-room-quote-action micro-interaction"
+            <div className="flex items-center gap-2">{lyricRecord?.id && <button type="button" className="reading-room-collaborate micro-interaction" onClick={() => { if (!user) { showToast('Sign in to suggest a translation', 'info'); return; } navigate(`/translate/${lyricRecord.id}`); }}><Languages className="h-4 w-4" /><span className="hidden lg:inline">Collaborate</span></button>}<button type="button" className="reading-room-quote-action micro-interaction"
  onClick={() => void handleShareQuote()}><Share2 className="h-4 w-4" /><span className="hidden sm:inline">Share a line</span></button><button type="button" className={`reading-room-translate micro-interaction ${showTranslation ? 'is-active' : ''}`}
  onClick={() => setShowTranslation((visible) => !visible)} disabled={translations.length === 0} aria-label={translations.length === 0 ? 'No authorized translations available' : 'Toggle translations'}><Languages className="h-4 w-4" /><span>{translations.length === 0 ? 'No translation' : showTranslation ? 'Original' : 'Translate'}</span><ChevronDown className={`h-4 w-4 transition-transform ${showTranslation ? 'rotate-180' : ''}`} /></button></div>
           </header>

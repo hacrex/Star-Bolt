@@ -11,9 +11,10 @@ Apply the migrations in order through the Supabase SQL editor or your normal mig
 20260822000001_fix_signup_profile_trigger.sql
 20260822000002_add_multilingual_test_catalog.sql
 20260822000003_add_rights_aware_lyrics_translations.sql
+20260822000004_add_translation_versions.sql
 ```
 
-The catalog migration adds `songs.language`, deterministic indexes, the `test_catalog_assets` manifest table, and the public `test-catalog-lyrics` Storage bucket. The rights-aware migration adds song/lyric authorization metadata and the `translations` table. The service-role seed marks QA lyrics as original/owned and explicitly display-authorized, while the service-role upload does not require a browser-client Storage upload policy.
+The catalog migration adds `songs.language`, deterministic indexes, the `test_catalog_assets` manifest table, and the public `test-catalog-lyrics` Storage bucket. The rights-aware migration adds song/lyric authorization metadata and the `translations` table. The translation-version migration adds immutable pending snapshots for collaborative revision history. The service-role seed marks QA lyrics as original/owned and explicitly display-authorized, while the service-role upload does not require a browser-client Storage upload policy.
 
 ## Seed command
 
