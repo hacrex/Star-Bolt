@@ -97,6 +97,12 @@ supabase/
   migrations/     # SQL migration files
 ```
 
+## Project specifications and memory
+
+The complete build plan, acceptance criteria, phased roadmap, architecture targets, and release definition are documented in [`docs/STAR_LYrix_BUILD_SPEC.md`](docs/STAR_LYrix_BUILD_SPEC.md). Future sessions should begin with [`docs/STAR_LYrix_PROJECT_MEMORY.md`](docs/STAR_LYrix_PROJECT_MEMORY.md), which records the current implementation state, design decisions, known constraints, and next milestones.
+
+The Supabase comparison is preserved in [`qa/supabase-architecture-crosscheck.md`](qa/supabase-architecture-crosscheck.md). UI and Stitch decisions remain in [`UIUX.md`](UIUX.md), [`stitch_star_lyrix_design_system/star_lyrix/DESIGN.md`](stitch_star_lyrix_design_system/star_lyrix/DESIGN.md), and [`stitch_star_lyrix_design_system/star_lyrix/IMPLEMENTATION.md`](stitch_star_lyrix_design_system/star_lyrix/IMPLEMENTATION.md).
+
 ## License
 
 This project is private and not publicly licensed.
