@@ -92,3 +92,10 @@ The latest UI pass keeps the warm cinematic system but makes the product more pe
 The shared header includes a command palette available from the Search control or `/` / `Ctrl+K` / `Cmd+K` shortcuts. Mobile navigation is intent-led: Discover, Read, Create, Library, and Search, with Create visually elevated as the primary action. A persistent Now Reading bar keeps the last lyric room available across non-reading routes.
 
 Reading Room actions now remember local saves, support share-a-line moments, persist lightweight reactions, expose language metadata, and retain authorized audio synchronization. These local enhancements are deliberately independent of Supabase so they remain useful while authenticated backend features are unavailable. The motion layer uses short transform/opacity transitions and respects reduced-motion preferences.
+
+
+## Supabase light-architecture cross-check
+
+The attached `Star_Lyrix_Supabase_Database_Light_Architecture.md` was cross-checked against the current repository. The source document is not currently tracked in the selected Git branch, so the full comparison is preserved in `qa/supabase-architecture-crosscheck.md`.
+
+The implementation matches the requested Supabase foundation and currently supports Auth, PostgreSQL, Storage, RLS, private playlists/favorites/generated lyrics, authorized playback, and the multilingual QA catalog. Add Song now captures explicit language metadata. The documented next architecture milestones are rights-aware lyric fields, translation and contribution workflows, lyric requests, normalized artists, cached YouTube videos with scheduled Edge Function synchronization, production Storage buckets, and moderator/admin authorization. These are intentionally tracked as additive milestones rather than silently changing the existing `public.users` and free-text artist model.

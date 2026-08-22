@@ -5,6 +5,7 @@ import { useSongStore } from '../store/songStore';
 import { useAuthStore } from '../store/authStore';
 import { supabase } from '../lib/supabase';
 import type { PlaybackCue } from '../lib/database.types';
+import { LANGUAGE_OPTIONS } from '../lib/discovery';
 
 const URL_REGEX = /^https?:\/\/.+\.(jpg|jpeg|png|gif|webp|svg)(\?.*)?$/i;
 const AUDIO_URL_REGEX = /^https?:\/\/.+$/i;
@@ -16,7 +17,7 @@ const AddSong = () => {
   const [loading, setLoading] = React.useState(false);
   const [error, setError] = React.useState('');
   const [formData, setFormData] = React.useState({
-    title: '', artist: '', album: '', release_date: '', thumbnail_url: '', audio_url: '', duration_seconds: '', synced_lyrics: '',
+    title: '', artist: '', album: '', release_date: '', language: 'en', thumbnail_url: '', audio_url: '', duration_seconds: '', synced_lyrics: '',
   });
   const [confirmAuthorized, setConfirmAuthorized] = React.useState(false);
 
@@ -65,6 +66,7 @@ const AddSong = () => {
         album: formData.album || null,
         release_date: formData.release_date || null,
         thumbnail_url: formData.thumbnail_url || null,
+        language: formData.language,
         created_by: user.id,
       });
 
@@ -88,7 +90,7 @@ const AddSong = () => {
     }
   };
 
-  const handleChange = (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  const handleChange = (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     setFormData((previous) => ({ ...previous, [event.target.name]: event.target.value }));
   };
 
@@ -101,6 +103,7 @@ const AddSong = () => {
           <Field id="artist" label="Artist *" value={formData.artist} onChange={handleChange} required />
           <Field id="album" label="Album" value={formData.album} onChange={handleChange} />
           <Field id="release_date" label="Release date" type="date" value={formData.release_date} onChange={handleChange} />
+          <label className="block"><span className="block text-sm font-medium text-[var(--text-primary)]">Language *</span><select id="language" name="language" value={formData.language} onChange={handleChange} required className="mt-2 min-h-12 w-full rounded-xl border border-[var(--border-subtle)] bg-[var(--bg-elevated)] px-4 text-[var(--text-primary)] focus:border-[var(--gold-primary)] focus:outline-none">{LANGUAGE_OPTIONS.filter((option) => option.code !== 'all').map((option) => <option key={option.code} value={option.code}>{option.label}</option>)}</select></label>
         </div>
         <Field id="thumbnail_url" label="Thumbnail URL" value={formData.thumbnail_url} onChange={handleChange} placeholder="https://example.com/image.jpg" type="url" />
 
