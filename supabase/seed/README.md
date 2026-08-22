@@ -10,9 +10,10 @@ Apply the migrations in order through the Supabase SQL editor or your normal mig
 20260822000000_add_song_playback.sql
 20260822000001_fix_signup_profile_trigger.sql
 20260822000002_add_multilingual_test_catalog.sql
+20260822000003_add_rights_aware_lyrics_translations.sql
 ```
 
-The catalog migration adds `songs.language`, deterministic indexes, the `test_catalog_assets` manifest table, and the public `test-catalog-lyrics` Storage bucket. The service-role seed writes the lyric text files and therefore does not require a browser-client Storage upload policy.
+The catalog migration adds `songs.language`, deterministic indexes, the `test_catalog_assets` manifest table, and the public `test-catalog-lyrics` Storage bucket. The rights-aware migration adds song/lyric authorization metadata and the `translations` table. The service-role seed marks QA lyrics as original/owned and explicitly display-authorized, while the service-role upload does not require a browser-client Storage upload policy.
 
 ## Seed command
 
@@ -29,4 +30,4 @@ The script is idempotent for the catalog identity `(title, artist)`: it upserts 
 
 ## Verification
 
-After the command completes, verify that `public.songs` contains 30 catalog rows with `language` values `hi`, `en`, and `ta`, that `public.lyrics` has one lyric row for each seeded song, and that `storage.objects` contains one `.txt` file per song in `test-catalog-lyrics`. If the database migration has not been applied, the script will fail rather than silently creating an incomplete catalog.
+After the command completes, verify that `public.songs` contains 30 catalog rows with `language` and `language_code` values `hi`, `en`, and `ta`, that `public.lyrics` has one lyric row for each seeded song with `source_type = 'star_lyrix_original'`, `rights_status = 'owned'`, `allowed_display = true`, and `status = 'verified'`, and that `storage.objects` contains one `.txt` file per song in `test-catalog-lyrics`. If the database migration has not been applied, the script will fail rather than silently creating an incomplete catalog.

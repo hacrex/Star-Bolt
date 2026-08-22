@@ -32,6 +32,8 @@ import { languageLabel, rememberSong } from '../lib/discovery';
 type Song = Database['public']['Tables']['songs']['Row'];
 type Playback = Database['public']['Tables']['song_playback']['Row'];
 type Comment = Database['public']['Tables']['comments']['Row'] & { user: { username: string } };
+type LyricRecord = Database['public']['Tables']['lyrics']['Row'];
+type Translation = Database['public']['Tables']['translations']['Row'];
 
 const parsePlaybackCues = (value: unknown): PlaybackCue[] => {
   if (!Array.isArray(value)) return [];
@@ -63,6 +65,9 @@ const SongDetails = () => {
   const [song, setSong] = React.useState<Song | null>(null);
   const [playback, setPlayback] = React.useState<Playback | null>(null);
   const [lyrics, setLyrics] = React.useState('');
+  const [lyricRecord, setLyricRecord] = React.useState<LyricRecord | null>(null);
+  const [translations, setTranslations] = React.useState<Translation[]>([]);
+  const [selectedTranslationLanguage, setSelectedTranslationLanguage] = React.useState<string | null>(null);
   const [comments, setComments] = React.useState<Comment[]>([]);
   const [loading, setLoading] = React.useState(true);
   const [error, setError] = React.useState('');
@@ -98,7 +103,7 @@ const SongDetails = () => {
 
         const [songResult, lyricsResult, commentsResult, playbackResult] = await Promise.all([
           supabase.from('songs').select('*').eq('id', id).single(),
-          supabase.from('lyrics').select('content').eq('song_id', id).single(),
+          supabase.from('lyrics').select('*').eq('song_id', id).maybeSingle(),
           supabase.from('comments').select('*, user:users(username)').eq('song_id', id).order('created_at', { ascending: false }),
           supabase.from('song_playback').select('*').eq('song_id', id).eq('audio_authorized', true).maybeSingle(),
         ]);
@@ -106,7 +111,25 @@ const SongDetails = () => {
         if (songResult.error) throw songResult.error;
         setSong(songResult.data);
 
-        if (lyricsResult.error && lyricsResult.error.code !== 'PGRST116') throw lyricsResult.error;
+        if (lyricsResult.error) throw lyricsResult.error;
+        const lyricRecord = lyricsResult.data as LyricRecord | null;
+        setLyricRecord(lyricRecord);
+
+        if (lyricRecord?.id) {
+          const translationResult = await supabase
+            .from('translations')
+            .select('*')
+            .eq('lyrics_id', lyricRecord.id)
+            .order('language_code', { ascending: true });
+          const missingTranslationTable = translationResult.error?.code === 'PGRST205' || translationResult.error?.code === '42P01';
+          if (translationResult.error && !missingTranslationTable) throw translationResult.error;
+          const availableTranslations = missingTranslationTable ? [] : ((translationResult.data || []) as Translation[]);
+          setTranslations(availableTranslations);
+          setSelectedTranslationLanguage((current) => availableTranslations.some((translation) => translation.language_code === current) ? current : availableTranslations[0]?.language_code || null);
+        } else {
+          setTranslations([]);
+          setSelectedTranslationLanguage(null);
+        }
 
         if (commentsResult.error) throw commentsResult.error;
         setComments((commentsResult.data || []) as Comment[]);
@@ -116,7 +139,7 @@ const SongDetails = () => {
         setPlayback(authorizedPlayback);
         setDuration(authorizedPlayback?.duration_seconds || 0);
         const cueLyrics = parsePlaybackCues(authorizedPlayback?.synced_lyrics).map((cue) => cue.text).join('\n');
-        setLyrics(lyricsResult.data?.content || cueLyrics);
+        setLyrics(lyricRecord?.content || cueLyrics);
 
         if (user && id) {
           const { data: rating } = await supabase
@@ -137,6 +160,11 @@ const SongDetails = () => {
     if (id) fetchSongDetails();
   }, [id, user]);
 
+  const selectedTranslation = React.useMemo(
+    () => translations.find((translation) => translation.language_code === selectedTranslationLanguage) || null,
+    [selectedTranslationLanguage, translations],
+  );
+
   const syncCues = React.useMemo(() => parsePlaybackCues(playback?.synced_lyrics), [playback]);
   const syncedLine = React.useMemo(() => {
     if (syncCues.length === 0) return null;
@@ -154,6 +182,9 @@ const SongDetails = () => {
     setCurrentTime(0);
     setProgress(0);
     setActiveReaction(null);
+    setTranslations([]);
+    setSelectedTranslationLanguage(null);
+    setLyricRecord(null);
     setReactionCounts({ 'felt this': 12, beautiful: 8, 'need translation': 4 });
     setIsSaved(() => {
       try {
@@ -445,7 +476,7 @@ const SongDetails = () => {
           <div className="reading-room-metadata">
             <div><span>Album</span><strong>{song.album || 'Single release'}</strong></div>
             <div><span>Release</span><strong>{song.release_date ? new Date(song.release_date).toLocaleDateString() : 'Not listed'}</strong></div>
-            <div><span>Lyrics status</span><strong>{playback && syncCues.length > 0 ? 'Synced & authorized' : 'Authorized content'}</strong></div>
+            <div><span>Lyrics status</span><strong>{lyricRecord?.status === 'verified' ? 'Verified & authorized' : lyricRecord?.status === 'approved' ? 'Approved for display' : lyricRecord ? 'Pending review' : 'Not available'}</strong></div>
           </div>
         </aside>
 
@@ -455,13 +486,13 @@ const SongDetails = () => {
               <Languages className="h-5 w-5 text-[var(--gold-light)]" aria-hidden="true" />
               <div><p className="eyebrow">Words & meaning</p><h2 id="reading-room-title">The Reading Room</h2></div>
             </div>
-            <div className="flex items-center gap-2"><button type="button" className="reading-room-quote-action" onClick={() => void handleShareQuote()}><Share2 className="h-4 w-4" /><span className="hidden sm:inline">Share a line</span></button><button type="button" className={`reading-room-translate ${showTranslation ? 'is-active' : ''}`} onClick={() => setShowTranslation((visible) => !visible)}><Languages className="h-4 w-4" /><span>{showTranslation ? 'Original' : 'Translate'}</span><ChevronDown className={`h-4 w-4 transition-transform ${showTranslation ? 'rotate-180' : ''}`} /></button></div>
+            <div className="flex items-center gap-2"><button type="button" className="reading-room-quote-action" onClick={() => void handleShareQuote()}><Share2 className="h-4 w-4" /><span className="hidden sm:inline">Share a line</span></button><button type="button" className={`reading-room-translate ${showTranslation ? 'is-active' : ''}`} onClick={() => setShowTranslation((visible) => !visible)} disabled={translations.length === 0} aria-label={translations.length === 0 ? 'No authorized translations available' : 'Toggle translations'}><Languages className="h-4 w-4" /><span>{translations.length === 0 ? 'No translation' : showTranslation ? 'Original' : 'Translate'}</span><ChevronDown className={`h-4 w-4 transition-transform ${showTranslation ? 'rotate-180' : ''}`} /></button></div>
           </header>
 
           {showTranslation && (
             <div className="reading-room-translation" role="status">
               <Languages className="h-4 w-4 text-[var(--gold-light)]" />
-              <span>Translation mode is ready for a licensed translation source. Original lyrics remain visible below.</span>
+              <div className="min-w-0 flex-1"><div className="flex flex-wrap gap-2">{translations.map((translation) => <button type="button" key={translation.id} className={`reaction-pill ${selectedTranslationLanguage === translation.language_code ? 'is-active' : ''}`} onClick={() => setSelectedTranslationLanguage(translation.language_code)}>{languageLabel(translation.language_code)}</button>)}</div>{selectedTranslation ? <p className="mt-3 whitespace-pre-line text-sm leading-7 text-[var(--text-secondary)]">{selectedTranslation.translated_text}</p> : <p className="mt-2 text-sm text-[var(--text-secondary)]">Choose an authorized translation. The original lyrics remain visible below.</p>}</div>
             </div>
           )}
 

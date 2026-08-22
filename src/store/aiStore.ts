@@ -25,7 +25,7 @@ interface AIStore {
   loading: boolean;
   error: string | null;
   updateSettings: (settings: Partial<AISettings>) => void;
-  generateLyrics: (prompt: string) => Promise<void>;
+  generateLyrics: (prompt: string) => Promise<string>;
   saveLyrics: (title: string, content: string) => Promise<void>;
   fetchUserLyrics: () => Promise<void>;
   translateLyrics: (content: string, targetLanguage: string) => Promise<string>;

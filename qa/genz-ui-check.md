@@ -16,3 +16,8 @@ The first home render exposed `Sparkles is not defined` in the header; the icon 
 
 | AI Lyrics `/ai-lyrics` | Pass | Lyric Studio renders with warm prompt canvas, settings rail, and Create navigation destination. |
 | Persistent Now Reading | Pass | A local reading-memory fixture produced the expected taste-card shelf and fixed Now Reading bar with Continue and Dismiss controls. |
+
+
+## Rights-aware translation integration QA
+
+The local preview route `/songs/1` rendered the existing graceful `Failed to load song details` state with a Back to lyrics action. No runtime error was introduced by the new translations query; an authorized seeded song is still required to verify the full translation selector and rights-aware Reading Room state.

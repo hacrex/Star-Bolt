@@ -17,15 +17,21 @@ const AddSong = () => {
   const [loading, setLoading] = React.useState(false);
   const [error, setError] = React.useState('');
   const [formData, setFormData] = React.useState({
-    title: '', artist: '', album: '', release_date: '', language: 'en', thumbnail_url: '', audio_url: '', duration_seconds: '', synced_lyrics: '',
+    title: '', artist: '', album: '', release_date: '', language: 'en', thumbnail_url: '', lyrics_content: '', lyrics_source_type: 'authorized_submission', lyrics_rights_status: 'authorized', lyrics_rights_holder: '', lyrics_license_reference: '', audio_url: '', duration_seconds: '', synced_lyrics: '',
   });
   const [confirmAuthorized, setConfirmAuthorized] = React.useState(false);
+  const [confirmLyricsAuthorized, setConfirmLyricsAuthorized] = React.useState(false);
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
     setError('');
     const hasAudio = Boolean(formData.audio_url.trim());
+    const hasLyrics = Boolean(formData.lyrics_content.trim());
 
+    if (hasLyrics && !confirmLyricsAuthorized) {
+      setError('Confirm that you have the rights to submit these lyrics for review.');
+      return;
+    }
     if (formData.thumbnail_url && !URL_REGEX.test(formData.thumbnail_url)) {
       setError('Thumbnail URL must be a valid image URL (jpg, png, gif, webp, svg)');
       return;
@@ -67,8 +73,30 @@ const AddSong = () => {
         release_date: formData.release_date || null,
         thumbnail_url: formData.thumbnail_url || null,
         language: formData.language,
+        language_code: formData.language,
+        lyrics_status: hasLyrics ? 'pending' : 'not_available',
+        rights_status: hasLyrics ? formData.lyrics_rights_status : 'unknown',
         created_by: user.id,
       });
+
+      if (hasLyrics) {
+        const { error: lyricsError } = await supabase.from('lyrics').insert([{
+          song_id: createdSong.id,
+          content: formData.lyrics_content.trim(),
+          language_code: formData.language,
+          source_type: formData.lyrics_source_type,
+          rights_status: formData.lyrics_rights_status,
+          rights_holder: formData.lyrics_rights_holder.trim() || null,
+          license_reference: formData.lyrics_license_reference.trim() || null,
+          allowed_display: false,
+          allowed_translation: false,
+          allowed_synchronization: false,
+          status: 'pending',
+          verified: false,
+          created_by: user.id,
+        }]);
+        if (lyricsError) throw lyricsError;
+      }
 
       if (hasAudio) {
         const { error: playbackError } = await supabase.from('song_playback').insert([{
@@ -108,6 +136,14 @@ const AddSong = () => {
         <Field id="thumbnail_url" label="Thumbnail URL" value={formData.thumbnail_url} onChange={handleChange} placeholder="https://example.com/image.jpg" type="url" />
 
         <div className="rounded-2xl border border-[rgba(212,168,67,0.22)] bg-[rgba(212,168,67,0.06)] p-5">
+          <div className="flex items-start gap-3"><LanguagesIcon /><div><p className="eyebrow">Rights-aware lyrics submission</p><p className="mt-2 text-sm leading-6 text-[var(--text-secondary)]">Optional. Lyrics are stored as pending and remain hidden until a moderator confirms the rights metadata and approves display.</p></div></div>
+          <label className="mt-5 block"><span className="block text-sm font-medium text-[var(--text-primary)]">Lyrics content</span><textarea id="lyrics_content" name="lyrics_content" value={formData.lyrics_content} onChange={handleChange} rows={8} placeholder="Paste original, licensed, public-domain, or explicitly authorized lyrics…" className="mt-2 w-full rounded-xl border border-[var(--border-subtle)] bg-[var(--bg-elevated)] px-4 py-3 font-serif text-base leading-7 text-[var(--text-primary)] placeholder:text-[var(--text-muted)] focus:border-[var(--gold-primary)] focus:outline-none" /></label>
+          <div className="mt-5 grid gap-5 sm:grid-cols-3"><SelectField id="lyrics_source_type" label="Source type" value={formData.lyrics_source_type} onChange={handleChange} options={[['authorized_submission', 'Authorized submission'], ['star_lyrix_original', 'Star Lyrix original'], ['licensed', 'Licensed'], ['public_domain', 'Public domain']]} /><SelectField id="lyrics_rights_status" label="Rights status" value={formData.lyrics_rights_status} onChange={handleChange} options={[['authorized', 'Authorized'], ['owned', 'Owned'], ['licensed', 'Licensed'], ['public_domain', 'Public domain']]} /><Field id="lyrics_rights_holder" label="Rights holder" value={formData.lyrics_rights_holder} onChange={handleChange} placeholder="Optional name" /></div>
+          <Field id="lyrics_license_reference" label="License reference" value={formData.lyrics_license_reference} onChange={handleChange} placeholder="Optional URL or internal reference" />
+          <label className="mt-5 flex items-start gap-3 text-sm text-[var(--text-secondary)]"><input type="checkbox" checked={confirmLyricsAuthorized} onChange={(event) => setConfirmLyricsAuthorized(event.target.checked)} className="mt-0.5 h-4 w-4 accent-[var(--gold-primary)]" /> <span>I confirm that I own or am authorized to submit this lyric text. It will remain pending until reviewed.</span></label>
+        </div>
+
+        <div className="rounded-2xl border border-[rgba(212,168,67,0.22)] bg-[rgba(212,168,67,0.06)] p-5">
           <div className="flex items-start gap-3"><Music2 className="mt-0.5 h-5 w-5 shrink-0 text-[var(--gold-light)]" /><div><p className="eyebrow">Authorized Reading Room playback</p><p className="mt-2 text-sm leading-6 text-[var(--text-secondary)]">Optional. Use an audio URL you are authorized to publish and stream. The player will not load unverified sources.</p></div></div>
           <div className="mt-5 grid gap-5 sm:grid-cols-2"><Field id="audio_url" label="Authorized audio URL" value={formData.audio_url} onChange={handleChange} placeholder="https://cdn.example.com/song.mp3" type="url" /><Field id="duration_seconds" label="Duration (seconds)" value={formData.duration_seconds} onChange={handleChange} placeholder="245" type="number" min="1" /></div>
           <label className="mt-5 block"><span className="block text-sm font-medium text-[var(--text-primary)]">Timed lyric cues (JSON)</span><textarea name="synced_lyrics" value={formData.synced_lyrics} onChange={handleChange} rows={5} placeholder={'[{"startMs": 0, "endMs": 4200, "text": "First line"}]'} className="mt-2 w-full rounded-xl border border-[var(--border-subtle)] bg-[var(--bg-elevated)] px-4 py-3 font-mono text-xs text-[var(--text-primary)] placeholder:text-[var(--text-muted)] focus:border-[var(--gold-primary)] focus:outline-none" /><span className="mt-2 block text-xs leading-5 text-[var(--text-muted)]">Each cue needs <code>startMs</code> and <code>text</code>; <code>endMs</code> is optional.</span></label>
@@ -121,6 +157,10 @@ const AddSong = () => {
   );
 };
 
-const Field: React.FC<{ id: string; label: string; value: string; onChange: (event: React.ChangeEvent<HTMLInputElement>) => void; type?: string; placeholder?: string; min?: string; required?: boolean }> = ({ id, label, value, onChange, type = 'text', placeholder, min, required }) => <label className="block"><span className="block text-sm font-medium text-[var(--text-primary)]">{label}</span><input id={id} name={id} type={type} value={value} onChange={onChange} placeholder={placeholder} min={min} required={required} maxLength={type === 'number' ? undefined : 200} className="mt-2 min-h-12 w-full rounded-xl border border-[var(--border-subtle)] bg-[var(--bg-elevated)] px-4 text-[var(--text-primary)] placeholder:text-[var(--text-muted)] focus:border-[var(--gold-primary)] focus:outline-none" /></label>;
+const LanguagesIcon = () => <span className="mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-full border border-[var(--gold-light)] text-[0.6rem] text-[var(--gold-light)]" aria-hidden="true">文</span>;
+
+const Field: React.FC<{ id: string; label: string; value: string; onChange: (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => void; type?: string; placeholder?: string; min?: string; required?: boolean }> = ({ id, label, value, onChange, type = 'text', placeholder, min, required }) => <label className="block"><span className="block text-sm font-medium text-[var(--text-primary)]">{label}</span><input id={id} name={id} type={type} value={value} onChange={onChange} placeholder={placeholder} min={min} required={required} maxLength={type === 'number' ? undefined : 200} className="mt-2 min-h-12 w-full rounded-xl border border-[var(--border-subtle)] bg-[var(--bg-elevated)] px-4 text-[var(--text-primary)] placeholder:text-[var(--text-muted)] focus:border-[var(--gold-primary)] focus:outline-none" /></label>;
+
+const SelectField: React.FC<{ id: string; label: string; value: string; onChange: (event: React.ChangeEvent<HTMLSelectElement>) => void; options: string[][] }> = ({ id, label, value, onChange, options }) => <label className="block"><span className="block text-sm font-medium text-[var(--text-primary)]">{label}</span><select id={id} name={id} value={value} onChange={onChange} className="mt-2 min-h-12 w-full rounded-xl border border-[var(--border-subtle)] bg-[var(--bg-elevated)] px-4 text-[var(--text-primary)] focus:border-[var(--gold-primary)] focus:outline-none">{options.map(([optionValue, optionLabel]) => <option key={optionValue} value={optionValue}>{optionLabel}</option>)}</select></label>;
 
 export default AddSong;

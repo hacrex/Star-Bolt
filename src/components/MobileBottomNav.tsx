@@ -1,4 +1,3 @@
-import React from 'react';
 import { BookOpen, Compass, Library, Search, Sparkles } from 'lucide-react';
 import { Link, useLocation } from 'react-router-dom';
 

@@ -3,12 +3,13 @@ import { supabase } from '../lib/supabase';
 import type { Database } from '../lib/database.types';
 
 type Song = Database['public']['Tables']['songs']['Row'];
+type SongInsert = Database['public']['Tables']['songs']['Insert'];
 
 interface SongState {
   songs: Song[];
   loading: boolean;
   fetchSongs: () => Promise<void>;
-  addSong: (song: Omit<Song, 'id' | 'created_at'>) => Promise<Song>;
+  addSong: (song: SongInsert) => Promise<Song>;
   updateSong: (songId: string, updates: Partial<Song>) => Promise<void>;
   deleteSong: (songId: string) => Promise<void>;
   rateSong: (songId: string, score: number) => Promise<void>;
