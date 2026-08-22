@@ -66,3 +66,20 @@ The React implementation now maps the four checked-in Stitch HTML prototypes as 
 | `the_reading_room_lyrics` | `/songs/:id` | Album/metadata rail, Reading Room lyrics canvas, masked serif reading flow, active cue highlighting, translation state, community notes, and sticky player. |
 
 The home route intentionally no longer composes the earlier `FeaturedArtist`, `CategorySection`, `TrendingSection`, or `TopNewSongs` legacy blocks. The Stitch Bento canvas is the canonical discovery surface; dynamic Supabase songs still populate the latest-song area without changing the reference hierarchy.
+
+
+## AI Lyrics Studio
+
+The `/ai-lyrics` route now uses the Stitch lyric-studio composition: a warm prompt canvas, compact settings rail, editorial serif output surface, and explicit save, share, and translation actions. The legacy orphaned category, artist, trending, and placeholder song blocks were removed from the active implementation so they cannot reintroduce the earlier visual language.
+
+## Signup and profile creation
+
+Signup validation uses the browser-safe username pattern `[-A-Za-z0-9_]+`; placing the hyphen at the beginning avoids the modern browser `v`-flag character-class error. The client passes the username in Supabase Auth metadata and only attempts a profile upsert when an authenticated session exists. Migration `supabase/migrations/20260822000001_fix_signup_profile_trigger.sql` adds a security-definer trigger that creates the matching `public.users` profile after a new `auth.users` row is created, including when email confirmation means the initial signup response has no session.
+
+## Original multilingual QA catalog
+
+Migration `supabase/migrations/20260822000002_add_multilingual_test_catalog.sql` adds the `songs.language` field, the `test_catalog_assets` manifest table, and the public `test-catalog-lyrics` Storage bucket. The checked-in seed contains 10 original Hindi, 10 original English, and 10 original Tamil songs with short original lyrics. `scripts/seed-stitch-test-catalog.mjs` requires a Supabase service-role key and a valid `public.users` profile UUID; it has not been run from this workspace because no service credential is available. See `supabase/seed/README.md` for safe execution instructions.
+
+## Dedicated legal routes
+
+The shared Footer now links to `/terms`, `/privacy`, `/copyright`, and `/community-guidelines`. These routes render the reusable Stitch-styled `src/pages/Legal.tsx` surface and include account-use, privacy, rights-reporting, original test-content, and community-safety language. The copy is product guidance for QA and should be reviewed by the project owner or counsel before production publication.

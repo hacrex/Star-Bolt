@@ -7,6 +7,7 @@ import MobileBottomNav from './components/MobileBottomNav';
 import Home from './pages/Home';
 import Auth from './pages/Auth';
 import SongDetails from './pages/SongDetails';
+import Legal from './pages/Legal';
 import { ThemeProvider } from './context/ThemeContext';
 import { ToastProvider } from './components/Toast';
 
@@ -95,6 +96,10 @@ const App = () => {
                     <Route path="/search" element={<Search />} />
                     <Route path="/ai-lyrics" element={<AILyricsGenerator />} />
                     <Route path="/videos" element={<Videos />} />
+                    <Route path="/terms" element={<Legal />} />
+                    <Route path="/privacy" element={<Legal />} />
+                    <Route path="/copyright" element={<Legal />} />
+                    <Route path="/community-guidelines" element={<Legal />} />
                     <Route
                       path="/add-song"
                       element={<ProtectedRoute><AddSong /></ProtectedRoute>}

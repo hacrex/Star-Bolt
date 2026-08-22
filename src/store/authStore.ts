@@ -10,7 +10,7 @@ interface AuthState {
   profile: UserProfile | null;
   loading: boolean;
   signIn: (email: string, password: string) => Promise<void>;
-  signUp: (email: string, password: string, username: string) => Promise<void>;
+  signUp: (email: string, password: string, username: string) => Promise<boolean>;
   signOut: () => Promise<void>;
   loadUser: () => Promise<void>;
 }
@@ -30,15 +30,18 @@ export const useAuthStore = create<AuthState>((set) => ({
     const { error: signUpError, data } = await supabase.auth.signUp({
       email,
       password,
+      options: { data: { username: username.trim() } },
     });
     if (signUpError) throw signUpError;
 
-    if (data.user) {
+    if (data.user && data.session) {
       const { error: profileError } = await supabase
         .from('users')
-        .insert([{ id: data.user.id, username }]);
+        .upsert([{ id: data.user.id, username: username.trim() }], { onConflict: 'id' });
       if (profileError) throw profileError;
     }
+
+    return Boolean(data.session);
   },
   signOut: async () => {
     const { error } = await supabase.auth.signOut();

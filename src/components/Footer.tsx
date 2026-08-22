@@ -36,10 +36,10 @@ const Footer = () => {
             ['Contribute', '/add-song'],
           ]} />
           <FooterColumn title="Legal" links={[
-            ['Terms', '/'],
-            ['Privacy', '/'],
-            ['Copyright & DMCA', '/'],
-            ['Community Guidelines', '/'],
+            ['Terms', '/terms'],
+            ['Privacy', '/privacy'],
+            ['Copyright & DMCA', '/copyright'],
+            ['Community Guidelines', '/community-guidelines'],
           ]} />
         </div>
 

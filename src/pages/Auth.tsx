@@ -8,6 +8,7 @@ const Auth = () => {
   const [password, setPassword] = React.useState('');
   const [username, setUsername] = React.useState('');
   const [error, setError] = React.useState('');
+  const [notice, setNotice] = React.useState('');
   const [loading, setLoading] = React.useState(false);
   const navigate = useNavigate();
   const { signIn, signUp } = useAuthStore();
@@ -29,6 +30,7 @@ const Auth = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
+    setNotice('');
 
     const validationError = validateForm();
     if (validationError) {
@@ -41,7 +43,12 @@ const Auth = () => {
       if (isLogin) {
         await signIn(email, password);
       } else {
-        await signUp(email, password, username);
+        const hasSession = await signUp(email, password, username);
+        if (!hasSession) {
+          setIsLogin(true);
+          setNotice('Account created. Check your email to confirm your address, then sign in.');
+          return;
+        }
       }
       navigate('/');
     } catch (err) {
@@ -54,6 +61,7 @@ const Auth = () => {
   const handleToggle = () => {
     setIsLogin(!isLogin);
     setError('');
+    setNotice('');
     setPassword('');
   };
 
@@ -86,7 +94,7 @@ const Auth = () => {
               className="min-h-12 w-full rounded-xl border border-[var(--border-subtle)] bg-[var(--bg-elevated)] px-4 text-[var(--text-primary)] placeholder:text-[var(--text-muted)] focus:border-[var(--gold-primary)] focus:outline-none"
               minLength={3}
               maxLength={30}
-              pattern="[a-zA-Z0-9_-]+"
+              pattern="[-A-Za-z0-9_]+"
               title="3-30 characters: letters, numbers, hyphens, underscores"
               required
             />
@@ -111,6 +119,9 @@ const Auth = () => {
 
         {error && (
           <div className="rounded-xl border border-red-400/30 bg-red-400/10 px-4 py-3 text-sm text-red-200">{error}</div>
+        )}
+        {notice && (
+          <div className="rounded-xl border border-[rgba(212,168,67,0.35)] bg-[rgba(61,47,17,0.35)] px-4 py-3 text-sm leading-6 text-[var(--gold-light)]">{notice}</div>
         )}
 
         <button
