@@ -28,6 +28,8 @@ import { usePlaylistStore } from '../store/playlistStore';
 import { useToast } from '../components/Toast';
 import type { Database, PlaybackCue } from '../lib/database.types';
 import { languageLabel, rememberSong } from '../lib/discovery';
+import AnimatedLyricLine from '../components/AnimatedLyricLine';
+import LyricSyncStatus from '../components/LyricSyncStatus';
 
 type Song = Database['public']['Tables']['songs']['Row'];
 type Playback = Database['public']['Tables']['song_playback']['Row'];
@@ -172,6 +174,13 @@ const SongDetails = () => {
     const cueIndex = syncCues.findIndex((cue) => currentMs >= cue.startMs && (cue.endMs === undefined || currentMs < cue.endMs));
     return cueIndex >= 0 ? cueIndex : null;
   }, [currentTime, syncCues]);
+
+  const activeCueProgress = React.useMemo(() => {
+    if (syncedLine === null) return 0;
+    const cue = syncCues[syncedLine];
+    if (!cue?.endMs || cue.endMs <= cue.startMs) return 0;
+    return (currentTime * 1000 - cue.startMs) / (cue.endMs - cue.startMs);
+  }, [currentTime, syncedLine, syncCues]);
 
   React.useEffect(() => {
     if (audioRef.current) audioRef.current.volume = volume / 100;
@@ -447,15 +456,18 @@ const SongDetails = () => {
           </div>
 
           <div className="reading-room-actions">
-            <button type="button" className={`reading-room-action ${isSaved ? 'is-active' : ''}`} onClick={handleSave}>
+            <button type="button" className={`reading-room-action micro-interaction ${isSaved ? 'is-active' : ''}`}
+ onClick={handleSave}>
               {isSaved ? <Check className="h-4 w-4" /> : <Heart className="h-4 w-4" />}
               <span>{isSaved ? 'Saved' : 'Save'}</span>
             </button>
-            <button type="button" className="reading-room-action" onClick={() => void handleOpenPlaylistPicker()}>
+            <button type="button" className="reading-room-action micro-interaction" onClick={() => void handleOpenPlaylistPicker()}
+>
               <ListPlus className="h-4 w-4" />
               <span>Add</span>
             </button>
-            <button type="button" className="reading-room-action reading-room-share" aria-label="Share song" onClick={handleShare}>
+            <button type="button" className="reading-room-action reading-room-share micro-interaction"
+ aria-label="Share song" onClick={handleShare}>
               <Share2 className="h-4 w-4" />
             </button>
           </div>
@@ -486,8 +498,11 @@ const SongDetails = () => {
               <Languages className="h-5 w-5 text-[var(--gold-light)]" aria-hidden="true" />
               <div><p className="eyebrow">Words & meaning</p><h2 id="reading-room-title">The Reading Room</h2></div>
             </div>
-            <div className="flex items-center gap-2"><button type="button" className="reading-room-quote-action" onClick={() => void handleShareQuote()}><Share2 className="h-4 w-4" /><span className="hidden sm:inline">Share a line</span></button><button type="button" className={`reading-room-translate ${showTranslation ? 'is-active' : ''}`} onClick={() => setShowTranslation((visible) => !visible)} disabled={translations.length === 0} aria-label={translations.length === 0 ? 'No authorized translations available' : 'Toggle translations'}><Languages className="h-4 w-4" /><span>{translations.length === 0 ? 'No translation' : showTranslation ? 'Original' : 'Translate'}</span><ChevronDown className={`h-4 w-4 transition-transform ${showTranslation ? 'rotate-180' : ''}`} /></button></div>
+            <div className="flex items-center gap-2"><button type="button" className="reading-room-quote-action micro-interaction"
+ onClick={() => void handleShareQuote()}><Share2 className="h-4 w-4" /><span className="hidden sm:inline">Share a line</span></button><button type="button" className={`reading-room-translate micro-interaction ${showTranslation ? 'is-active' : ''}`}
+ onClick={() => setShowTranslation((visible) => !visible)} disabled={translations.length === 0} aria-label={translations.length === 0 ? 'No authorized translations available' : 'Toggle translations'}><Languages className="h-4 w-4" /><span>{translations.length === 0 ? 'No translation' : showTranslation ? 'Original' : 'Translate'}</span><ChevronDown className={`h-4 w-4 transition-transform ${showTranslation ? 'rotate-180' : ''}`} /></button></div>
           </header>
+          <LyricSyncStatus isAuthorized={Boolean(playback?.audio_authorized)} isPlaying={isPlaying} currentCue={syncedLine} cueCount={syncCues.length} cueProgress={activeCueProgress} />
 
           {showTranslation && (
             <div className="reading-room-translation" role="status">
@@ -508,11 +523,8 @@ const SongDetails = () => {
                         {section.lines.map((line, lineIndex) => {
                           const lineNumber = sectionStart + lineIndex;
                           const isActive = (syncedLine ?? activeLine) === lineNumber;
-                          return (
-                            <button type="button" key={`${line}-${lineNumber}`} className={`reading-room-line ${isActive ? 'is-active' : ''}`} onClick={() => handleLyricClick(lineNumber)} aria-pressed={isActive}>
-                              {line}
-                            </button>
-                          );
+                          const isPast = syncedLine !== null && lineNumber < syncedLine;
+                          return <AnimatedLyricLine key={`${line}-${lineNumber}`} line={line} lineNumber={lineNumber} isActive={isActive} isPast={isPast} progress={isActive ? activeCueProgress : 0} onSelect={handleLyricClick} />;
                         })}
                       </div>
                     </section>
@@ -520,7 +532,8 @@ const SongDetails = () => {
                 })}
               </div>
               <p className="reading-room-rights-note">Only display lyrics you are licensed or authorized to publish. Community corrections and translations should pass through review before being marked verified.</p>
-              <div className="lyric-reaction-rail" aria-label="React to this lyric room"><span className="font-mono text-[0.6rem] uppercase tracking-[0.14em] text-[var(--text-muted)]">This line feels like</span>{['felt this', 'beautiful', 'need translation'].map((reaction) => <button type="button" key={reaction} className={`reaction-pill ${activeReaction === reaction ? 'is-active' : ''}`} onClick={() => handleReaction(reaction)}>{reaction} <span>{reactionCounts[reaction]}</span></button>)}</div>
+              <div className="lyric-reaction-rail" aria-label="React to this lyric room"><span className="font-mono text-[0.6rem] uppercase tracking-[0.14em] text-[var(--text-muted)]">This line feels like</span>{['felt this', 'beautiful', 'need translation'].map((reaction) => <button type="button" key={reaction} className={`reaction-pill micro-interaction ${activeReaction === reaction ? 'is-active' : ''}`}
+ onClick={() => handleReaction(reaction)}>{reaction} <span>{reactionCounts[reaction]}</span></button>)}</div>
             </div>
           ) : (
             <div className="reading-room-empty"><Music2 className="h-8 w-8 text-[var(--gold-muted)]" /><p>No lyrics available yet.</p></div>
@@ -551,7 +564,7 @@ const SongDetails = () => {
       </section>
 
       <audio ref={audioRef} src={playback?.audio_authorized ? playback.audio_url : undefined} preload="metadata" onLoadedMetadata={(event) => setDuration(event.currentTarget.duration || duration)} onTimeUpdate={(event) => { const nextTime = event.currentTarget.currentTime; const total = event.currentTarget.duration || duration; setCurrentTime(nextTime); setProgress(total > 0 ? (nextTime / total) * 100 : 0); }} onPlay={() => setIsPlaying(true)} onPause={() => setIsPlaying(false)} onEnded={() => { setIsPlaying(false); setProgress(100); }} />
-      <div className="reading-room-player" aria-label="Reading Room playback controls">
+      <div className={`reading-room-player ${isPlaying ? 'is-playing' : ''}`} aria-label="Reading Room playback controls">
         <div className="reading-room-player-track">
           {song.thumbnail_url ? <img src={song.thumbnail_url} alt="" /> : <div className="reading-room-player-cover"><Music2 className="h-5 w-5" /></div>}
           <div><strong>{song.title}</strong><span>{song.artist}</span></div>

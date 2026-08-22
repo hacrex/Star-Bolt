@@ -21,3 +21,13 @@ The first home render exposed `Sparkles is not defined` in the header; the icon 
 ## Rights-aware translation integration QA
 
 The local preview route `/songs/1` rendered the existing graceful `Failed to load song details` state with a Back to lyrics action. No runtime error was introduced by the new translations query; an authorized seeded song is still required to verify the full translation selector and rights-aware Reading Room state.
+
+
+## Phase 2 animated sync QA
+
+The Reading Room route `/songs/1` continues to render the graceful unavailable-song state after adding the animated lyric-line and sync-status components. The browser console showed only the existing React Router future-flag advisories and no runtime errors from the Phase 2 integration. Full live cue animation remains dependent on an authorized seeded song with structured playback cues.
+
+
+## Phase 2 final browser verification
+
+After the final micro-interaction polish, `/songs/1` still renders the graceful unavailable-content state. The browser console contains only the existing React Router future-flag advisories and no runtime errors from `AnimatedLyricLine`, `LyricSyncStatus`, or the updated Reading Room controls.

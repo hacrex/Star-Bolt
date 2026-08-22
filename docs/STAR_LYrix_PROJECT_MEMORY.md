@@ -67,3 +67,8 @@ The current video gallery uses mock data until a secure cached YouTube integrati
 The new additive migration `supabase/migrations/20260822000003_add_rights_aware_lyrics_translations.sql` adds rights and publication metadata to `songs` and `lyrics`, creates `translations`, and replaces the legacy broad public lyric-read policy with explicit display authorization. Existing records default to hidden until reviewed. Owners can view and edit their own pending lyric/translation submissions, while users cannot self-approve or self-verify.
 
 The Reading Room now loads public authorized translations and shows a rights-aware lyric status. Add Song captures lyric source, rights status, holder, license reference, and authorization confirmation; submissions are stored as pending and hidden. The QA seed now marks original test lyrics as owned, verified, and display-authorized. Apply migrations through `20260822000003` before running or verifying the QA seed. No Supabase write was executed from the sandbox.
+
+
+## Phase 2 animated lyric synchronization
+
+The Reading Room now uses `AnimatedLyricLine` for cue-aware line focus, past-line depth, keyboard selection, auto-centering, and a gold progress underline driven by structured cue timing. `LyricSyncStatus` exposes manual, ready, and live authorized-sync states with a cue count and progress rail. These components remain dependent on `song_playback.audio_authorized` and existing structured cues; they do not introduce autoplay or guessed media. Non-essential pulse/focus animation is disabled under `prefers-reduced-motion`.

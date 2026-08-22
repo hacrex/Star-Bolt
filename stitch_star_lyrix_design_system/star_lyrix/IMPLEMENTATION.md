@@ -108,3 +108,10 @@ Migration `supabase/migrations/20260822000003_add_rights_aware_lyrics_translatio
 The same schema is mirrored in `supabase/setup.sql`. Public lyric reads now require explicit display authorization, an approved or verified status, and an allowed rights status. Contributors can view and manage their own pending lyric submissions, but cannot publish, approve, or verify them. The new `translations` table uses one target-language row per lyric record, stores contributor and rights metadata, and follows the same pending-versus-public RLS boundary.
 
 `SongDetails.tsx` now loads the rights-aware lyric record and authorized translations, presents the rights-aware lyric status, and enables the translation selector only when public authorized translations exist. `AddSong.tsx` captures language, lyric source type, rights status, rights holder, license reference, and an explicit authorization confirmation; submitted lyrics remain pending and hidden until review. The QA catalog seed marks its original test records as owned, verified, and display-authorized so the Reading Room can be tested after the migration and secure seed are run.
+
+
+## Phase 2 animated lyric synchronization
+
+The Reading Room now composes `AnimatedLyricLine` and `LyricSyncStatus`. Active cues receive a subtle focus entrance, a gold progress underline driven by the current cue interval, past-line depth treatment, and automatic centering inside the lyric scroll container. `LyricSyncStatus` communicates manual reading, ready-to-sync, and live lyric-sync states with an accessible cue count and progress rail.
+
+The animation contract remains purposeful and rights-safe: it only responds to the existing authorized playback state and structured cue data, uses transform/opacity plus a small progress scale, avoids autoplay, keeps lyric buttons keyboard reachable, and disables non-essential pulse/focus animation under `prefers-reduced-motion`. Browser QA verified that the unavailable-content fallback and console remain clean when no authorized song is present.
