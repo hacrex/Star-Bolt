@@ -2,14 +2,15 @@ import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { usePlaylistStore } from '../store/playlistStore';
 import { useAuthStore } from '../store/authStore';
-import { Plus, ListMusic } from 'lucide-react';
+import { Plus, ListMusic, Trash2 } from 'lucide-react';
 
 const Playlists = () => {
   const navigate = useNavigate();
   const { user } = useAuthStore();
-  const { playlists, loading, createPlaylist, fetchPlaylists } = usePlaylistStore();
+  const { playlists, loading, createPlaylist, fetchPlaylists, deletePlaylist } = usePlaylistStore();
   const [newPlaylistName, setNewPlaylistName] = React.useState('');
   const [showCreateModal, setShowCreateModal] = React.useState(false);
+  const [deletingPlaylistId, setDeletingPlaylistId] = React.useState<string | null>(null);
 
   React.useEffect(() => {
     if (!user) {
@@ -18,6 +19,18 @@ const Playlists = () => {
     }
     fetchPlaylists();
   }, [user, navigate, fetchPlaylists]);
+
+  const handleDeletePlaylist = async (playlistId: string) => {
+    if (!window.confirm('Delete this playlist? Songs will remain in your library.')) return;
+    setDeletingPlaylistId(playlistId);
+    try {
+      await deletePlaylist(playlistId);
+    } catch (error) {
+      console.error('Error deleting playlist:', error);
+    } finally {
+      setDeletingPlaylistId(null);
+    }
+  };
 
   const handleCreatePlaylist = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -49,19 +62,18 @@ const Playlists = () => {
 
       <div className="grid grid-cols-1 gap-5 md:grid-cols-2 lg:grid-cols-3">
         {playlists.map((playlist) => (
-          <Link
-            key={playlist.id}
-            to={`/playlists/${playlist.id}`}
-            className="surface-card surface-card-hover p-6"
-          >
-            <div className="mb-4 flex items-center gap-3">
-              <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-[rgba(212,168,67,0.1)] text-[var(--gold-light)]"><ListMusic className="h-5 w-5" /></span>
-              <h2 className="text-xl font-semibold text-[var(--text-primary)]">{playlist.name}</h2>
-            </div>
-            <p className="text-xs uppercase tracking-[0.12em] text-[var(--text-muted)]">
-              Created {new Date(playlist.created_at).toLocaleDateString()}
-            </p>
-          </Link>
+          <article key={playlist.id} className="surface-card surface-card-hover relative p-6">
+            <Link to={`/playlists/${playlist.id}`} className="block pr-8">
+              <div className="mb-4 flex items-center gap-3">
+                <span className="flex h-10 w-10 items-center justify-center rounded-xl bg-[rgba(212,168,67,0.1)] text-[var(--gold-light)]"><ListMusic className="h-5 w-5" /></span>
+                <h2 className="text-xl font-semibold text-[var(--text-primary)]">{playlist.name}</h2>
+              </div>
+              <p className="text-xs uppercase tracking-[0.12em] text-[var(--text-muted)]">Created {new Date(playlist.created_at).toLocaleDateString()}</p>
+            </Link>
+            <button type="button" className="icon-button absolute right-4 top-4 hover:!text-red-300" title={`Delete ${playlist.name}`} aria-label={`Delete ${playlist.name}`} disabled={deletingPlaylistId === playlist.id} onClick={() => void handleDeletePlaylist(playlist.id)}>
+              <Trash2 className="h-4 w-4" />
+            </button>
+          </article>
         ))}
       </div>
 

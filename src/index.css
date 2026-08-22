@@ -1126,3 +1126,48 @@
     }
   }
 }
+
+
+@layer components {
+  .playlist-picker-backdrop {
+    position: fixed;
+    inset: 0;
+    z-index: 60;
+    display: grid;
+    place-items: center;
+    padding: 1rem;
+    background: rgba(0, 0, 0, 0.72);
+    backdrop-filter: blur(10px);
+  }
+
+  .playlist-picker-dialog {
+    width: min(100%, 28rem);
+    padding: 1.5rem;
+    box-shadow: 0 24px 80px rgba(0, 0, 0, 0.55), 0 0 40px rgba(212, 168, 67, 0.1);
+  }
+
+  .playlist-picker-option {
+    display: flex;
+    min-height: 3rem;
+    align-items: center;
+    gap: 0.7rem;
+    border: 1px solid rgba(154, 143, 125, 0.14);
+    border-radius: 0.7rem;
+    background: var(--bg-elevated);
+    color: var(--text-primary);
+    padding: 0.7rem 0.8rem;
+    text-align: left;
+    transition: border-color 160ms ease-out, background-color 160ms ease-out, color 160ms ease-out;
+  }
+
+  .playlist-picker-option:hover:not(:disabled) {
+    border-color: rgba(212, 168, 67, 0.5);
+    background: var(--bg-subtle);
+    color: var(--gold-light);
+  }
+
+  .playlist-picker-option:disabled {
+    cursor: wait;
+    opacity: 0.55;
+  }
+}

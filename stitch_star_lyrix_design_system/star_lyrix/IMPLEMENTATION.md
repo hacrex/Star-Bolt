@@ -41,3 +41,14 @@ The shared shell now includes a Stitch-style mobile bottom navigation for Discov
 The follow-up pass also extends the same surface language to authenticated experiences: profile, playlists, playlist detail, generated lyrics, and authentication now use warm surfaced cards, gold accents, mono metadata labels, softer modal treatment, and serif lyric presentation. These routes continue using their existing authentication and Supabase store flows.
 
 The implementation intentionally keeps unfinished data integrations explicit. The Reading Room player is a UI shell until an authorized audio/synchronization provider is connected; playlist Add remains a coming-soon interaction; and video/search mock content remains clearly separated from the existing Supabase-backed song catalog.
+
+
+## Authorized playback and synchronization
+
+Reading Room playback is now backed by `public.song_playback`. The table stores an explicit `audio_authorized` flag, source URL, duration, and a JSON array of timed cue objects. The client queries only rows where `audio_authorized = true`, loads the source through a native HTML audio element, and updates the active lyric line from `currentTime` against `startMs` / `endMs`. Clicking a synchronized line seeks the authorized player to that cue. If no authorized source exists, the player remains visibly unavailable rather than attempting to play a guessed or third-party source.
+
+Contributors can add playback metadata from the authenticated Add Song route. The form requires a rights confirmation, a valid audio URL, whole-second duration, and optional cue JSON before inserting `song_playback`. The migration is `supabase/migrations/20260822000000_add_song_playback.sql`; `supabase/setup.sql` contains the equivalent one-shot setup.
+
+## Playlist management
+
+Playlist actions now use the existing Supabase-backed store and RLS policies end to end. Users can create playlists, add a song from the Reading Room through a playlist picker, create a new playlist and add the current song in one action, remove songs from playlist detail, and delete playlists from the library. The UI keeps link and button controls separate for keyboard and screen-reader correctness, and duplicate junction rows surface as a friendly already-added message.
