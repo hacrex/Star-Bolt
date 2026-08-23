@@ -36,3 +36,13 @@ After the final micro-interaction polish, `/songs/1` still renders the graceful 
 ## Phase 3 translation workspace QA
 
 The protected route `/translate/1` redirected signed-out users to `/auth` through the existing ProtectedRoute guard. The Auth shell and persistent Now Reading context rendered correctly. The browser console contained only the existing React Router future-flag advisories and no new runtime errors.
+
+
+## Phase 4 realtime collaboration QA
+
+The protected `/translate/1` route continued to redirect signed-out users to `/auth` after adding the Realtime collaboration hook and presence UI. The shared Auth shell and Now Reading context remained intact. The browser console showed only the existing React Router future-flag advisories and no new Realtime or runtime errors. Live multi-user presence requires an authenticated session, an applied Realtime-enabled Supabase project, and a lyric workspace that is available to the current user.
+
+
+## Phase 4 private Realtime QA
+
+After switching the workspace channel to `private: true`, `/translate/1` continued to redirect signed-out users to `/auth`. The shared Auth shell and persistent Now Reading context remained intact. The browser console showed only the existing React Router future-flag advisories and no new Realtime or route errors. Cross-session presence and cursor behavior remain dependent on an authenticated Supabase project with migration 00005 applied and public channel access disabled.

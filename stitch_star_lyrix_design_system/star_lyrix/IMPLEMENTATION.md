@@ -122,3 +122,17 @@ The animation contract remains purposeful and rights-safe: it only responds to t
 The protected route `/translate/:lyricsId` now provides a two-column collaboration workspace: the authorized source lyric on the left and a target-language editor on the right. Contributors can select Hindi, English, or Tamil targets, record rights status and change notes, and submit a translation only when the source lyric is marked translation-eligible. New and revised work remains pending and hidden until review.
 
 Migration `supabase/migrations/20260822000004_add_translation_versions.sql` adds `translation_versions` as immutable snapshots linked to a canonical `translations` row. A security-definer trigger assigns monotonically increasing version numbers under a transaction lock. Public users can see only authorized approved snapshots; contributors can manage their own pending snapshots, and no client action can self-approve or self-verify content. The workspace displays the current translation, version labels, pending state, and change notes while preserving the existing warm editorial interaction language.
+
+
+## Phase 4 realtime collaboration indicators
+
+The translation workspace now uses `useTranslationRealtime` with a workspace-scoped Supabase Realtime channel. Presence payloads intentionally contain only a user id, display name fallback, stable accent color, target language, cursor index, selection length, editing state, and last-active timestamp; email, lyric text, and rights metadata are never broadcast. Cursor and editing events are ephemeral and stale events are ignored.
+
+`CollaboratorPresence` renders live/connecting/offline status, collaborator initials, target-language context, editing signals, and truthful draft-line cursor labels. Textarea edits publish cursor position and editing state with an inactivity timeout; focus and blur publish explicit activity transitions. The hook listens for browser online/offline changes, tears down channels on route changes, and degrades to an offline indicator when Supabase Realtime is unavailable. The feature remains protected by the existing route guard and must be paired with the project's authenticated Supabase Realtime channel policy before production use.
+
+
+## Phase 4 private Realtime authorization
+
+Migration `20260822000005_add_translation_realtime_policies.sql` adds a security-definer access function and policies on Supabase's managed `realtime.messages` table. The client now joins `translation-workspace:<lyrics_uuid>` as a private channel. Authenticated users may receive and publish presence/broadcast events only when the source lyric is explicitly translation-eligible and publicly authorized, or when they own the pending source record. The migration does not create or alter the managed Realtime table; it only adds permitted policies.
+
+Before production rollout, disable public channel access in Supabase Realtime Settings, apply the migration after the translation-version migration, and test with two dedicated accounts. Local route QA can verify signed-out protection but cannot prove cross-session presence without authenticated sessions and a live Supabase project.

@@ -79,3 +79,17 @@ The Reading Room now uses `AnimatedLyricLine` for cue-aware line focus, past-lin
 The protected route `/translate/:lyricsId` is the collaboration surface. It loads an accessible lyric source, lets a signed-in contributor choose a target language, edit a translation, provide a change note, and confirm rights before submission. The UI clearly communicates that new work is pending and cannot replace public content until reviewed.
 
 Migration `20260822000004_add_translation_versions.sql` creates immutable `translation_versions` snapshots and a transaction-locked database trigger that assigns version numbers. The `translationStore` owns public/pending translation reads, version-history reads, and pending submissions. The Reading Room exposes the collaboration entry point only when a lyric record is available, while Supabase RLS remains the source of truth for eligibility and approval.
+
+
+## Phase 4 realtime multiplayer collaboration
+
+The protected translation workspace now includes Supabase Realtime presence and broadcast signals through `useTranslationRealtime`. Collaborators share only pseudonymous display metadata, language code, cursor index, selection length, editing state, stable color, and activity timestamp. No lyric text, email, rights data, or credentials are transmitted.
+
+`CollaboratorPresence` presents live/connecting/offline status, collaborator initials, editing indicators, and truthful draft-line cursor labels. The hook handles reconnect and browser online/offline transitions, ignores stale events, and removes its channel on unmount. Production rollout still requires authenticated Supabase Realtime channel authorization and an end-to-end test with two dedicated accounts; the local workspace cannot perform that authenticated test without user credentials.
+
+
+## Phase 4 private Realtime authorization
+
+Migration `20260822000005_add_translation_realtime_policies.sql` authorizes private presence and broadcast channels through policies on Supabase's managed `realtime.messages` table. The topic format is `translation-workspace:<lyrics_uuid>`. Access is limited to authenticated users who can access an explicitly translation-eligible/authorized source or own the pending source lyric. The browser hook now requests `private: true`, and the payload remains ephemeral and metadata-only.
+
+Production requires applying migration 00005 and disabling public channel access in Supabase Realtime Settings. Two-account end-to-end presence and cursor tests remain pending until a live configured Supabase project and dedicated test accounts are available.

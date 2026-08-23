@@ -7,6 +7,8 @@ import type { Database } from '../lib/database.types';
 import { useAuthStore } from '../store/authStore';
 import { useTranslationStore } from '../store/translationStore';
 import { useToast } from '../components/Toast';
+import CollaboratorPresence from '../components/CollaboratorPresence';
+import { useTranslationRealtime } from '../hooks/useTranslationRealtime';
 
 type Lyric = Database['public']['Tables']['lyrics']['Row'];
 type Song = Database['public']['Tables']['songs']['Row'];
@@ -29,6 +31,9 @@ const TranslationWorkspace = () => {
   const [rightsStatus, setRightsStatus] = React.useState('authorized');
   const [confirmRights, setConfirmRights] = React.useState(false);
   const [submittedMessage, setSubmittedMessage] = React.useState('');
+  const editingTimeoutRef = React.useRef<number | null>(null);
+  const userName = typeof user?.user_metadata?.username === 'string' ? user.user_metadata.username : 'Lyric contributor';
+  const { collaborators, connectionStatus, publishCursor, publishEditing } = useTranslationRealtime(lyricsId, user?.id, userName, targetLanguage);
 
   const selectedTranslation = translations.find((translation) => translation.language_code === targetLanguage) || null;
   const selectedTranslationId = selectedTranslation?.id;
@@ -64,6 +69,28 @@ const TranslationWorkspace = () => {
     clearVersions();
     if (selectedTranslationId) void fetchVersions(selectedTranslationId);
   }, [clearVersions, fetchVersions, selectedTranslationId, selectedTranslationText]);
+
+  const scheduleEditingStop = React.useCallback(() => {
+    if (editingTimeoutRef.current) window.clearTimeout(editingTimeoutRef.current);
+    editingTimeoutRef.current = window.setTimeout(() => { void publishEditing(false); }, 1800);
+  }, [publishEditing]);
+
+  const handleDraftChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
+    setDraft(event.target.value);
+    void publishCursor(event.target.selectionStart, Math.max(0, event.target.selectionEnd - event.target.selectionStart));
+    void publishEditing(true);
+    scheduleEditingStop();
+  };
+
+  const handleDraftSelection = (event: React.SyntheticEvent<HTMLTextAreaElement>) => {
+    const textarea = event.currentTarget;
+    void publishCursor(textarea.selectionStart, Math.max(0, textarea.selectionEnd - textarea.selectionStart));
+  };
+
+  React.useEffect(() => () => {
+    if (editingTimeoutRef.current) window.clearTimeout(editingTimeoutRef.current);
+    void publishEditing(false);
+  }, [publishEditing]);
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
@@ -107,7 +134,7 @@ const TranslationWorkspace = () => {
       <div className="mt-6 grid gap-6 lg:grid-cols-[0.82fr_1.18fr]">
         <section className="translation-source-card surface-card" aria-labelledby="translation-source-title"><div className="mb-5 flex items-center justify-between gap-4"><div><p className="eyebrow">Original words</p><h2 id="translation-source-title">Source lyric</h2></div><span className="language-badge">{languageLabel(source.language_code)}</span></div><div className="translation-source-copy">{source.content}</div><div className="mt-6 flex items-start gap-3 border-t border-[var(--border-subtle)] pt-5 text-xs leading-5 text-[var(--text-muted)]"><Languages className="mt-0.5 h-4 w-4 shrink-0 text-[var(--gold-light)]" /><span>{source.allowed_translation ? 'This source is marked translation-eligible.' : 'Translation eligibility is still subject to rights review.'}</span></div></section>
 
-        <section className="translation-editor-card surface-card" aria-labelledby="translation-editor-title"><div className="mb-5 flex items-center justify-between gap-4"><div><p className="eyebrow">Your contribution</p><h2 id="translation-editor-title">Translate with context</h2></div><Sparkles className="h-5 w-5 text-[var(--gold-light)]" /></div><form onSubmit={handleSubmit} className="space-y-5"><div className="grid gap-4 sm:grid-cols-2"><label className="block"><span className="block text-sm font-medium text-[var(--text-primary)]">Translate into</span><select value={targetLanguage} onChange={(event) => setTargetLanguage(event.target.value)} className="mt-2 min-h-12 w-full rounded-xl border border-[var(--border-subtle)] bg-[var(--bg-elevated)] px-4 text-[var(--text-primary)] focus:border-[var(--gold-primary)] focus:outline-none">{targetLanguages.filter((option) => option.code !== source.language_code).map((option) => <option key={option.code} value={option.code}>{option.label}</option>)}</select></label><label className="block"><span className="block text-sm font-medium text-[var(--text-primary)]">Rights status</span><select value={rightsStatus} onChange={(event) => setRightsStatus(event.target.value)} className="mt-2 min-h-12 w-full rounded-xl border border-[var(--border-subtle)] bg-[var(--bg-elevated)] px-4 text-[var(--text-primary)] focus:border-[var(--gold-primary)] focus:outline-none"><option value="owned">I own this translation</option><option value="authorized">I am authorized</option><option value="licensed">Licensed</option><option value="public_domain">Public domain</option></select></label></div><label className="block"><span className="block text-sm font-medium text-[var(--text-primary)]">Translation draft</span><textarea value={draft} onChange={(event) => setDraft(event.target.value)} rows={12} placeholder="Let the meaning travel without flattening the feeling…" className="mt-2 w-full rounded-xl border border-[var(--border-subtle)] bg-[var(--bg-elevated)] px-4 py-3 font-serif text-lg leading-8 text-[var(--text-primary)] placeholder:text-[var(--text-muted)] focus:border-[var(--gold-primary)] focus:outline-none" required /></label><label className="block"><span className="block text-sm font-medium text-[var(--text-primary)]">Change note <span className="text-[var(--text-muted)]">(optional)</span></span><input value={changeNote} onChange={(event) => setChangeNote(event.target.value)} placeholder="Clarified the chorus metaphor" maxLength={240} className="mt-2 min-h-12 w-full rounded-xl border border-[var(--border-subtle)] bg-[var(--bg-elevated)] px-4 text-sm text-[var(--text-primary)] placeholder:text-[var(--text-muted)] focus:border-[var(--gold-primary)] focus:outline-none" /></label><label className="flex items-start gap-3 text-sm leading-6 text-[var(--text-secondary)]"><input type="checkbox" checked={confirmRights} onChange={(event) => setConfirmRights(event.target.checked)} className="mt-1 h-4 w-4 accent-[var(--gold-primary)]" /><span>I own or am authorized to submit this translation. I understand it stays pending until reviewed.</span></label>{submittedMessage && <div className="translation-success-message" role="status"><CheckCircle2 className="h-4 w-4 shrink-0" />{submittedMessage}</div>}<button type="submit" className="btn-primary min-h-12 w-full" disabled={loading || !user || !draft.trim() || !source.allowed_translation}>
+        <section className="translation-editor-card surface-card" aria-labelledby="translation-editor-title"><div className="mb-5 flex items-center justify-between gap-4"><div><p className="eyebrow">Your contribution</p><h2 id="translation-editor-title">Translate with context</h2></div><Sparkles className="h-5 w-5 text-[var(--gold-light)]" /></div><CollaboratorPresence collaborators={collaborators} connectionStatus={connectionStatus} draft={draft} /><form onSubmit={handleSubmit} className="space-y-5"><div className="grid gap-4 sm:grid-cols-2"><label className="block"><span className="block text-sm font-medium text-[var(--text-primary)]">Translate into</span><select value={targetLanguage} onChange={(event) => { setTargetLanguage(event.target.value); void publishCursor(null, 0); }} className="mt-2 min-h-12 w-full rounded-xl border border-[var(--border-subtle)] bg-[var(--bg-elevated)] px-4 text-[var(--text-primary)] focus:border-[var(--gold-primary)] focus:outline-none">{targetLanguages.filter((option) => option.code !== source.language_code).map((option) => <option key={option.code} value={option.code}>{option.label}</option>)}</select></label><label className="block"><span className="block text-sm font-medium text-[var(--text-primary)]">Rights status</span><select value={rightsStatus} onChange={(event) => setRightsStatus(event.target.value)} className="mt-2 min-h-12 w-full rounded-xl border border-[var(--border-subtle)] bg-[var(--bg-elevated)] px-4 text-[var(--text-primary)] focus:border-[var(--gold-primary)] focus:outline-none"><option value="owned">I own this translation</option><option value="authorized">I am authorized</option><option value="licensed">Licensed</option><option value="public_domain">Public domain</option></select></label></div><label className="block"><span className="block text-sm font-medium text-[var(--text-primary)]">Translation draft</span><textarea value={draft} onChange={handleDraftChange} onSelect={handleDraftSelection} onClick={handleDraftSelection} onFocus={() => { void publishEditing(true); }} onBlur={() => { void publishEditing(false); }} rows={12} placeholder="Let the meaning travel without flattening the feeling…" className="mt-2 w-full rounded-xl border border-[var(--border-subtle)] bg-[var(--bg-elevated)] px-4 py-3 font-serif text-lg leading-8 text-[var(--text-primary)] placeholder:text-[var(--text-muted)] focus:border-[var(--gold-primary)] focus:outline-none" required /></label><label className="block"><span className="block text-sm font-medium text-[var(--text-primary)]">Change note <span className="text-[var(--text-muted)]">(optional)</span></span><input value={changeNote} onChange={(event) => setChangeNote(event.target.value)} placeholder="Clarified the chorus metaphor" maxLength={240} className="mt-2 min-h-12 w-full rounded-xl border border-[var(--border-subtle)] bg-[var(--bg-elevated)] px-4 text-sm text-[var(--text-primary)] placeholder:text-[var(--text-muted)] focus:border-[var(--gold-primary)] focus:outline-none" /></label><label className="flex items-start gap-3 text-sm leading-6 text-[var(--text-secondary)]"><input type="checkbox" checked={confirmRights} onChange={(event) => setConfirmRights(event.target.checked)} className="mt-1 h-4 w-4 accent-[var(--gold-primary)]" /><span>I own or am authorized to submit this translation. I understand it stays pending until reviewed.</span></label>{submittedMessage && <div className="translation-success-message" role="status"><CheckCircle2 className="h-4 w-4 shrink-0" />{submittedMessage}</div>}<button type="submit" className="btn-primary min-h-12 w-full" disabled={loading || !user || !draft.trim() || !source.allowed_translation}>
 <Send className="h-4 w-4" />{loading ? 'Submitting…' : selectedTranslation ? 'Suggest revision' : 'Submit translation'}</button>{error && <p className="text-sm text-red-200">{error}</p>}</form></section>
       </div>
 
