@@ -67,9 +67,9 @@ const Header = () => {
 
         <nav className="hidden items-center gap-6 lg:flex" aria-label="Primary navigation">
           <NavLink href="/" active={location.pathname === "/"}>Discover</NavLink>
-          <NavLink href="/search" active={location.pathname.startsWith('/search')} icon={<BookOpen className="h-3.5 w-3.5" />}>Lyrics</NavLink>
-          <NavLink href="/videos" active={location.pathname.startsWith('/videos')} icon={<Youtube className="h-3.5 w-3.5" />}>Videos</NavLink>
-          <NavLink href="/ai-lyrics" active={location.pathname.startsWith('/ai-lyrics')} icon={<Wand2 className="h-3.5 w-3.5" />}>AI Lyrics</NavLink>
+          <NavLink href="/lyrics" active={location.pathname.startsWith('/lyrics')} icon={<BookOpen className="h-3.5 w-3.5" />}>Lyrics Reader</NavLink>
+          <NavLink href="/shorts" active={location.pathname.startsWith('/shorts')} icon={<Youtube className="h-3.5 w-3.5" />}>Shorts</NavLink>
+          {user && <NavLink href="/creator" active={location.pathname.startsWith('/creator') || location.pathname.startsWith('/ai-lyrics')} icon={<Wand2 className="h-3.5 w-3.5" />}>Creator Studio</NavLink>}
           {user && <NavLink href="/generated-lyrics" active={location.pathname.startsWith('/generated-lyrics')}>My Lyrics</NavLink>}
           {user && <NavLink href="/playlists" active={location.pathname.startsWith('/playlists')} icon={<ListMusic className="h-3.5 w-3.5" />}>Playlists</NavLink>}
         </nav>
@@ -87,7 +87,7 @@ const Header = () => {
             {darkMode ? <Sun className="h-5 w-5" aria-hidden="true" /> : <Moon className="h-5 w-5" aria-hidden="true" />}
           </button>
 
-          <Link to="/ai-lyrics" className="header-create-link"><Sparkles className="h-3.5 w-3.5" /> <span className="hidden sm:inline">Create</span></Link>
+          <Link to={user ? '/creator' : '/auth'} className="header-create-link"><Sparkles className="h-3.5 w-3.5" /> <span className="hidden sm:inline">For creators</span></Link>
 
           {user ? (
             <div className="hidden items-center gap-2 sm:flex">
@@ -125,9 +125,9 @@ const Header = () => {
         <nav id="mobile-navigation" className="border-t border-[var(--border-subtle)] bg-[var(--bg-deep)] px-4 py-4 lg:hidden" aria-label="Mobile navigation">
           <div className="mx-auto grid max-w-7xl gap-1 sm:grid-cols-2">
             <MobileNavLink href="/" onClick={closeMobileMenu}>Discover</MobileNavLink>
-            <MobileNavLink href="/search" onClick={closeMobileMenu}>Lyrics & Search</MobileNavLink>
-            <MobileNavLink href="/videos" onClick={closeMobileMenu}>Videos</MobileNavLink>
-            <MobileNavLink href="/ai-lyrics" onClick={closeMobileMenu}>AI Tools</MobileNavLink>
+            <MobileNavLink href="/lyrics" onClick={closeMobileMenu}>Lyrics Reader</MobileNavLink>
+            <MobileNavLink href="/shorts" onClick={closeMobileMenu}>Star Lyrix Shorts</MobileNavLink>
+            <MobileNavLink href={user ? '/creator' : '/auth'} onClick={closeMobileMenu}>{user ? 'Creator Studio' : 'Creator login'}</MobileNavLink>
             {user && <MobileNavLink href="/generated-lyrics" onClick={closeMobileMenu}>My Lyrics</MobileNavLink>}
             {user && <MobileNavLink href="/playlists" onClick={closeMobileMenu}>Playlists</MobileNavLink>}
             {user && <MobileNavLink href="/add-song" onClick={closeMobileMenu}>Add Song</MobileNavLink>}

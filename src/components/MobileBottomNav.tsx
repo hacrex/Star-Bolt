@@ -1,14 +1,16 @@
-import { BookOpen, Compass, Library, Search, Sparkles } from 'lucide-react';
+import { BookOpen, Compass, Search, Sparkles, Youtube } from 'lucide-react';
 import { Link, useLocation } from 'react-router-dom';
+import { useAuthStore } from '../store/authStore';
 
 const MobileBottomNav = () => {
   const location = useLocation();
+  const { user } = useAuthStore();
   const items = [
     { label: 'Discover', href: '/', icon: Compass, active: location.pathname === '/' },
-    { label: 'Read', href: '/search', icon: BookOpen, active: location.pathname.startsWith('/songs/') || location.pathname.startsWith('/search') },
-    { label: 'Create', href: '/ai-lyrics', icon: Sparkles, active: location.pathname.startsWith('/ai-lyrics'), featured: true },
-    { label: 'Library', href: '/playlists', icon: Library, active: location.pathname.startsWith('/playlists') || location.pathname.startsWith('/generated-lyrics') || location.pathname.startsWith('/profile') },
-    { label: 'Search', href: '/search', icon: Search, active: false },
+    { label: 'Read', href: '/lyrics', icon: BookOpen, active: location.pathname.startsWith('/lyrics') || location.pathname.startsWith('/songs/') },
+    { label: 'Shorts', href: '/shorts', icon: Youtube, active: location.pathname.startsWith('/shorts'), featured: false },
+    { label: user ? 'Create' : 'Creators', href: user ? '/creator' : '/auth', icon: Sparkles, active: location.pathname.startsWith('/creator') || location.pathname.startsWith('/ai-lyrics'), featured: true },
+    { label: 'Search', href: '/search', icon: Search, active: location.pathname.startsWith('/search') },
   ];
 
   return (

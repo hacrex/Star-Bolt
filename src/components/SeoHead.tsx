@@ -4,9 +4,10 @@ import { useLocation } from 'react-router-dom';
 const SITE_URL = 'https://starlyrix.com';
 
 const routeMeta: Record<string, { title: string; description: string }> = {
-  '/': { title: 'Star Lyrix — Cinema for your ears', description: 'Discover authorized lyrics, multilingual reading rooms, and original music moments with Star Lyrix.' },
-  '/search': { title: 'Search lyrics — Star Lyrix', description: 'Search songs, languages, moods, and lyric moments in the Star Lyrix archive.' },
-  '/videos': { title: 'Lyric videos — Star Lyrix', description: 'Watch cinematic lyric videos and discover the sounds that stay.' },
+  '/': { title: 'Star Lyrix Creator Studio — Original lyrics. Visual stories.', description: 'Shape original lyrics, lyric-led video ideas, and YouTube Shorts with Star Lyrix Creator Studio.' },
+  '/search': { title: 'Music catalog — Star Lyrix', description: 'Match songs and artists across the Star Lyrix music catalog.' },
+  '/lyrics': { title: 'Lyrics Reader — Star Lyrix', description: 'Read authorized lyrics with Spotify catalog matching and Musixmatch-powered availability.' },
+  '/shorts': { title: 'Star Lyrix Shorts — YouTube gallery', description: 'Watch the official Star Lyrix Shorts gallery on YouTube.' },
   '/ai-lyrics': { title: 'AI Lyrics Studio — Star Lyrix', description: 'Create original lyrics in a warm, private studio built for musical ideas.' },
   '/creator': { title: 'Creator Studio — Star Lyrix', description: 'Bring your own AI provider and shape original lyric content in Star Lyrix.' },
   '/settings/ai': { title: 'AI Provider Settings — Star Lyrix', description: 'Manage your private BYOK provider connections for original Star Lyrix creator work.' },
@@ -19,7 +20,7 @@ const routeMeta: Record<string, { title: string; description: string }> = {
 
 const SeoHead = () => {
   const { pathname } = useLocation();
-  const basePath = pathname.startsWith('/songs/') ? '/songs' : pathname.startsWith('/playlists/') ? '/playlists' : pathname.startsWith('/translate/') ? '/translate' : pathname;
+  const basePath = pathname.startsWith('/songs/') ? '/songs' : pathname.startsWith('/playlists/') ? '/playlists' : pathname.startsWith('/translate/') ? '/translate' : pathname === '/videos' ? '/shorts' : pathname;
   const meta = routeMeta[basePath] || { title: 'Star Lyrix — Lyrics that light up your world', description: 'A warm, community-driven home for the lyrics, stories, and sounds that stay with us.' };
   const canonicalUrl = `${SITE_URL}${pathname === '/' ? '' : pathname}`;
 

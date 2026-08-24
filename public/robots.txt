@@ -6,6 +6,7 @@ Disallow: /playlists
 Disallow: /generated-lyrics
 Disallow: /add-song
 Disallow: /creator
+Disallow: /ai-lyrics
 Disallow: /settings
 Disallow: /translate
 

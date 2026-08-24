@@ -12,8 +12,8 @@ test.describe('Star Lyrix public shell', () => {
     await page.goto('/');
     await expect(page).toHaveTitle(/Star Lyrix/i);
     await expect(page.locator('main')).toBeVisible();
-    await expect(page.getByRole('link', { name: 'Star Lyrix' })).toBeVisible();
-    await expect(page.getByRole('link', { name: /Create|AI Lyrics/i }).first()).toBeVisible();
+    await expect(page.getByRole('link', { name: 'Star Lyrix', exact: true })).toBeVisible();
+    await expect(page.getByRole('link', { name: /Start creating|For creators/i }).first()).toBeVisible();
   });
 
   test('command palette opens with keyboard and navigates by selection', async ({ page }) => {
@@ -21,6 +21,7 @@ test.describe('Star Lyrix public shell', () => {
     await page.keyboard.press('/');
     await expect(page.getByRole('dialog', { name: /quick jump/i })).toBeVisible();
     await expect(page.getByRole('button', { name: /translate & collaborate/i })).toBeVisible();
+    await expect(page.getByRole('button', { name: /creator studio/i })).toBeVisible();
     await page.keyboard.press('Escape');
     await expect(page.getByRole('dialog', { name: /quick jump/i })).toHaveCount(0);
   });
@@ -42,10 +43,17 @@ test.describe('Star Lyrix public shell', () => {
     }
   });
 
-  test('signed-out lyric studio explains the BYOK setup path', async ({ page }) => {
-    await page.goto('/ai-lyrics');
-    await expect(page.locator('main')).toContainText(/connect your own AI provider/i);
-    await expect(page.getByRole('link', { name: /sign in to continue/i })).toHaveAttribute('href', '/auth');
+  test('public Lyrics Reader keeps catalog and lyrics source language clear', async ({ page }) => {
+    await page.goto('/lyrics');
+    await expect(page).toHaveTitle(/Lyrics Reader/i);
+    await expect(page.locator('main')).toContainText(/Spotify catalog matching|Musixmatch/i);
+  });
+
+  test('public Shorts route points only to the Star Lyrix YouTube channel', async ({ page }) => {
+    await page.goto('/shorts');
+    await expect(page).toHaveTitle(/Star Lyrix Shorts/i);
+    await expect(page.locator('main')).toContainText(/official Star Lyrix channel/i);
+    await expect(page.getByRole('link', { name: /open @starlyrix on youtube/i })).toHaveAttribute('href', 'https://www.youtube.com/@starlyrix');
   });
 
   test('mobile navigation remains available at a narrow viewport', async ({ page }) => {
@@ -57,7 +65,7 @@ test.describe('Star Lyrix public shell', () => {
 });
 
 test.describe('protected routes', () => {
-  for (const path of ['/profile', '/add-song', '/playlists', '/generated-lyrics', '/creator', '/settings/ai', '/translate/00000000-0000-0000-0000-000000000000']) {
+  for (const path of ['/profile', '/add-song', '/playlists', '/generated-lyrics', '/ai-lyrics', '/creator', '/settings/ai', '/translate/00000000-0000-0000-0000-000000000000']) {
     test(`${path} redirects signed-out visitors`, async ({ page }) => {
       await page.goto(path);
       await expect(page).toHaveURL(/\/auth$/);

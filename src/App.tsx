@@ -19,7 +19,8 @@ const Playlists = React.lazy(() => import('./pages/Playlists'));
 const Search = React.lazy(() => import('./pages/Search'));
 const AILyricsGenerator = React.lazy(() => import('./components/AILyricsGenerator'));
 const GeneratedLyrics = React.lazy(() => import('./pages/GeneratedLyrics'));
-const Videos = React.lazy(() => import('./pages/Videos'));
+const Shorts = React.lazy(() => import('./pages/Shorts'));
+const LyricsReader = React.lazy(() => import('./pages/LyricsReader'));
 const PlaylistDetail = React.lazy(() => import('./pages/PlaylistDetail'));
 const TranslationWorkspace = React.lazy(() => import('./pages/TranslationWorkspace'));
 const AISettings = React.lazy(() => import('./pages/AISettings'));
@@ -100,10 +101,12 @@ const App = () => {
                     <Route path="/auth" element={<Auth />} />
                     <Route path="/songs/:id" element={<SongDetails />} />
                     <Route path="/search" element={<Search />} />
-                    <Route path="/ai-lyrics" element={<AILyricsGenerator />} />
+                    <Route path="/lyrics" element={<LyricsReader />} />
+                    <Route path="/shorts" element={<Shorts />} />
+                    <Route path="/ai-lyrics" element={<ProtectedRoute><AILyricsGenerator /></ProtectedRoute>} />
                     <Route path="/creator" element={<ProtectedRoute><CreatorStudio /></ProtectedRoute>} />
                     <Route path="/settings/ai" element={<ProtectedRoute><AISettings /></ProtectedRoute>} />
-                    <Route path="/videos" element={<Videos />} />
+                    <Route path="/videos" element={<Navigate to="/shorts" replace />} />
                     <Route path="/terms" element={<Legal />} />
                     <Route path="/privacy" element={<Legal />} />
                     <Route path="/copyright" element={<Legal />} />
