@@ -100,3 +100,14 @@ Production requires applying migration 00005 and disabling public channel access
 The profile dashboard now reads owner-scoped `reputation_events` and derives points, submissions, approvals, language breadth, active days, recent activity, and badge progress through `src/lib/reputation.ts`. Badge thresholds are deterministic and based on real submission/approval activity rather than fake social metrics.
 
 Migration `20260822000006_add_reputation_events.sql` creates trigger-generated events for songs, lyrics, translations, and translation versions, revokes direct client access to the point-recording function, and backfills existing records idempotently. RLS exposes events only to the owning authenticated user. If the migration is unavailable, the UI shows a truthful “data will appear after migration” state.
+
+
+## Phase 6 production hardening
+
+Phase 6 added npm-consistent Playwright smoke testing through `npm run test:e2e`, using the installed system Chromium executable and no browser or ffmpeg download requirement. The public suite covers the Home shell, command palette open/close and focus path, all four dedicated legal routes, URL-preserved Hindi language filtering, narrow mobile navigation, signed-out protected-route redirects, wildcard fallback, route-aware document metadata, and safe missing-song behavior. The final local run passed 17 tests.
+
+Production polish added route-aware `SeoHead` metadata, canonical URLs, rights-safe descriptions, `robots.txt`, a minimal public sitemap, asynchronous lazy image decoding for noncritical discovery/video imagery, and Vite manual chunks for framework, Supabase, icons, and remaining vendor code. The measured local production asset total was 508.65 KiB uncompressed across the generated `dist/assets` files; this is a build artifact measurement, not a Core Web Vitals claim. `qa/bundle-report.json` records the file-level report.
+
+Static validation completed with `npx tsc -p tsconfig.app.json --noEmit`, `npm run build`, targeted ESLint for Phase 6 files, `git diff --check`, and the 17-test Playwright suite. A full repository lint run remains a separate inventory because historical unrelated legacy errors exist outside the Phase 6 paths.
+
+The release is conditionally ready from the frontend perspective only. Before production, apply migrations 00000 through 00006 in a staging project, run the secure original 30-song seed, configure Storage and Edge Function secrets, disable public Realtime channels and validate two authenticated collaboration accounts, execute authenticated playlist/profile/Reading Room/reputation tests, measure deployed Core Web Vitals, configure SPA fallback/rollback/monitoring, and obtain owner or counsel review of legal copy. No service-role credential, authenticated session, live migration, seed, Realtime two-user test, or deployed production test was available in this workspace.

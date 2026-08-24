@@ -4,6 +4,7 @@ import { useAuthStore } from './store/authStore';
 import Header from './components/Header';
 import Footer from './components/Footer';
 import MobileBottomNav from './components/MobileBottomNav';
+import SeoHead from './components/SeoHead';
 import NowReading from './components/NowReading';
 import Home from './pages/Home';
 import Auth from './pages/Auth';
@@ -88,6 +89,7 @@ const App = () => {
         <Router>
           <ErrorBoundary>
             <div className="app-shell flex flex-col">
+              <SeoHead />
               <Header />
               <main className="site-main flex-grow">
                 <Suspense fallback={<LoadingSpinner />}>

@@ -51,3 +51,11 @@ After switching the workspace channel to `private: true`, `/translate/1` continu
 ## Phase 5 reputation dashboard QA
 
 The protected `/profile` route redirected signed-out users to `/auth` after adding the reputation dashboard. The shared Auth shell and Now Reading context remained intact. The browser console showed only the existing React Router future-flag advisories and no new runtime errors. Authenticated reputation-card rendering remains dependent on applying migration 00006 and using a valid session.
+
+## Phase 6 end-to-end and production polish
+
+The local Playwright smoke suite passed 17 tests covering the public Home shell, command palette keyboard/focus path, dedicated legal routes, Hindi URL language state, narrow mobile navigation, protected-route redirects, wildcard fallback, metadata, and safe unavailable-song behavior. The suite uses the system Chromium binary and no authenticated credentials.
+
+The local visual pass confirmed the warm charcoal/gold Stitch composition on Home and the dedicated Terms page, including global navigation, cinematic Bento hero, mood/language discovery controls, empty catalog state, legal content, and footer escape routes. Route-aware titles now update on navigation. Noncritical media is lazy-decoded, the featured Home image remains prioritized, and Vite emits measured vendor chunks. See `qa/phase6-browser-qa-notes.md`, `qa/phase6-release-readiness.md`, and `qa/bundle-report.json` for evidence and limitations.
+
+Full repository lint remains non-green due to pre-existing errors in the duplicate `home/project` tree and Supabase function catch bindings; targeted lint for all Phase 6 files passed. Authenticated catalog, playlist, Reading Room, translation, Realtime, and reputation checks remain pending a configured Supabase project and dedicated test account.

@@ -143,3 +143,10 @@ Before production rollout, disable public channel access in Supabase Realtime Se
 The protected Profile route now includes a reputation dashboard powered by server-generated `reputation_events`. The dashboard reports contribution points, total submissions, approvals, languages, active days, recent activity, and deterministic progress toward six badges: First Light, Catalog Starter, Polyglot Spark, Verified Voice, Gold Standard, and Steady Hand.
 
 Migration `20260822000006_add_reputation_events.sql` derives events from song/lyric submissions and translation/version submissions or approvals through security-definer triggers. Points are not accepted from browser clients, direct execution of the recorder function is revoked, events are private to their owner, and existing activity is backfilled idempotently. The UI labels uninitialized reputation data honestly and never invents engagement metrics.
+
+
+## Phase 6 production hardening
+
+The production-polish pass preserves the Stitch identity while strengthening delivery quality. `SeoHead` updates titles, descriptions, canonical URLs, and social metadata by route; `public/robots.txt` and `public/sitemap.xml` describe only verified public surfaces. Home keeps its featured cinematic image prioritized while noncritical Bento, search, video, artist, and catalog thumbnails use asynchronous lazy decoding. Vite emits independent framework, Supabase, icon, and vendor chunks for browser caching.
+
+Playwright smoke coverage now exercises the signed-out public contract: Home shell, command palette keyboard path and focus, dedicated legal routes, Hindi URL filtering, mobile navigation, protected redirects, wildcard fallback, route metadata, and safe unavailable-song behavior. The local Chromium run passed 17 tests. Authenticated profile, playlist, authorized playback, translation submission, private Realtime presence, and server-derived reputation behavior remain blocked pending a configured Supabase environment and dedicated test account; the UI continues to communicate those pending states rather than fabricating success.

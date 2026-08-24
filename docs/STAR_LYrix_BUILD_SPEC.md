@@ -250,3 +250,14 @@ The long-term product is complete when the community loop and creator loop are o
 [7]: ../UIUX.md "Star Lyrix UI/UX Design System"
 [8]: ../qa/genz-ui-check.md "Star Lyrix UI and route QA record"
 [9]: ../supabase/setup.sql "One-shot Supabase setup schema"
+
+
+## 11. Phase 6 implementation checkpoint — 2026-08-24
+
+The current frontend hardening pass implements the testing and polish portion of the roadmap without expanding unfinished product domains. It adds npm-consistent Playwright public-route smoke tests, route-aware SEO metadata, canonical public URLs, crawler rules, a minimal sitemap, lazy image decoding for noncritical media, and measured Vite vendor chunking. The local Chromium suite passed 17 tests covering public shell stability, command-palette keyboard behavior, legal routes, language URL state, responsive navigation, protected redirects, wildcard fallback, metadata, and unavailable-song safety.
+
+The local production build generated a 508.65 KiB uncompressed `dist/assets` total in the recorded bundle report. This number is a reproducible build-artifact measurement only; deployed Core Web Vitals have not been measured and must not be inferred from it. Static checks passed for TypeScript, production build, targeted lint, and whitespace validation. A full repository lint run may still report historical legacy findings outside Phase 6 files.
+
+### Conditional production release gates
+
+Frontend implementation is conditionally ready, not fully production-certified. Release requires a staging migration rehearsal through 00006, secure execution of the original 30-song QA seed with a valid profile UUID, Storage and server-side secret configuration, private Realtime configuration with public channels disabled, two-account authenticated collaboration testing, authenticated profile/playlist/favorite/authorized-playback/translation/reputation tests, deployed performance measurement, SPA fallback and rollback configuration, monitoring and incident-response readiness, and owner or counsel review of the legal drafts. This workspace had no service-role credential, authenticated test session, live migration access, two-account Realtime environment, or deployed production target, so those checks remain explicitly open.
