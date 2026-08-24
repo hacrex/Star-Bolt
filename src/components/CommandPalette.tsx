@@ -1,5 +1,5 @@
 import React from 'react';
-import { ArrowUpRight, BookOpen, Compass, Languages, Library, Search, Sparkles, Trophy, X } from 'lucide-react';
+import { ArrowUpRight, BookOpen, Compass, KeyRound, Languages, Library, Search, Sparkles, Trophy, X } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
 type Command = {
@@ -13,6 +13,8 @@ const COMMANDS: Command[] = [
   { label: 'Discover', hint: 'Find a new feeling', href: '/', icon: Compass },
   { label: 'Read lyrics', hint: 'Open the infinite field', href: '/search', icon: BookOpen },
   { label: 'Create lyrics', hint: 'Open your lyric studio', href: '/ai-lyrics', icon: Sparkles },
+  { label: 'Creator Studio', hint: 'Build original lyric content', href: '/creator', icon: Sparkles },
+  { label: 'AI provider settings', hint: 'Manage your BYOK connections', href: '/settings/ai', icon: KeyRound },
   { label: 'Your library', hint: 'Playlists and saved work', href: '/playlists', icon: Library },
   { label: 'Translate & collaborate', hint: 'Open an approved lyric source', href: '/search', icon: Languages },
   { label: 'Your reputation', hint: 'Badges and contribution trail', href: '/profile', icon: Trophy },

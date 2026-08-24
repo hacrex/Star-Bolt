@@ -443,7 +443,7 @@ export interface Database {
           created_at?: string
         }
       }
-      generated_lyrics: {
+            generated_lyrics: {
         Row: {
           id: string
           title: string
@@ -468,6 +468,23 @@ export interface Database {
           user_id?: string
           created_at?: string
         }
+      }
+    }
+    Views: {
+      user_ai_provider_metadata: {
+        Row: {
+          id: string
+          user_id: string
+          provider: string
+          model_name: string
+          base_url: string | null
+          enabled: boolean
+          is_default: boolean
+          last_validated_at: string | null
+          created_at: string
+          updated_at: string
+        }
+        Relationships: []
       }
     }
   }

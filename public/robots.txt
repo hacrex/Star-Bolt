@@ -5,6 +5,8 @@ Disallow: /profile
 Disallow: /playlists
 Disallow: /generated-lyrics
 Disallow: /add-song
+Disallow: /creator
+Disallow: /settings
 Disallow: /translate
 
 Sitemap: https://starlyrix.com/sitemap.xml

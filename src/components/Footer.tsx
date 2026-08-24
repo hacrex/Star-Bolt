@@ -31,6 +31,7 @@ const Footer = () => {
           ]} />
           <FooterColumn title="Tools" links={[
             ['AI Lyrics Generator', '/ai-lyrics'],
+            ['Creator Studio', '/creator'],
             ['My Lyrics', '/generated-lyrics'],
             ['Playlists', '/playlists'],
             ['Contribute', '/add-song'],

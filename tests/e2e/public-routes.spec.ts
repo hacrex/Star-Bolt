@@ -42,6 +42,12 @@ test.describe('Star Lyrix public shell', () => {
     }
   });
 
+  test('signed-out lyric studio explains the BYOK setup path', async ({ page }) => {
+    await page.goto('/ai-lyrics');
+    await expect(page.locator('main')).toContainText(/connect your own AI provider/i);
+    await expect(page.getByRole('link', { name: /sign in to continue/i })).toHaveAttribute('href', '/auth');
+  });
+
   test('mobile navigation remains available at a narrow viewport', async ({ page }) => {
     await page.setViewportSize({ width: 390, height: 844 });
     await page.goto('/');
@@ -51,7 +57,7 @@ test.describe('Star Lyrix public shell', () => {
 });
 
 test.describe('protected routes', () => {
-  for (const path of ['/profile', '/add-song', '/playlists', '/generated-lyrics', '/translate/00000000-0000-0000-0000-000000000000']) {
+  for (const path of ['/profile', '/add-song', '/playlists', '/generated-lyrics', '/creator', '/settings/ai', '/translate/00000000-0000-0000-0000-000000000000']) {
     test(`${path} redirects signed-out visitors`, async ({ page }) => {
       await page.goto(path);
       await expect(page).toHaveURL(/\/auth$/);
