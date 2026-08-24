@@ -83,3 +83,86 @@ Migration `supabase/migrations/20260822000002_add_multilingual_test_catalog.sql`
 ## Dedicated legal routes
 
 The shared Footer now links to `/terms`, `/privacy`, `/copyright`, and `/community-guidelines`. These routes render the reusable Stitch-styled `src/pages/Legal.tsx` surface and include account-use, privacy, rights-reporting, original test-content, and community-safety language. The copy is product guidance for QA and should be reviewed by the project owner or counsel before production publication.
+
+
+## Modern Gen Z interaction layer
+
+The latest UI pass keeps the warm cinematic system but makes the product more personal and participatory. Home now includes a taste-profile card, local recent-reading shelf, mood discovery, language tabs, lyric pulse content, richer song cards, and intentional empty states. Search supports language and mood filters, while Videos now filters its editorial rail by mood rather than only changing visual state.
+
+The shared header includes a command palette available from the Search control or `/` / `Ctrl+K` / `Cmd+K` shortcuts. Mobile navigation is intent-led: Discover, Read, Create, Library, and Search, with Create visually elevated as the primary action. A persistent Now Reading bar keeps the last lyric room available across non-reading routes.
+
+Reading Room actions now remember local saves, support share-a-line moments, persist lightweight reactions, expose language metadata, and retain authorized audio synchronization. These local enhancements are deliberately independent of Supabase so they remain useful while authenticated backend features are unavailable. The motion layer uses short transform/opacity transitions and respects reduced-motion preferences.
+
+
+## Supabase light-architecture cross-check
+
+The attached `Star_Lyrix_Supabase_Database_Light_Architecture.md` was cross-checked against the current repository. The source document is not currently tracked in the selected Git branch, so the full comparison is preserved in `qa/supabase-architecture-crosscheck.md`.
+
+The implementation matches the requested Supabase foundation and currently supports Auth, PostgreSQL, Storage, RLS, private playlists/favorites/generated lyrics, authorized playback, and the multilingual QA catalog. Add Song now captures explicit language metadata. The documented next architecture milestones are rights-aware lyric fields, translation and contribution workflows, lyric requests, normalized artists, cached YouTube videos with scheduled Edge Function synchronization, production Storage buckets, and moderator/admin authorization. These are intentionally tracked as additive milestones rather than silently changing the existing `public.users` and free-text artist model.
+
+
+## Phase 1 rights-aware lyrics and translations
+
+Migration `supabase/migrations/20260822000003_add_rights_aware_lyrics_translations.sql` adds additive song and lyric metadata for `language_code`, lyrics publication status, rights status, rights holder, license reference, verification, and update timestamps. Lyric records also carry `source_type`, `allowed_display`, `allowed_translation`, and `allowed_synchronization`. Existing `language` and `content` fields remain for compatibility.
+
+The same schema is mirrored in `supabase/setup.sql`. Public lyric reads now require explicit display authorization, an approved or verified status, and an allowed rights status. Contributors can view and manage their own pending lyric submissions, but cannot publish, approve, or verify them. The new `translations` table uses one target-language row per lyric record, stores contributor and rights metadata, and follows the same pending-versus-public RLS boundary.
+
+`SongDetails.tsx` now loads the rights-aware lyric record and authorized translations, presents the rights-aware lyric status, and enables the translation selector only when public authorized translations exist. `AddSong.tsx` captures language, lyric source type, rights status, rights holder, license reference, and an explicit authorization confirmation; submitted lyrics remain pending and hidden until review. The QA catalog seed marks its original test records as owned, verified, and display-authorized so the Reading Room can be tested after the migration and secure seed are run.
+
+
+## Phase 2 animated lyric synchronization
+
+The Reading Room now composes `AnimatedLyricLine` and `LyricSyncStatus`. Active cues receive a subtle focus entrance, a gold progress underline driven by the current cue interval, past-line depth treatment, and automatic centering inside the lyric scroll container. `LyricSyncStatus` communicates manual reading, ready-to-sync, and live lyric-sync states with an accessible cue count and progress rail.
+
+The animation contract remains purposeful and rights-safe: it only responds to the existing authorized playback state and structured cue data, uses transform/opacity plus a small progress scale, avoids autoplay, keeps lyric buttons keyboard reachable, and disables non-essential pulse/focus animation under `prefers-reduced-motion`. Browser QA verified that the unavailable-content fallback and console remain clean when no authorized song is present.
+
+
+## Phase 3 collaborative translation and version control
+
+The protected route `/translate/:lyricsId` now provides a two-column collaboration workspace: the authorized source lyric on the left and a target-language editor on the right. Contributors can select Hindi, English, or Tamil targets, record rights status and change notes, and submit a translation only when the source lyric is marked translation-eligible. New and revised work remains pending and hidden until review.
+
+Migration `supabase/migrations/20260822000004_add_translation_versions.sql` adds `translation_versions` as immutable snapshots linked to a canonical `translations` row. A security-definer trigger assigns monotonically increasing version numbers under a transaction lock. Public users can see only authorized approved snapshots; contributors can manage their own pending snapshots, and no client action can self-approve or self-verify content. The workspace displays the current translation, version labels, pending state, and change notes while preserving the existing warm editorial interaction language.
+
+
+## Phase 4 realtime collaboration indicators
+
+The translation workspace now uses `useTranslationRealtime` with a workspace-scoped Supabase Realtime channel. Presence payloads intentionally contain only a user id, display name fallback, stable accent color, target language, cursor index, selection length, editing state, and last-active timestamp; email, lyric text, and rights metadata are never broadcast. Cursor and editing events are ephemeral and stale events are ignored.
+
+`CollaboratorPresence` renders live/connecting/offline status, collaborator initials, target-language context, editing signals, and truthful draft-line cursor labels. Textarea edits publish cursor position and editing state with an inactivity timeout; focus and blur publish explicit activity transitions. The hook listens for browser online/offline changes, tears down channels on route changes, and degrades to an offline indicator when Supabase Realtime is unavailable. The feature remains protected by the existing route guard and must be paired with the project's authenticated Supabase Realtime channel policy before production use.
+
+
+## Phase 4 private Realtime authorization
+
+Migration `20260822000005_add_translation_realtime_policies.sql` adds a security-definer access function and policies on Supabase's managed `realtime.messages` table. The client now joins `translation-workspace:<lyrics_uuid>` as a private channel. Authenticated users may receive and publish presence/broadcast events only when the source lyric is explicitly translation-eligible and publicly authorized, or when they own the pending source record. The migration does not create or alter the managed Realtime table; it only adds permitted policies.
+
+Before production rollout, disable public channel access in Supabase Realtime Settings, apply the migration after the translation-version migration, and test with two dedicated accounts. Local route QA can verify signed-out protection but cannot prove cross-session presence without authenticated sessions and a live Supabase project.
+
+
+## Phase 5 contribution reputation and badges
+
+The protected Profile route now includes a reputation dashboard powered by server-generated `reputation_events`. The dashboard reports contribution points, total submissions, approvals, languages, active days, recent activity, and deterministic progress toward six badges: First Light, Catalog Starter, Polyglot Spark, Verified Voice, Gold Standard, and Steady Hand.
+
+Migration `20260822000006_add_reputation_events.sql` derives events from song/lyric submissions and translation/version submissions or approvals through security-definer triggers. Points are not accepted from browser clients, direct execution of the recorder function is revoked, events are private to their owner, and existing activity is backfilled idempotently. The UI labels uninitialized reputation data honestly and never invents engagement metrics.
+
+
+## Phase 6 production hardening
+
+The production-polish pass preserves the Stitch identity while strengthening delivery quality. `SeoHead` updates titles, descriptions, canonical URLs, and social metadata by route; `public/robots.txt` and `public/sitemap.xml` describe only verified public surfaces. Home keeps its featured cinematic image prioritized while noncritical Bento, search, video, artist, and catalog thumbnails use asynchronous lazy decoding. Vite emits independent framework, Supabase, icon, and vendor chunks for browser caching.
+
+Playwright smoke coverage now exercises the signed-out public contract: Home shell, command palette keyboard path and focus, dedicated legal routes, Hindi URL filtering, mobile navigation, protected redirects, wildcard fallback, route metadata, and safe unavailable-song behavior. The local Chromium run passed 17 tests. Authenticated profile, playlist, authorized playback, translation submission, private Realtime presence, and server-derived reputation behavior remain blocked pending a configured Supabase environment and dedicated test account; the UI continues to communicate those pending states rather than fabricating success.
+
+## BYOK Creator Studio foundation
+
+The attached BYOK requirements are tracked in `docs/Star_Lyrix_AI_Creator_Studio_BYOK_Requirements.md`, with the incremental architecture decision recorded in `docs/STAR_LYrix_BYOK_IMPLEMENTATION_PLAN.md`. The first implementation slice adds protected `/creator` and `/settings/ai` routes, an extensible provider registry for OpenAI, Gemini, OpenRouter, and custom OpenAI-compatible endpoints, and metadata-only provider status cards styled in the existing warm cinematic system.
+
+Raw API keys are accepted only in transient password inputs and sent to the authenticated `manage-ai-provider` Edge Function. Migration `20260824000007_add_byok_provider_metadata.sql` stores provider metadata in `public.user_ai_providers`, exposes only the sanitized `user_ai_provider_metadata` view to authenticated clients, and uses Supabase Vault for encrypted secret references. The client never reads decrypted secrets, persists keys, or displays them after saving.
+
+The existing `/ai-lyrics` page now explains BYOK readiness, blocks generation when signed out or no provider is configured, and displays provider/model/usage provenance after a successful generation. `generate-lyrics` retrieves the configured provider secret server-side, applies an original-content safety instruction, normalizes provider failures, and returns no raw provider response or credential. Rendering workers, Whisper/TTS, video jobs, Storage exports, Shorts batching, and YouTube publishing remain later phases because they require separate infrastructure and authenticated rights validation.
+
+## Marketing-first public surface
+
+The public homepage now presents Star Lyrix as a Creator Studio product for original lyrics, lyric-led video ideas, and YouTube Shorts rather than as an unrestricted application dashboard. Public navigation is limited to Discover, Lyrics Reader, and the official Star Lyrix Shorts gallery; creator actions route to authentication or the protected Creator Studio. The mobile bottom navigation follows the same boundary.
+
+The new `/shorts` route renders only the curated Star Lyrix channel gallery from the server-side `search-media` function and links to `https://www.youtube.com/@starlyrix`. The new `/lyrics` route separates Spotify catalog matching from Musixmatch-authorized lyric display. No Spotify response is treated as lyric text, and no unofficial lyric endpoint is used. Missing service configuration produces a visible, truthful unavailable state rather than fake content.
+
+A Vercel SPA fallback was added because direct navigation to the deployed `/ai-lyrics` route returned `404: NOT_FOUND`. Deployment still requires a redeploy and verification. The public media gateway requires server-side YouTube, Spotify, and licensed Musixmatch configuration; those credentials are documented only in `supabase/functions/.env.example` and must not be exposed as `VITE_*` variables.

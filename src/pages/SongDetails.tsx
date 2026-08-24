@@ -27,10 +27,15 @@ import { useSongStore } from '../store/songStore';
 import { usePlaylistStore } from '../store/playlistStore';
 import { useToast } from '../components/Toast';
 import type { Database, PlaybackCue } from '../lib/database.types';
+import { languageLabel, rememberSong } from '../lib/discovery';
+import AnimatedLyricLine from '../components/AnimatedLyricLine';
+import LyricSyncStatus from '../components/LyricSyncStatus';
 
 type Song = Database['public']['Tables']['songs']['Row'];
 type Playback = Database['public']['Tables']['song_playback']['Row'];
 type Comment = Database['public']['Tables']['comments']['Row'] & { user: { username: string } };
+type LyricRecord = Database['public']['Tables']['lyrics']['Row'];
+type Translation = Database['public']['Tables']['translations']['Row'];
 
 const parsePlaybackCues = (value: unknown): PlaybackCue[] => {
   if (!Array.isArray(value)) return [];
@@ -62,6 +67,9 @@ const SongDetails = () => {
   const [song, setSong] = React.useState<Song | null>(null);
   const [playback, setPlayback] = React.useState<Playback | null>(null);
   const [lyrics, setLyrics] = React.useState('');
+  const [lyricRecord, setLyricRecord] = React.useState<LyricRecord | null>(null);
+  const [translations, setTranslations] = React.useState<Translation[]>([]);
+  const [selectedTranslationLanguage, setSelectedTranslationLanguage] = React.useState<string | null>(null);
   const [comments, setComments] = React.useState<Comment[]>([]);
   const [loading, setLoading] = React.useState(true);
   const [error, setError] = React.useState('');
@@ -69,7 +77,13 @@ const SongDetails = () => {
   const [submitting, setSubmitting] = React.useState(false);
   const [userRating, setUserRating] = React.useState(0);
   const [activeLine, setActiveLine] = React.useState<number | null>(null);
-  const [isSaved, setIsSaved] = React.useState(false);
+  const [isSaved, setIsSaved] = React.useState(() => {
+    try {
+      return JSON.parse(localStorage.getItem('star-lyrix-saved') || '[]').includes(id);
+    } catch {
+      return false;
+    }
+  });
   const [isPlaying, setIsPlaying] = React.useState(false);
   const [progress, setProgress] = React.useState(0);
   const [currentTime, setCurrentTime] = React.useState(0);
@@ -80,6 +94,8 @@ const SongDetails = () => {
   const [playlistPickerOpen, setPlaylistPickerOpen] = React.useState(false);
   const [newPlaylistName, setNewPlaylistName] = React.useState('');
   const [playlistActionLoading, setPlaylistActionLoading] = React.useState(false);
+  const [activeReaction, setActiveReaction] = React.useState<string | null>(null);
+  const [reactionCounts, setReactionCounts] = React.useState<Record<string, number>>({ 'felt this': 12, beautiful: 8, 'need translation': 4 });
 
   React.useEffect(() => {
     const fetchSongDetails = async () => {
@@ -89,7 +105,7 @@ const SongDetails = () => {
 
         const [songResult, lyricsResult, commentsResult, playbackResult] = await Promise.all([
           supabase.from('songs').select('*').eq('id', id).single(),
-          supabase.from('lyrics').select('content').eq('song_id', id).single(),
+          supabase.from('lyrics').select('*').eq('song_id', id).maybeSingle(),
           supabase.from('comments').select('*, user:users(username)').eq('song_id', id).order('created_at', { ascending: false }),
           supabase.from('song_playback').select('*').eq('song_id', id).eq('audio_authorized', true).maybeSingle(),
         ]);
@@ -97,7 +113,25 @@ const SongDetails = () => {
         if (songResult.error) throw songResult.error;
         setSong(songResult.data);
 
-        if (lyricsResult.error && lyricsResult.error.code !== 'PGRST116') throw lyricsResult.error;
+        if (lyricsResult.error) throw lyricsResult.error;
+        const lyricRecord = lyricsResult.data as LyricRecord | null;
+        setLyricRecord(lyricRecord);
+
+        if (lyricRecord?.id) {
+          const translationResult = await supabase
+            .from('translations')
+            .select('*')
+            .eq('lyrics_id', lyricRecord.id)
+            .order('language_code', { ascending: true });
+          const missingTranslationTable = translationResult.error?.code === 'PGRST205' || translationResult.error?.code === '42P01';
+          if (translationResult.error && !missingTranslationTable) throw translationResult.error;
+          const availableTranslations = missingTranslationTable ? [] : ((translationResult.data || []) as Translation[]);
+          setTranslations(availableTranslations);
+          setSelectedTranslationLanguage((current) => availableTranslations.some((translation) => translation.language_code === current) ? current : availableTranslations[0]?.language_code || null);
+        } else {
+          setTranslations([]);
+          setSelectedTranslationLanguage(null);
+        }
 
         if (commentsResult.error) throw commentsResult.error;
         setComments((commentsResult.data || []) as Comment[]);
@@ -107,7 +141,7 @@ const SongDetails = () => {
         setPlayback(authorizedPlayback);
         setDuration(authorizedPlayback?.duration_seconds || 0);
         const cueLyrics = parsePlaybackCues(authorizedPlayback?.synced_lyrics).map((cue) => cue.text).join('\n');
-        setLyrics(lyricsResult.data?.content || cueLyrics);
+        setLyrics(lyricRecord?.content || cueLyrics);
 
         if (user && id) {
           const { data: rating } = await supabase
@@ -128,6 +162,11 @@ const SongDetails = () => {
     if (id) fetchSongDetails();
   }, [id, user]);
 
+  const selectedTranslation = React.useMemo(
+    () => translations.find((translation) => translation.language_code === selectedTranslationLanguage) || null,
+    [selectedTranslationLanguage, translations],
+  );
+
   const syncCues = React.useMemo(() => parsePlaybackCues(playback?.synced_lyrics), [playback]);
   const syncedLine = React.useMemo(() => {
     if (syncCues.length === 0) return null;
@@ -135,6 +174,13 @@ const SongDetails = () => {
     const cueIndex = syncCues.findIndex((cue) => currentMs >= cue.startMs && (cue.endMs === undefined || currentMs < cue.endMs));
     return cueIndex >= 0 ? cueIndex : null;
   }, [currentTime, syncCues]);
+
+  const activeCueProgress = React.useMemo(() => {
+    if (syncedLine === null) return 0;
+    const cue = syncCues[syncedLine];
+    if (!cue?.endMs || cue.endMs <= cue.startMs) return 0;
+    return (currentTime * 1000 - cue.startMs) / (cue.endMs - cue.startMs);
+  }, [currentTime, syncedLine, syncCues]);
 
   React.useEffect(() => {
     if (audioRef.current) audioRef.current.volume = volume / 100;
@@ -144,11 +190,35 @@ const SongDetails = () => {
     setIsPlaying(false);
     setCurrentTime(0);
     setProgress(0);
+    setActiveReaction(null);
+    setTranslations([]);
+    setSelectedTranslationLanguage(null);
+    setLyricRecord(null);
+    setReactionCounts({ 'felt this': 12, beautiful: 8, 'need translation': 4 });
+    setIsSaved(() => {
+      try {
+        return JSON.parse(localStorage.getItem('star-lyrix-saved') || '[]').includes(id);
+      } catch {
+        return false;
+      }
+    });
+    try {
+      const savedReactions = localStorage.getItem(`star-lyrix-reactions-${id}`);
+      if (savedReactions) setReactionCounts(JSON.parse(savedReactions));
+    } catch {
+      // Local reaction state is enhancement-only.
+    }
     if (audioRef.current) {
       audioRef.current.pause();
       audioRef.current.currentTime = 0;
     }
   }, [id]);
+
+  React.useEffect(() => {
+    if (song) {
+      rememberSong({ id: song.id, title: song.title, artist: song.artist, thumbnailUrl: song.thumbnail_url, language: song.language });
+    }
+  }, [song]);
 
   const lyricSections = React.useMemo<LyricSection[]>(() => {
     const blocks = lyrics
@@ -161,6 +231,35 @@ const SongDetails = () => {
       lines,
     }));
   }, [lyrics]);
+
+  const flatLines = React.useMemo(() => lyricSections.flatMap((section) => section.lines), [lyricSections]);
+
+  const handleShareQuote = async () => {
+    const line = flatLines[syncedLine ?? activeLine ?? 0];
+    if (!line || !song) {
+      showToast('Choose a lyric line to share', 'info');
+      return;
+    }
+    const quote = `“${line}” — ${song.title} by ${song.artist}`;
+    try {
+      if (navigator.share) await navigator.share({ title: `${song.title} · Star Lyrix`, text: quote, url: window.location.href });
+      else if (navigator.clipboard) { await navigator.clipboard.writeText(quote); showToast('Lyric moment copied', 'success'); }
+    } catch {
+      // Sharing can be cancelled without showing an error.
+    }
+  };
+
+  const handleReaction = (reaction: string) => {
+    setActiveReaction((current) => {
+      let nextCounts: Record<string, number>;
+      if (current === reaction) nextCounts = { ...reactionCounts, [reaction]: Math.max(0, reactionCounts[reaction] - 1) };
+      else if (current) nextCounts = { ...reactionCounts, [current]: Math.max(0, reactionCounts[current] - 1), [reaction]: reactionCounts[reaction] + 1 };
+      else nextCounts = { ...reactionCounts, [reaction]: reactionCounts[reaction] + 1 };
+      setReactionCounts(nextCounts);
+      try { localStorage.setItem(`star-lyrix-reactions-${id}`, JSON.stringify(nextCounts)); } catch { /* Ignore private browsing storage errors. */ }
+      return current === reaction ? null : reaction;
+    });
+  };
 
   const handleRate = async (score: number) => {
     if (!user || !id) {
@@ -219,8 +318,16 @@ const SongDetails = () => {
   };
 
   const handleSave = () => {
-    setIsSaved((saved) => !saved);
-    showToast(isSaved ? 'Removed from your library' : 'Saved to your library', 'success');
+    const nextSaved = !isSaved;
+    setIsSaved(nextSaved);
+    try {
+      const savedIds = JSON.parse(localStorage.getItem('star-lyrix-saved') || '[]') as string[];
+      const nextIds = nextSaved ? Array.from(new Set([...savedIds, id])) : savedIds.filter((savedId) => savedId !== id);
+      localStorage.setItem('star-lyrix-saved', JSON.stringify(nextIds));
+    } catch {
+      // The visual state remains useful if storage is unavailable.
+    }
+    showToast(nextSaved ? 'Saved to your library' : 'Removed from your library', 'success');
   };
 
   const handleOpenPlaylistPicker = async () => {
@@ -342,21 +449,25 @@ const SongDetails = () => {
           </div>
 
           <div className="reading-room-heading">
-            <p className="eyebrow">Now reading</p>
+            <div><p className="eyebrow">Now reading · {languageLabel(song.language)}</p>
             <h1>{song.title}</h1>
             <p className="reading-room-artist">{song.artist} <span>{song.release_date ? new Date(song.release_date).getFullYear() : '—'}</span></p>
+            </div>
           </div>
 
           <div className="reading-room-actions">
-            <button type="button" className={`reading-room-action ${isSaved ? 'is-active' : ''}`} onClick={handleSave}>
+            <button type="button" className={`reading-room-action micro-interaction ${isSaved ? 'is-active' : ''}`}
+ onClick={handleSave}>
               {isSaved ? <Check className="h-4 w-4" /> : <Heart className="h-4 w-4" />}
               <span>{isSaved ? 'Saved' : 'Save'}</span>
             </button>
-            <button type="button" className="reading-room-action" onClick={() => void handleOpenPlaylistPicker()}>
+            <button type="button" className="reading-room-action micro-interaction" onClick={() => void handleOpenPlaylistPicker()}
+>
               <ListPlus className="h-4 w-4" />
               <span>Add</span>
             </button>
-            <button type="button" className="reading-room-action reading-room-share" aria-label="Share song" onClick={handleShare}>
+            <button type="button" className="reading-room-action reading-room-share micro-interaction"
+ aria-label="Share song" onClick={handleShare}>
               <Share2 className="h-4 w-4" />
             </button>
           </div>
@@ -377,7 +488,7 @@ const SongDetails = () => {
           <div className="reading-room-metadata">
             <div><span>Album</span><strong>{song.album || 'Single release'}</strong></div>
             <div><span>Release</span><strong>{song.release_date ? new Date(song.release_date).toLocaleDateString() : 'Not listed'}</strong></div>
-            <div><span>Lyrics status</span><strong>{playback && syncCues.length > 0 ? 'Synced & authorized' : 'Authorized content'}</strong></div>
+            <div><span>Lyrics status</span><strong>{lyricRecord?.status === 'verified' ? 'Verified & authorized' : lyricRecord?.status === 'approved' ? 'Approved for display' : lyricRecord ? 'Pending review' : 'Not available'}</strong></div>
           </div>
         </aside>
 
@@ -387,17 +498,16 @@ const SongDetails = () => {
               <Languages className="h-5 w-5 text-[var(--gold-light)]" aria-hidden="true" />
               <div><p className="eyebrow">Words & meaning</p><h2 id="reading-room-title">The Reading Room</h2></div>
             </div>
-            <button type="button" className={`reading-room-translate ${showTranslation ? 'is-active' : ''}`} onClick={() => setShowTranslation((visible) => !visible)}>
-              <Languages className="h-4 w-4" />
-              <span>{showTranslation ? 'Original' : 'Translate'}</span>
-              <ChevronDown className={`h-4 w-4 transition-transform ${showTranslation ? 'rotate-180' : ''}`} />
-            </button>
+            <div className="flex items-center gap-2">{lyricRecord?.id && <button type="button" className="reading-room-collaborate micro-interaction" onClick={() => { if (!user) { showToast('Sign in to suggest a translation', 'info'); return; } navigate(`/translate/${lyricRecord.id}`); }}><Languages className="h-4 w-4" /><span className="hidden lg:inline">Collaborate</span></button>}<button type="button" className="reading-room-quote-action micro-interaction"
+ onClick={() => void handleShareQuote()}><Share2 className="h-4 w-4" /><span className="hidden sm:inline">Share a line</span></button><button type="button" className={`reading-room-translate micro-interaction ${showTranslation ? 'is-active' : ''}`}
+ onClick={() => setShowTranslation((visible) => !visible)} disabled={translations.length === 0} aria-label={translations.length === 0 ? 'No authorized translations available' : 'Toggle translations'}><Languages className="h-4 w-4" /><span>{translations.length === 0 ? 'No translation' : showTranslation ? 'Original' : 'Translate'}</span><ChevronDown className={`h-4 w-4 transition-transform ${showTranslation ? 'rotate-180' : ''}`} /></button></div>
           </header>
+          <LyricSyncStatus isAuthorized={Boolean(playback?.audio_authorized)} isPlaying={isPlaying} currentCue={syncedLine} cueCount={syncCues.length} cueProgress={activeCueProgress} />
 
           {showTranslation && (
             <div className="reading-room-translation" role="status">
               <Languages className="h-4 w-4 text-[var(--gold-light)]" />
-              <span>Translation mode is ready for a licensed translation source. Original lyrics remain visible below.</span>
+              <div className="min-w-0 flex-1"><div className="flex flex-wrap gap-2">{translations.map((translation) => <button type="button" key={translation.id} className={`reaction-pill ${selectedTranslationLanguage === translation.language_code ? 'is-active' : ''}`} onClick={() => setSelectedTranslationLanguage(translation.language_code)}>{languageLabel(translation.language_code)}</button>)}</div>{selectedTranslation ? <p className="mt-3 whitespace-pre-line text-sm leading-7 text-[var(--text-secondary)]">{selectedTranslation.translated_text}</p> : <p className="mt-2 text-sm text-[var(--text-secondary)]">Choose an authorized translation. The original lyrics remain visible below.</p>}</div>
             </div>
           )}
 
@@ -413,11 +523,8 @@ const SongDetails = () => {
                         {section.lines.map((line, lineIndex) => {
                           const lineNumber = sectionStart + lineIndex;
                           const isActive = (syncedLine ?? activeLine) === lineNumber;
-                          return (
-                            <button type="button" key={`${line}-${lineNumber}`} className={`reading-room-line ${isActive ? 'is-active' : ''}`} onClick={() => handleLyricClick(lineNumber)} aria-pressed={isActive}>
-                              {line}
-                            </button>
-                          );
+                          const isPast = syncedLine !== null && lineNumber < syncedLine;
+                          return <AnimatedLyricLine key={`${line}-${lineNumber}`} line={line} lineNumber={lineNumber} isActive={isActive} isPast={isPast} progress={isActive ? activeCueProgress : 0} onSelect={handleLyricClick} />;
                         })}
                       </div>
                     </section>
@@ -425,6 +532,8 @@ const SongDetails = () => {
                 })}
               </div>
               <p className="reading-room-rights-note">Only display lyrics you are licensed or authorized to publish. Community corrections and translations should pass through review before being marked verified.</p>
+              <div className="lyric-reaction-rail" aria-label="React to this lyric room"><span className="font-mono text-[0.6rem] uppercase tracking-[0.14em] text-[var(--text-muted)]">This line feels like</span>{['felt this', 'beautiful', 'need translation'].map((reaction) => <button type="button" key={reaction} className={`reaction-pill micro-interaction ${activeReaction === reaction ? 'is-active' : ''}`}
+ onClick={() => handleReaction(reaction)}>{reaction} <span>{reactionCounts[reaction]}</span></button>)}</div>
             </div>
           ) : (
             <div className="reading-room-empty"><Music2 className="h-8 w-8 text-[var(--gold-muted)]" /><p>No lyrics available yet.</p></div>
@@ -455,7 +564,7 @@ const SongDetails = () => {
       </section>
 
       <audio ref={audioRef} src={playback?.audio_authorized ? playback.audio_url : undefined} preload="metadata" onLoadedMetadata={(event) => setDuration(event.currentTarget.duration || duration)} onTimeUpdate={(event) => { const nextTime = event.currentTarget.currentTime; const total = event.currentTarget.duration || duration; setCurrentTime(nextTime); setProgress(total > 0 ? (nextTime / total) * 100 : 0); }} onPlay={() => setIsPlaying(true)} onPause={() => setIsPlaying(false)} onEnded={() => { setIsPlaying(false); setProgress(100); }} />
-      <div className="reading-room-player" aria-label="Reading Room playback controls">
+      <div className={`reading-room-player ${isPlaying ? 'is-playing' : ''}`} aria-label="Reading Room playback controls">
         <div className="reading-room-player-track">
           {song.thumbnail_url ? <img src={song.thumbnail_url} alt="" /> : <div className="reading-room-player-cover"><Music2 className="h-5 w-5" /></div>}
           <div><strong>{song.title}</strong><span>{song.artist}</span></div>

@@ -24,16 +24,17 @@ const Footer = () => {
           </div>
 
           <FooterColumn title="Explore" links={[
-            ['Lyrics', '/search'],
-            ['Artists', '/search'],
-            ['Genres', '/search'],
-            ['YouTube', '/videos'],
+            ['Lyrics Reader', '/lyrics'],
+            ['Star Lyrix Shorts', '/shorts'],
+            ['Music catalog', '/search'],
+            ['YouTube channel', 'https://www.youtube.com/@starlyrix'],
           ]} />
-          <FooterColumn title="Tools" links={[
-            ['AI Lyrics Generator', '/ai-lyrics'],
+          <FooterColumn title="For creators" links={[
+            ['Creator Studio', '/creator'],
+            ['AI provider settings', '/settings/ai'],
+            ['Sign in', '/auth'],
             ['My Lyrics', '/generated-lyrics'],
             ['Playlists', '/playlists'],
-            ['Contribute', '/add-song'],
           ]} />
           <FooterColumn title="Legal" links={[
             ['Terms', '/terms'],
@@ -63,7 +64,7 @@ const FooterColumn: React.FC<{ title: string; links: [string, string][] }> = ({ 
     <ul className="space-y-3 text-sm">
       {links.map(([label, href]) => (
         <li key={label}>
-          <Link to={href} className="transition-colors hover:text-[var(--gold-light)]">{label}</Link>
+          {href.startsWith('http') ? <a href={href} target="_blank" rel="noreferrer" className="transition-colors hover:text-[var(--gold-light)]">{label}</a> : <Link to={href} className="transition-colors hover:text-[var(--gold-light)]">{label}</Link>}
         </li>
       ))}
     </ul>

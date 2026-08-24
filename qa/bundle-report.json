@@ -1,0 +1,81 @@
+{
+  "generatedAt": "2026-08-24T10:46:49.837Z",
+  "totalBytes": 520857,
+  "assets": [
+    {
+      "file": "framework-yl9d0m2g.js",
+      "bytes": 179587,
+      "kib": 175.38
+    },
+    {
+      "file": "supabase-BrI5sEQV.js",
+      "bytes": 105678,
+      "kib": 103.2
+    },
+    {
+      "file": "index-vamP3p1N.css",
+      "bytes": 73251,
+      "kib": 71.53
+    },
+    {
+      "file": "index-CzIAbDXl.js",
+      "bytes": 71211,
+      "kib": 69.54
+    },
+    {
+      "file": "TranslationWorkspace-6_tpTmdD.js",
+      "bytes": 18504,
+      "kib": 18.07
+    },
+    {
+      "file": "vendor-B6Ni98Mr.js",
+      "bytes": 13391,
+      "kib": 13.08
+    },
+    {
+      "file": "Search-BU3M12KB.js",
+      "bytes": 11181,
+      "kib": 10.92
+    },
+    {
+      "file": "AddSong-lhR3BoTs.js",
+      "bytes": 10581,
+      "kib": 10.33
+    },
+    {
+      "file": "Profile-CtKM12km.js",
+      "bytes": 10360,
+      "kib": 10.12
+    },
+    {
+      "file": "AILyricsGenerator-BqYdQZiJ.js",
+      "bytes": 7330,
+      "kib": 7.16
+    },
+    {
+      "file": "Videos-DO6K9bHq.js",
+      "bytes": 6900,
+      "kib": 6.74
+    },
+    {
+      "file": "Playlists-X3Gxvl_p.js",
+      "bytes": 4220,
+      "kib": 4.12
+    },
+    {
+      "file": "GeneratedLyrics-B4zBuDpB.js",
+      "bytes": 3329,
+      "kib": 3.25
+    },
+    {
+      "file": "PlaylistDetail-CWtkoIIA.js",
+      "bytes": 2895,
+      "kib": 2.83
+    },
+    {
+      "file": "aiStore-C1IXe-59.js",
+      "bytes": 2439,
+      "kib": 2.38
+    }
+  ]
+}

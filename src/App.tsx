@@ -4,6 +4,8 @@ import { useAuthStore } from './store/authStore';
 import Header from './components/Header';
 import Footer from './components/Footer';
 import MobileBottomNav from './components/MobileBottomNav';
+import SeoHead from './components/SeoHead';
+import NowReading from './components/NowReading';
 import Home from './pages/Home';
 import Auth from './pages/Auth';
 import SongDetails from './pages/SongDetails';
@@ -17,8 +19,12 @@ const Playlists = React.lazy(() => import('./pages/Playlists'));
 const Search = React.lazy(() => import('./pages/Search'));
 const AILyricsGenerator = React.lazy(() => import('./components/AILyricsGenerator'));
 const GeneratedLyrics = React.lazy(() => import('./pages/GeneratedLyrics'));
-const Videos = React.lazy(() => import('./pages/Videos'));
+const Shorts = React.lazy(() => import('./pages/Shorts'));
+const LyricsReader = React.lazy(() => import('./pages/LyricsReader'));
 const PlaylistDetail = React.lazy(() => import('./pages/PlaylistDetail'));
+const TranslationWorkspace = React.lazy(() => import('./pages/TranslationWorkspace'));
+const AISettings = React.lazy(() => import('./pages/AISettings'));
+const CreatorStudio = React.lazy(() => import('./pages/CreatorStudio'));
 
 class ErrorBoundary extends React.Component<
   { children: React.ReactNode },
@@ -86,6 +92,7 @@ const App = () => {
         <Router>
           <ErrorBoundary>
             <div className="app-shell flex flex-col">
+              <SeoHead />
               <Header />
               <main className="site-main flex-grow">
                 <Suspense fallback={<LoadingSpinner />}>
@@ -94,8 +101,12 @@ const App = () => {
                     <Route path="/auth" element={<Auth />} />
                     <Route path="/songs/:id" element={<SongDetails />} />
                     <Route path="/search" element={<Search />} />
-                    <Route path="/ai-lyrics" element={<AILyricsGenerator />} />
-                    <Route path="/videos" element={<Videos />} />
+                    <Route path="/lyrics" element={<LyricsReader />} />
+                    <Route path="/shorts" element={<Shorts />} />
+                    <Route path="/ai-lyrics" element={<ProtectedRoute><AILyricsGenerator /></ProtectedRoute>} />
+                    <Route path="/creator" element={<ProtectedRoute><CreatorStudio /></ProtectedRoute>} />
+                    <Route path="/settings/ai" element={<ProtectedRoute><AISettings /></ProtectedRoute>} />
+                    <Route path="/videos" element={<Navigate to="/shorts" replace />} />
                     <Route path="/terms" element={<Legal />} />
                     <Route path="/privacy" element={<Legal />} />
                     <Route path="/copyright" element={<Legal />} />
@@ -116,14 +127,14 @@ const App = () => {
                       path="/playlists/:id"
                       element={<ProtectedRoute><PlaylistDetail /></ProtectedRoute>}
                     />
-                    <Route
-                      path="/generated-lyrics"
-                      element={<ProtectedRoute><GeneratedLyrics /></ProtectedRoute>}
-                    />
+                                        <Route path="/generated-lyrics" element={<ProtectedRoute><GeneratedLyrics /></ProtectedRoute>} />
+                    <Route path="/translate/:lyricsId" element={<ProtectedRoute><TranslationWorkspace /></ProtectedRoute>} />
+
                     <Route path="*" element={<Navigate to="/" replace />} />
                   </Routes>
                 </Suspense>
               </main>
+              <NowReading />
               <Footer />
               <MobileBottomNav />
             </div>

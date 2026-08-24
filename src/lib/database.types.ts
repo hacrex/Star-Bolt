@@ -76,6 +76,13 @@ export interface Database {
           release_date: string | null
           thumbnail_url: string | null
           language: string
+          language_code: string
+          lyrics_status: string
+          rights_status: string
+          rights_holder: string | null
+          license_reference: string | null
+          verified: boolean
+          updated_at: string
           created_at: string
           created_by: string
         }
@@ -87,6 +94,13 @@ export interface Database {
           release_date?: string | null
           thumbnail_url?: string | null
           language?: string
+          language_code?: string
+          lyrics_status?: string
+          rights_status?: string
+          rights_holder?: string | null
+          license_reference?: string | null
+          verified?: boolean
+          updated_at?: string
           created_at?: string
           created_by: string
         }
@@ -98,6 +112,13 @@ export interface Database {
           release_date?: string | null
           thumbnail_url?: string | null
           language?: string
+          language_code?: string
+          lyrics_status?: string
+          rights_status?: string
+          rights_holder?: string | null
+          license_reference?: string | null
+          verified?: boolean
+          updated_at?: string
           created_at?: string
           created_by?: string
         }
@@ -139,7 +160,17 @@ export interface Database {
           id: string
           song_id: string
           content: string
+          language_code: string
+          source_type: string
+          rights_status: string
+          rights_holder: string | null
+          license_reference: string | null
+          allowed_display: boolean
+          allowed_translation: boolean
+          allowed_synchronization: boolean
+          status: string
           verified: boolean
+          updated_at: string
           created_at: string
           created_by: string
         }
@@ -147,7 +178,17 @@ export interface Database {
           id?: string
           song_id: string
           content: string
+          language_code?: string
+          source_type?: string
+          rights_status?: string
+          rights_holder?: string | null
+          license_reference?: string | null
+          allowed_display?: boolean
+          allowed_translation?: boolean
+          allowed_synchronization?: boolean
+          status?: string
           verified?: boolean
+          updated_at?: string
           created_at?: string
           created_by: string
         }
@@ -155,9 +196,145 @@ export interface Database {
           id?: string
           song_id?: string
           content?: string
+          language_code?: string
+          source_type?: string
+          rights_status?: string
+          rights_holder?: string | null
+          license_reference?: string | null
+          allowed_display?: boolean
+          allowed_translation?: boolean
+          allowed_synchronization?: boolean
+          status?: string
           verified?: boolean
+          updated_at?: string
           created_at?: string
           created_by?: string
+        }
+      }
+      translations: {
+        Row: {
+          id: string
+          lyrics_id: string
+          language_code: string
+          translated_text: string
+          submitted_by: string | null
+          status: string
+          verified: boolean
+          rights_status: string
+          rights_holder: string | null
+          license_reference: string | null
+          allowed_display: boolean
+          created_at: string
+          updated_at: string
+        }
+        Insert: {
+          id?: string
+          lyrics_id: string
+          language_code: string
+          translated_text: string
+          submitted_by?: string | null
+          status?: string
+          verified?: boolean
+          rights_status?: string
+          rights_holder?: string | null
+          license_reference?: string | null
+          allowed_display?: boolean
+          created_at?: string
+          updated_at?: string
+        }
+        Update: {
+          id?: string
+          lyrics_id?: string
+          language_code?: string
+          translated_text?: string
+          submitted_by?: string | null
+          status?: string
+          verified?: boolean
+          rights_status?: string
+          rights_holder?: string | null
+          license_reference?: string | null
+          allowed_display?: boolean
+          created_at?: string
+          updated_at?: string
+        }
+      }
+      reputation_events: {
+        Row: {
+          id: string
+          user_id: string
+          event_type: string
+          source_type: string
+          source_id: string
+          points: number
+          metadata: Record<string, unknown>
+          created_at: string
+        }
+        Insert: {
+          id?: string
+          user_id: string
+          event_type: string
+          source_type: string
+          source_id: string
+          points: number
+          metadata?: Record<string, unknown>
+          created_at?: string
+        }
+        Update: {
+          id?: string
+          user_id?: string
+          event_type?: string
+          source_type?: string
+          source_id?: string
+          points?: number
+          metadata?: Record<string, unknown>
+          created_at?: string
+        }
+      }
+      translation_versions: {
+        Row: {
+          id: string
+          translation_id: string
+          version_number: number
+          translated_text: string
+          submitted_by: string
+          status: string
+          verified: boolean
+          rights_status: string
+          rights_holder: string | null
+          license_reference: string | null
+          allowed_display: boolean
+          change_note: string | null
+          created_at: string
+        }
+        Insert: {
+          id?: string
+          translation_id: string
+          version_number: number
+          translated_text: string
+          submitted_by: string
+          status?: string
+          verified?: boolean
+          rights_status?: string
+          rights_holder?: string | null
+          license_reference?: string | null
+          allowed_display?: boolean
+          change_note?: string | null
+          created_at?: string
+        }
+        Update: {
+          id?: string
+          translation_id?: string
+          version_number?: number
+          translated_text?: string
+          submitted_by?: string
+          status?: string
+          verified?: boolean
+          rights_status?: string
+          rights_holder?: string | null
+          license_reference?: string | null
+          allowed_display?: boolean
+          change_note?: string | null
+          created_at?: string
         }
       }
       comments: {
@@ -266,7 +443,7 @@ export interface Database {
           created_at?: string
         }
       }
-      generated_lyrics: {
+            generated_lyrics: {
         Row: {
           id: string
           title: string
@@ -291,6 +468,23 @@ export interface Database {
           user_id?: string
           created_at?: string
         }
+      }
+    }
+    Views: {
+      user_ai_provider_metadata: {
+        Row: {
+          id: string
+          user_id: string
+          provider: string
+          model_name: string
+          base_url: string | null
+          enabled: boolean
+          is_default: boolean
+          last_validated_at: string | null
+          created_at: string
+          updated_at: string
+        }
+        Relationships: []
       }
     }
   }

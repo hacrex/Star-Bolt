@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import { useAIStore } from '../store/aiStore';
+import { providerLabel } from '../lib/aiProviders';
+import { Link } from 'react-router-dom';
 import { useAuthStore } from '../store/authStore';
 import { useToast } from './Toast';
 import { Languages, Save, Settings2, Share2, Sparkles, Wand2 } from 'lucide-react';
@@ -22,15 +24,28 @@ const MOODS = ['Happy', 'Sad', 'Energetic', 'Romantic', 'Angry', 'Peaceful'];
 const AILyricsGenerator = () => {
   const { user } = useAuthStore();
   const { showToast } = useToast();
-  const { settings, updateSettings, generateLyrics, saveLyrics, translateLyrics, loading, error } = useAIStore();
+  const { settings, updateSettings, generateLyrics, saveLyrics, translateLyrics, loading, error, providers, providersLoading, lastGeneration, loadProviders } = useAIStore();
   const [prompt, setPrompt] = useState('');
   const [generatedContent, setGeneratedContent] = useState('');
   const [title, setTitle] = useState('');
   const [showSettings, setShowSettings] = useState(false);
   const [targetLanguage, setTargetLanguage] = useState('en');
+  const connectedProvider = providers.find((provider) => provider.enabled && provider.is_default) || providers.find((provider) => provider.enabled);
+
+  React.useEffect(() => {
+    if (user) void loadProviders().catch(() => undefined);
+  }, [loadProviders, user]);
 
   const handleGenerate = async () => {
     if (!prompt.trim()) return;
+    if (!user) {
+      showToast('Sign in and connect your own AI provider before generating', 'error');
+      return;
+    }
+    if (!connectedProvider) {
+      showToast('Connect an AI provider in Settings before generating', 'error');
+      return;
+    }
     try {
       const lyrics = await generateLyrics(prompt.trim());
       setGeneratedContent(lyrics);
@@ -89,13 +104,15 @@ const AILyricsGenerator = () => {
         </button>
       </header>
 
+      <div className="mb-6 flex flex-col gap-3 rounded-2xl border border-[rgba(212,168,67,0.22)] bg-[var(--bg-surface)]/70 p-4 sm:flex-row sm:items-center sm:justify-between"><div className="flex items-start gap-3"><span className="mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-[rgba(212,168,67,0.12)] text-[var(--gold-light)]"><Settings2 className="h-4 w-4" /></span><div><p className="text-sm font-semibold text-[var(--text-primary)]">{providersLoading ? 'Checking your AI setup…' : connectedProvider ? `Using ${providerLabel(connectedProvider.provider)} · ${connectedProvider.model_name}` : 'Connect your own AI provider to begin'}</p><p className="mt-1 text-xs leading-5 text-[var(--text-secondary)]">{connectedProvider ? 'Generation stays behind your authenticated provider connection.' : 'BYOK keeps provider credentials out of Star Lyrix and out of your browser after saving.'}</p></div></div>{connectedProvider ? <span className="gold-chip">Key stored server-side</span> : <Link to={user ? '/settings/ai' : '/auth'} className="btn-secondary text-xs">{user ? 'Open AI settings' : 'Sign in to continue'} <Wand2 className="h-3.5 w-3.5" /></Link>}</div>
+
       <div className="ai-studio-layout">
         <section className="surface-card ai-studio-prompt-card">
           <div className="ai-studio-card-kicker"><Sparkles className="h-4 w-4 text-[var(--gold-light)]" /><span>Begin anywhere</span></div>
           <label htmlFor="lyric-prompt" className="mt-6 block font-mono text-xs uppercase tracking-[0.14em] text-[var(--text-muted)]">What would you like to write about?</label>
           <textarea id="lyric-prompt" value={prompt} onChange={(event) => setPrompt(event.target.value)} placeholder="A late-night drive through a city that still remembers us..." className="ai-studio-prompt-input" rows={7} maxLength={1200} />
           <div className="mt-3 flex items-center justify-between gap-3 text-xs text-[var(--text-muted)]"><span>{prompt.length}/1200</span><span className="font-mono uppercase tracking-[0.12em]">{settings.genre} / {settings.mood}</span></div>
-          <button type="button" onClick={() => void handleGenerate()} disabled={loading || !prompt.trim()} className="btn-primary mt-6 min-h-12 w-full justify-center disabled:cursor-not-allowed disabled:opacity-50"><Wand2 className="h-4 w-4" />{loading ? 'Writing…' : 'Generate lyrics'}</button>
+          <button type="button" onClick={() => void handleGenerate()} disabled={loading || !prompt.trim() || !user || !connectedProvider} className="btn-primary mt-6 min-h-12 w-full justify-center disabled:cursor-not-allowed disabled:opacity-50"><Wand2 className="h-4 w-4" />{loading ? 'Writing…' : 'Generate lyrics'}</button>
           {error && <div className="mt-5 rounded-xl border border-red-400/30 bg-red-400/10 px-4 py-3 text-sm leading-6 text-red-200">{error}</div>}
         </section>
 
@@ -118,6 +135,7 @@ const AILyricsGenerator = () => {
             <div className="flex flex-wrap justify-end gap-2"><button type="button" className="icon-button" onClick={() => void handleShare()} aria-label="Share generated lyrics"><Share2 className="h-4 w-4" /></button>{user && <button type="button" className="btn-secondary text-xs" onClick={() => void handleSave()} disabled={loading || !title.trim()}><Save className="h-4 w-4" /> Save</button>}</div>
           </div>
           <div className="ai-studio-lyrics-canvas"><div className="ai-studio-lyrics-rule" /><pre>{generatedContent}</pre></div>
+          {lastGeneration && <p className="mt-4 text-xs text-[var(--text-muted)]">Generated with {providerLabel(lastGeneration.provider)} · {lastGeneration.model}{lastGeneration.usage.available ? ' · provider usage available' : ''}</p>}
           <div className="flex flex-wrap items-center justify-between gap-3 border-t border-[var(--border-subtle)] pt-5"><p className="text-xs leading-5 text-[var(--text-muted)]">Generated drafts are starting points. Keep the lines that sound like you.</p><div className="flex items-center gap-2"><select value={targetLanguage} onChange={(event) => setTargetLanguage(event.target.value)} className="ai-studio-control ai-studio-language-select" aria-label="Translation language">{LANGUAGES.map((language) => <option key={language.code} value={language.code}>{language.name}</option>)}</select><button type="button" className="btn-secondary text-xs" onClick={() => void handleTranslate()} disabled={loading || targetLanguage === settings.language}><Languages className="h-4 w-4" /> Translate</button></div></div>
         </section>
       )}
