@@ -93,3 +93,10 @@ The protected translation workspace now includes Supabase Realtime presence and 
 Migration `20260822000005_add_translation_realtime_policies.sql` authorizes private presence and broadcast channels through policies on Supabase's managed `realtime.messages` table. The topic format is `translation-workspace:<lyrics_uuid>`. Access is limited to authenticated users who can access an explicitly translation-eligible/authorized source or own the pending source lyric. The browser hook now requests `private: true`, and the payload remains ephemeral and metadata-only.
 
 Production requires applying migration 00005 and disabling public channel access in Supabase Realtime Settings. Two-account end-to-end presence and cursor tests remain pending until a live configured Supabase project and dedicated test accounts are available.
+
+
+## Phase 5 contribution reputation and badges
+
+The profile dashboard now reads owner-scoped `reputation_events` and derives points, submissions, approvals, language breadth, active days, recent activity, and badge progress through `src/lib/reputation.ts`. Badge thresholds are deterministic and based on real submission/approval activity rather than fake social metrics.
+
+Migration `20260822000006_add_reputation_events.sql` creates trigger-generated events for songs, lyrics, translations, and translation versions, revokes direct client access to the point-recording function, and backfills existing records idempotently. RLS exposes events only to the owning authenticated user. If the migration is unavailable, the UI shows a truthful “data will appear after migration” state.

@@ -2153,3 +2153,229 @@
     }
   }
 }
+
+
+@layer components {
+  .profile-reputation-card {
+    padding: clamp(1.1rem, 3vw, 2rem);
+    background:
+      radial-gradient(circle at 95% 5%, rgba(212, 168, 67, 0.1), transparent 18rem),
+      var(--bg-surface);
+  }
+
+  .profile-reputation-score {
+    display: grid;
+    min-width: 7rem;
+    justify-items: center;
+    gap: 0.15rem;
+    border: 1px solid rgba(212, 168, 67, 0.3);
+    border-radius: 1rem;
+    background: rgba(212, 168, 67, 0.08);
+    color: var(--gold-light);
+    padding: 0.8rem 1rem;
+  }
+
+  .profile-reputation-score strong {
+    font-size: 1.7rem;
+    letter-spacing: -0.04em;
+  }
+
+  .profile-reputation-score span {
+    font-family: var(--font-mono);
+    font-size: 0.56rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+
+  .profile-reputation-metrics {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 0.75rem;
+    margin-top: 1.6rem;
+    border-block: 1px solid var(--border-subtle);
+    padding-block: 1rem;
+  }
+
+  .profile-reputation-metrics div {
+    display: grid;
+    gap: 0.2rem;
+    border-right: 1px solid var(--border-subtle);
+    padding-inline: 0.8rem;
+  }
+
+  .profile-reputation-metrics div:first-child {
+    padding-left: 0;
+  }
+
+  .profile-reputation-metrics div:last-child {
+    border-right: 0;
+  }
+
+  .profile-reputation-metrics strong {
+    color: var(--text-primary);
+    font-size: 1.5rem;
+    letter-spacing: -0.04em;
+  }
+
+  .profile-reputation-metrics span,
+  .profile-badge-card small,
+  .profile-activity-row p {
+    color: var(--text-muted);
+    font-family: var(--font-mono);
+    font-size: 0.58rem;
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+  }
+
+  .profile-badge-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.75rem;
+  }
+
+  .profile-badge-card {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.75rem;
+    border: 1px solid var(--border-subtle);
+    border-radius: 0.9rem;
+    background: rgba(255, 255, 255, 0.02);
+    padding: 0.85rem;
+    opacity: 0.68;
+    transition: transform 160ms ease-out, border-color 160ms ease-out, opacity 160ms ease-out;
+  }
+
+  .profile-badge-card:hover,
+  .profile-badge-card.is-earned {
+    border-color: color-mix(in srgb, var(--badge-accent) 48%, transparent);
+    opacity: 1;
+    transform: translateY(-1px);
+  }
+
+  .profile-badge-icon {
+    display: grid;
+    width: 2rem;
+    height: 2rem;
+    flex: 0 0 2rem;
+    place-items: center;
+    border-radius: 0.7rem;
+    background: color-mix(in srgb, var(--badge-accent) 14%, transparent);
+    color: var(--badge-accent);
+  }
+
+  .profile-badge-card strong {
+    color: var(--text-primary);
+    font-size: 0.9rem;
+  }
+
+  .profile-badge-card p {
+    margin-top: 0.2rem;
+    color: var(--text-secondary);
+    font-size: 0.75rem;
+    line-height: 1.45;
+  }
+
+  .profile-badge-progress {
+    height: 3px;
+    margin-top: 0.65rem;
+    overflow: hidden;
+    border-radius: 999px;
+    background: rgba(154, 143, 125, 0.15);
+  }
+
+  .profile-badge-progress span {
+    display: block;
+    height: 100%;
+    border-radius: inherit;
+    background: var(--badge-accent);
+    transition: width 300ms cubic-bezier(0.23, 1, 0.32, 1);
+  }
+
+  .profile-badge-card small {
+    display: block;
+    margin-top: 0.35rem;
+  }
+
+  .profile-reputation-note {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-top: 1.25rem;
+    border: 1px dashed rgba(154, 143, 125, 0.24);
+    border-radius: 0.75rem;
+    color: var(--text-muted);
+    padding: 0.75rem 0.85rem;
+    font-size: 0.78rem;
+  }
+
+  .profile-activity-list {
+    display: grid;
+    gap: 0.2rem;
+  }
+
+  .profile-activity-row {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    border-bottom: 1px solid var(--border-subtle);
+    padding: 0.8rem 0;
+  }
+
+  .profile-activity-row:last-child {
+    border-bottom: 0;
+  }
+
+  .profile-activity-dot {
+    width: 0.5rem;
+    height: 0.5rem;
+    flex: 0 0 0.5rem;
+    border-radius: 999px;
+    background: var(--gold-primary);
+    box-shadow: 0 0 10px rgba(212, 168, 67, 0.4);
+  }
+
+  .profile-activity-row strong {
+    color: var(--text-primary);
+    font-size: 0.85rem;
+  }
+
+  .profile-activity-row p {
+    margin-top: 0.2rem;
+    letter-spacing: 0.04em;
+    text-transform: none;
+  }
+
+  .profile-activity-type {
+    margin-left: auto;
+    color: var(--gold-light);
+    font-family: var(--font-mono);
+    font-size: 0.58rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  @media (max-width: 767px) {
+    .profile-reputation-metrics {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .profile-reputation-metrics div:nth-child(2) {
+      border-right: 0;
+    }
+
+    .profile-badge-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .profile-activity-type {
+      display: none;
+    }
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .profile-badge-card,
+  .profile-badge-progress span {
+    transition: none;
+  }
+}

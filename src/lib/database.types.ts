@@ -258,6 +258,38 @@ export interface Database {
           updated_at?: string
         }
       }
+      reputation_events: {
+        Row: {
+          id: string
+          user_id: string
+          event_type: string
+          source_type: string
+          source_id: string
+          points: number
+          metadata: Record<string, unknown>
+          created_at: string
+        }
+        Insert: {
+          id?: string
+          user_id: string
+          event_type: string
+          source_type: string
+          source_id: string
+          points: number
+          metadata?: Record<string, unknown>
+          created_at?: string
+        }
+        Update: {
+          id?: string
+          user_id?: string
+          event_type?: string
+          source_type?: string
+          source_id?: string
+          points?: number
+          metadata?: Record<string, unknown>
+          created_at?: string
+        }
+      }
       translation_versions: {
         Row: {
           id: string

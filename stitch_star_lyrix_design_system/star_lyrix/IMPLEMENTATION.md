@@ -136,3 +136,10 @@ The translation workspace now uses `useTranslationRealtime` with a workspace-sco
 Migration `20260822000005_add_translation_realtime_policies.sql` adds a security-definer access function and policies on Supabase's managed `realtime.messages` table. The client now joins `translation-workspace:<lyrics_uuid>` as a private channel. Authenticated users may receive and publish presence/broadcast events only when the source lyric is explicitly translation-eligible and publicly authorized, or when they own the pending source record. The migration does not create or alter the managed Realtime table; it only adds permitted policies.
 
 Before production rollout, disable public channel access in Supabase Realtime Settings, apply the migration after the translation-version migration, and test with two dedicated accounts. Local route QA can verify signed-out protection but cannot prove cross-session presence without authenticated sessions and a live Supabase project.
+
+
+## Phase 5 contribution reputation and badges
+
+The protected Profile route now includes a reputation dashboard powered by server-generated `reputation_events`. The dashboard reports contribution points, total submissions, approvals, languages, active days, recent activity, and deterministic progress toward six badges: First Light, Catalog Starter, Polyglot Spark, Verified Voice, Gold Standard, and Steady Hand.
+
+Migration `20260822000006_add_reputation_events.sql` derives events from song/lyric submissions and translation/version submissions or approvals through security-definer triggers. Points are not accepted from browser clients, direct execution of the recorder function is revoked, events are private to their owner, and existing activity is backfilled idempotently. The UI labels uninitialized reputation data honestly and never invents engagement metrics.

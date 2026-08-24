@@ -525,3 +525,102 @@ BEGIN
   END IF;
 END;
 $$;
+
+
+-- 16. Server-generated reputation events and badge inputs
+CREATE TABLE IF NOT EXISTS public.reputation_events (
+  id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  user_id uuid NOT NULL REFERENCES public.users(id) ON DELETE CASCADE,
+  event_type text NOT NULL,
+  source_type text NOT NULL,
+  source_id uuid NOT NULL,
+  points integer NOT NULL CHECK (points > 0),
+  metadata jsonb NOT NULL DEFAULT '{}'::jsonb,
+  created_at timestamptz NOT NULL DEFAULT now(),
+  CONSTRAINT reputation_events_type_valid CHECK (event_type IN ('song_submitted', 'lyrics_submitted', 'translation_submitted', 'translation_revision_submitted', 'translation_approved', 'translation_revision_approved')),
+  CONSTRAINT reputation_events_source_valid CHECK (source_type IN ('song', 'lyrics', 'translation', 'translation_version')),
+  UNIQUE (user_id, event_type, source_type, source_id)
+);
+
+ALTER TABLE public.reputation_events ENABLE ROW LEVEL SECURITY;
+CREATE INDEX IF NOT EXISTS reputation_events_user_created_idx ON public.reputation_events(user_id, created_at DESC);
+CREATE INDEX IF NOT EXISTS reputation_events_user_type_idx ON public.reputation_events(user_id, event_type);
+DROP POLICY IF EXISTS "Users can view own reputation events" ON public.reputation_events;
+CREATE POLICY "Users can view own reputation events" ON public.reputation_events FOR SELECT TO authenticated USING (auth.uid() = user_id);
+
+CREATE OR REPLACE FUNCTION public.record_reputation_event(target_user_id uuid, target_event_type text, target_source_type text, target_source_id uuid, target_points integer, target_metadata jsonb DEFAULT '{}'::jsonb)
+RETURNS void LANGUAGE plpgsql SECURITY DEFINER SET search_path = public AS $$
+BEGIN
+  IF target_user_id IS NULL THEN RETURN; END IF;
+  INSERT INTO public.reputation_events (user_id, event_type, source_type, source_id, points, metadata)
+  VALUES (target_user_id, target_event_type, target_source_type, target_source_id, target_points, COALESCE(target_metadata, '{}'::jsonb))
+  ON CONFLICT (user_id, event_type, source_type, source_id) DO NOTHING;
+END;
+$$;
+
+CREATE OR REPLACE FUNCTION public.sync_song_reputation_event() RETURNS trigger LANGUAGE plpgsql SECURITY DEFINER SET search_path = public AS $$
+BEGIN
+  PERFORM public.record_reputation_event(NEW.created_by, 'song_submitted', 'song', NEW.id, 25, jsonb_build_object('language_code', COALESCE(NEW.language_code, NEW.language, 'en')));
+  RETURN NEW;
+END;
+$$;
+CREATE OR REPLACE FUNCTION public.sync_lyrics_reputation_event() RETURNS trigger LANGUAGE plpgsql SECURITY DEFINER SET search_path = public AS $$
+BEGIN
+  PERFORM public.record_reputation_event(NEW.created_by, 'lyrics_submitted', 'lyrics', NEW.id, 15, jsonb_build_object('language_code', COALESCE(NEW.language_code, 'en')));
+  RETURN NEW;
+END;
+$$;
+CREATE OR REPLACE FUNCTION public.sync_translation_reputation_event() RETURNS trigger LANGUAGE plpgsql SECURITY DEFINER SET search_path = public AS $$
+BEGIN
+  IF TG_OP = 'INSERT' THEN PERFORM public.record_reputation_event(NEW.submitted_by, 'translation_submitted', 'translation', NEW.id, 20, jsonb_build_object('language_code', NEW.language_code)); END IF;
+  IF NEW.status IN ('approved', 'verified') THEN PERFORM public.record_reputation_event(NEW.submitted_by, 'translation_approved', 'translation', NEW.id, 40, jsonb_build_object('language_code', NEW.language_code)); ELSE DELETE FROM public.reputation_events WHERE user_id = NEW.submitted_by AND event_type = 'translation_approved' AND source_type = 'translation' AND source_id = NEW.id; END IF;
+  RETURN NEW;
+END;
+$$;
+CREATE OR REPLACE FUNCTION public.sync_translation_version_reputation_event() RETURNS trigger LANGUAGE plpgsql SECURITY DEFINER SET search_path = public AS $$
+BEGIN
+  IF TG_OP = 'INSERT' THEN PERFORM public.record_reputation_event(NEW.submitted_by, 'translation_revision_submitted', 'translation_version', NEW.id, 12, '{}'::jsonb); END IF;
+  IF NEW.status IN ('approved', 'verified') THEN PERFORM public.record_reputation_event(NEW.submitted_by, 'translation_revision_approved', 'translation_version', NEW.id, 35, '{}'::jsonb); ELSE DELETE FROM public.reputation_events WHERE user_id = NEW.submitted_by AND event_type = 'translation_revision_approved' AND source_type = 'translation_version' AND source_id = NEW.id; END IF;
+  RETURN NEW;
+END;
+$$;
+DROP TRIGGER IF EXISTS songs_reputation_event ON public.songs;
+CREATE TRIGGER songs_reputation_event AFTER INSERT ON public.songs FOR EACH ROW EXECUTE FUNCTION public.sync_song_reputation_event();
+DROP TRIGGER IF EXISTS lyrics_reputation_event ON public.lyrics;
+CREATE TRIGGER lyrics_reputation_event AFTER INSERT ON public.lyrics FOR EACH ROW EXECUTE FUNCTION public.sync_lyrics_reputation_event();
+DROP TRIGGER IF EXISTS translations_reputation_event ON public.translations;
+CREATE TRIGGER translations_reputation_event AFTER INSERT OR UPDATE OF status ON public.translations FOR EACH ROW EXECUTE FUNCTION public.sync_translation_reputation_event();
+DROP TRIGGER IF EXISTS translation_versions_reputation_event ON public.translation_versions;
+CREATE TRIGGER translation_versions_reputation_event AFTER INSERT OR UPDATE OF status ON public.translation_versions FOR EACH ROW EXECUTE FUNCTION public.sync_translation_version_reputation_event();
+
+
+-- Prevent browser clients from fabricating reputation points.
+REVOKE EXECUTE ON FUNCTION public.record_reputation_event(uuid, text, text, uuid, integer, jsonb) FROM PUBLIC, anon, authenticated;
+
+-- Backfill existing contribution activity without awarding duplicates on reruns.
+INSERT INTO public.reputation_events (user_id, event_type, source_type, source_id, points, metadata)
+SELECT created_by, 'song_submitted', 'song', id, 25, jsonb_build_object('language_code', COALESCE(language_code, language, 'en'))
+FROM public.songs WHERE created_by IS NOT NULL
+ON CONFLICT (user_id, event_type, source_type, source_id) DO NOTHING;
+INSERT INTO public.reputation_events (user_id, event_type, source_type, source_id, points, metadata)
+SELECT created_by, 'lyrics_submitted', 'lyrics', id, 15, jsonb_build_object('language_code', COALESCE(language_code, 'en'))
+FROM public.lyrics WHERE created_by IS NOT NULL
+ON CONFLICT (user_id, event_type, source_type, source_id) DO NOTHING;
+INSERT INTO public.reputation_events (user_id, event_type, source_type, source_id, points, metadata)
+SELECT submitted_by, 'translation_submitted', 'translation', id, 20, jsonb_build_object('language_code', language_code)
+FROM public.translations WHERE submitted_by IS NOT NULL
+ON CONFLICT (user_id, event_type, source_type, source_id) DO NOTHING;
+INSERT INTO public.reputation_events (user_id, event_type, source_type, source_id, points, metadata)
+SELECT submitted_by, 'translation_approved', 'translation', id, 40, jsonb_build_object('language_code', language_code)
+FROM public.translations WHERE submitted_by IS NOT NULL AND status IN ('approved', 'verified')
+ON CONFLICT (user_id, event_type, source_type, source_id) DO NOTHING;
+INSERT INTO public.reputation_events (user_id, event_type, source_type, source_id, points, metadata)
+SELECT v.submitted_by, 'translation_revision_submitted', 'translation_version', v.id, 12, jsonb_build_object('language_code', t.language_code)
+FROM public.translation_versions v JOIN public.translations t ON t.id = v.translation_id
+WHERE v.submitted_by IS NOT NULL
+ON CONFLICT (user_id, event_type, source_type, source_id) DO NOTHING;
+INSERT INTO public.reputation_events (user_id, event_type, source_type, source_id, points, metadata)
+SELECT v.submitted_by, 'translation_revision_approved', 'translation_version', v.id, 35, jsonb_build_object('language_code', t.language_code)
+FROM public.translation_versions v JOIN public.translations t ON t.id = v.translation_id
+WHERE v.submitted_by IS NOT NULL AND v.status IN ('approved', 'verified')
+ON CONFLICT (user_id, event_type, source_type, source_id) DO NOTHING;
