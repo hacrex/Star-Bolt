@@ -469,6 +469,58 @@ export interface Database {
           created_at?: string
         }
       }
+      youtube_videos: {
+        Row: {
+          id: string
+          youtube_video_id: string
+          channel_handle: string
+          title: string
+          description: string
+          thumbnail_url: string | null
+          published_at: string | null
+          content_type: string
+          youtube_url: string
+          song_id: string | null
+          artist_name: string | null
+          is_public: boolean
+          synced_at: string
+          created_at: string
+          updated_at: string
+        }
+        Insert: {
+          id?: string
+          youtube_video_id: string
+          channel_handle?: string
+          title: string
+          description?: string
+          thumbnail_url?: string | null
+          published_at?: string | null
+          content_type?: string
+          youtube_url: string
+          song_id?: string | null
+          artist_name?: string | null
+          is_public?: boolean
+          synced_at?: string
+          created_at?: string
+          updated_at?: string
+        }
+        Update: {
+          id?: string
+          youtube_video_id?: string
+          channel_handle?: string
+          title?: string
+          description?: string
+          thumbnail_url?: string | null
+          published_at?: string | null
+          content_type?: string
+          youtube_url?: string
+          song_id?: string | null
+          artist_name?: string | null
+          is_public?: boolean
+          synced_at?: string
+          updated_at?: string
+        }
+      }
     }
     Views: {
       user_ai_provider_metadata: {
