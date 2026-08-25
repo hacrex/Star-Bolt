@@ -67,6 +67,9 @@ test.describe('Star Lyrix public shell', () => {
     await page.goto('/lyrics');
     await expect(page).toHaveTitle(/Lyrics Reader/i);
     await expect(page.locator('main')).toContainText(/Spotify catalog matching|Musixmatch/i);
+    const search = page.getByRole('combobox', { name: /search songs and artists/i });
+    await expect(search).toHaveAttribute('aria-autocomplete', 'list');
+    await expect(search).toHaveAttribute('aria-controls', 'lyrics-reader-suggestions');
   });
 
   test('public Shorts route points only to the Star Lyrix YouTube channel', async ({ page }) => {
@@ -76,11 +79,19 @@ test.describe('Star Lyrix public shell', () => {
     await expect(page.getByRole('link', { name: /open @starlyrix on youtube/i })).toHaveAttribute('href', 'https://www.youtube.com/@starlyrix');
   });
 
-  test('mobile navigation remains available at a narrow viewport', async ({ page }) => {
+  test('mobile hamburger drawer works across public pages', async ({ page }) => {
     await page.setViewportSize({ width: 390, height: 844 });
-    await page.goto('/');
-    await expect(page.locator('.mobile-bottom-nav')).toBeVisible();
-    await expect(page.locator('.mobile-bottom-nav')).toContainText('Discover');
+    for (const path of ['/', '/lyrics', '/creators', '/shorts']) {
+      await page.goto(path);
+      await expect(page.locator('.mobile-bottom-nav')).toBeVisible();
+      await expect(page.getByRole('button', { name: /open navigation menu/i })).toBeVisible();
+      await page.getByRole('button', { name: /open navigation menu/i }).click();
+      const drawer = page.getByRole('navigation', { name: /mobile navigation/i });
+      await expect(drawer).toBeVisible();
+      await expect(drawer).toContainText(/Discover|Lyrics Reader|For Creators/i);
+      await page.keyboard.press('Escape');
+      await expect(drawer).toHaveCount(0);
+    }
   });
 });
 

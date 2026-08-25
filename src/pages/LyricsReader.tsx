@@ -11,11 +11,56 @@ const LyricsReader = () => {
   const [lyricsLoading, setLyricsLoading] = React.useState(false);
   const [searched, setSearched] = React.useState(false);
   const [error, setError] = React.useState('');
+  const [suggestions, setSuggestions] = React.useState<MusicMatch[]>([]);
+  const [suggestionsLoading, setSuggestionsLoading] = React.useState(false);
+  const [suggestionsOpen, setSuggestionsOpen] = React.useState(false);
+  const [suggestionIndex, setSuggestionIndex] = React.useState(0);
+  const suggestionRequestId = React.useRef(0);
+  const skipNextSuggestionRequest = React.useRef(false);
+
+  React.useEffect(() => {
+    const trimmed = query.trim();
+    if (skipNextSuggestionRequest.current) {
+      skipNextSuggestionRequest.current = false;
+      return;
+    }
+    if (trimmed.length < 2) {
+      setSuggestions([]);
+      setSuggestionsOpen(false);
+      setSuggestionsLoading(false);
+      return;
+    }
+
+    const requestId = ++suggestionRequestId.current;
+    const timeoutId = window.setTimeout(() => {
+      setSuggestionsLoading(true);
+      void searchMusicCatalog(trimmed)
+        .then((result) => {
+          if (requestId !== suggestionRequestId.current) return;
+          setSuggestions((result.matches || []).slice(0, 6));
+          setSuggestionIndex(0);
+          setSuggestionsOpen(true);
+        })
+        .catch(() => {
+          if (requestId !== suggestionRequestId.current) return;
+          setSuggestions([]);
+          setSuggestionsOpen(false);
+        })
+        .finally(() => {
+          if (requestId === suggestionRequestId.current) setSuggestionsLoading(false);
+        });
+    }, 280);
+
+    return () => window.clearTimeout(timeoutId);
+  }, [query]);
 
   const handleSearch = async (event: React.FormEvent) => {
     event.preventDefault();
     const trimmed = query.trim();
     if (trimmed.length < 2) return;
+    suggestionRequestId.current += 1;
+    setSuggestionsOpen(false);
+    setSuggestions([]);
     setLoading(true);
     setError('');
     setSelected(null);
@@ -46,6 +91,17 @@ const LyricsReader = () => {
     }
   };
 
+  const handleSuggestionSelect = (match: MusicMatch) => {
+    suggestionRequestId.current += 1;
+    skipNextSuggestionRequest.current = true;
+    setQuery(match.title);
+    setSuggestions([]);
+    setSuggestionsOpen(false);
+    setSelected(null);
+    setLyrics(null);
+    void openLyrics(match);
+  };
+
   return (
     <div className="lyrics-reader-page mx-auto max-w-[1440px] pb-12">
       <header className="lyrics-reader-hero">
@@ -55,7 +111,10 @@ const LyricsReader = () => {
           <p className="lyrics-reader-hero-lede">Search the catalog by song or artist, then open the words only when an authorized source makes them available.</p>
           <form onSubmit={handleSearch} className="lyrics-reader-hero-search">
             <label htmlFor="lyrics-reader-search" className="sr-only">Search songs and artists</label>
-            <div className="lyrics-reader-search-field"><Search className="lyrics-reader-search-icon" aria-hidden="true" /><input id="lyrics-reader-search" value={query} onChange={(event) => setQuery(event.target.value)} placeholder="Search a song or artist" maxLength={120} /><kbd aria-hidden="true">↵</kbd></div>
+            <div className="lyrics-reader-search-combo">
+              <div className="lyrics-reader-search-field"><Search className="lyrics-reader-search-icon" aria-hidden="true" /><input id="lyrics-reader-search" role="combobox" aria-autocomplete="list" aria-controls="lyrics-reader-suggestions" aria-expanded={suggestionsOpen && suggestions.length > 0} aria-activedescendant={suggestionsOpen && suggestions[suggestionIndex] ? `lyrics-suggestion-${suggestionIndex}` : undefined} value={query} onChange={(event) => setQuery(event.target.value)} onFocus={() => { if (suggestions.length > 0) setSuggestionsOpen(true); }} onKeyDown={(event) => { if (!suggestionsOpen || suggestions.length === 0) return; if (event.key === 'ArrowDown') { event.preventDefault(); setSuggestionIndex((index) => Math.min(index + 1, suggestions.length - 1)); } else if (event.key === 'ArrowUp') { event.preventDefault(); setSuggestionIndex((index) => Math.max(index - 1, 0)); } else if (event.key === 'Escape') { setSuggestionsOpen(false); } else if (event.key === 'Enter' && suggestions[suggestionIndex]) { event.preventDefault(); handleSuggestionSelect(suggestions[suggestionIndex]); } }} placeholder="Search a song or artist" maxLength={120} /><kbd aria-hidden="true">↵</kbd></div>
+              {suggestionsOpen && (suggestions.length > 0 || suggestionsLoading) && <div id="lyrics-reader-suggestions" className="lyrics-reader-suggestions" role="listbox" aria-label="Live song suggestions">{suggestionsLoading && suggestions.length === 0 && <div className="lyrics-reader-suggestion-status" role="status"><Loader2 className="h-4 w-4 animate-spin" aria-hidden="true" /> Finding songs…</div>}{suggestions.map((suggestion, index) => <button key={`${suggestion.source}-${suggestion.id}`} id={`lyrics-suggestion-${index}`} type="button" role="option" aria-selected={index === suggestionIndex} className={`lyrics-reader-suggestion ${index === suggestionIndex ? 'is-active' : ''}`} onMouseDown={(event) => event.preventDefault()} onMouseEnter={() => setSuggestionIndex(index)} onClick={() => handleSuggestionSelect(suggestion)}><span className="lyrics-reader-suggestion-art">{suggestion.thumbnailUrl ? <img src={suggestion.thumbnailUrl} alt="" loading="lazy" decoding="async" /> : <Music2 className="h-4 w-4" aria-hidden="true" />}</span><span className="lyrics-reader-suggestion-copy"><strong>{suggestion.title}</strong><small>{suggestion.artist}{suggestion.album ? ` · ${suggestion.album}` : ''}</small></span><span className="lyrics-reader-suggestion-source">{suggestion.source === 'musixmatch' ? 'Lyrics' : 'Catalog'}</span></button>)}</div>}
+            </div>
             <button type="submit" className="btn-primary lyrics-reader-search-button" disabled={loading || query.trim().length < 2}>{loading ? <Loader2 className="h-4 w-4 animate-spin" aria-hidden="true" /> : <Search className="h-4 w-4" aria-hidden="true" />}<span>Search catalog</span></button>
           </form>
           <div className="lyrics-reader-source-note"><ShieldCheck className="h-4 w-4" aria-hidden="true" /><span>Spotify for identity · licensed lyrics when available</span></div>

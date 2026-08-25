@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import {
+  ArrowUpRight,
   BookOpen,
   ListMusic,
   LogIn,
@@ -54,6 +55,24 @@ const Header = () => {
   };
 
   const closeMobileMenu = () => setMobileOpen(false);
+
+  React.useEffect(() => {
+    setMobileOpen(false);
+  }, [location.pathname]);
+
+  React.useEffect(() => {
+    if (!mobileOpen) return;
+    const onEscape = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') setMobileOpen(false);
+    };
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+    window.addEventListener('keydown', onEscape);
+    return () => {
+      document.body.style.overflow = previousOverflow;
+      window.removeEventListener('keydown', onEscape);
+    };
+  }, [mobileOpen]);
 
   return (
     <header className="site-header">
@@ -123,19 +142,15 @@ const Header = () => {
       <CommandPalette open={commandOpen} onClose={() => setCommandOpen(false)} />
 
       {mobileOpen && (
-        <nav id="mobile-navigation" className="border-t border-[var(--border-subtle)] bg-[var(--bg-deep)] px-4 py-4 lg:hidden" aria-label="Mobile navigation">
-          <div className="mx-auto grid max-w-7xl gap-1 sm:grid-cols-2">
-            <MobileNavLink href="/" onClick={closeMobileMenu}>Discover</MobileNavLink>
-            <MobileNavLink href="/lyrics" onClick={closeMobileMenu}>Lyrics Reader</MobileNavLink>
-            <MobileNavLink href="/shorts" onClick={closeMobileMenu}>Star Lyrix Shorts</MobileNavLink>
-            <MobileNavLink href="/creators" onClick={closeMobileMenu}>For Creators</MobileNavLink>
-            <MobileNavLink href={user ? '/creator' : '/auth'} onClick={closeMobileMenu}>{user ? 'Creator Studio' : 'Creator login'}</MobileNavLink>
-            {user && <MobileNavLink href="/generated-lyrics" onClick={closeMobileMenu}>My Lyrics</MobileNavLink>}
-            {user && <MobileNavLink href="/playlists" onClick={closeMobileMenu}>Playlists</MobileNavLink>}
-            {user && <MobileNavLink href="/add-song" onClick={closeMobileMenu}>Add Song</MobileNavLink>}
-            {user && <button type="button" className="flex min-h-12 items-center rounded-xl px-3 text-left text-sm font-semibold text-[var(--text-secondary)] hover:bg-[var(--bg-surface)] hover:text-[var(--gold-light)]" onClick={handleSignOut}>Sign out</button>}
-          </div>
-        </nav>
+        <div className="mobile-menu-layer lg:hidden">
+          <button type="button" className="mobile-menu-backdrop" aria-label="Close navigation menu" onClick={closeMobileMenu} />
+          <nav id="mobile-navigation" className="mobile-drawer" aria-label="Mobile navigation">
+            <div className="mobile-drawer-header"><span className="mobile-drawer-label">STAR LYRIX / MENU</span><button type="button" className="icon-button" onClick={closeMobileMenu} aria-label="Close navigation menu"><X className="h-5 w-5" aria-hidden="true" /></button></div>
+            <div className="mobile-drawer-section"><p className="mobile-drawer-section-label">Explore</p><MobileNavLink href="/" onClick={closeMobileMenu}>Discover</MobileNavLink><MobileNavLink href="/lyrics" onClick={closeMobileMenu}>Lyrics Reader</MobileNavLink><MobileNavLink href="/shorts" onClick={closeMobileMenu}>Star Lyrix Shorts</MobileNavLink><MobileNavLink href="/creators" onClick={closeMobileMenu}>For Creators</MobileNavLink><MobileNavLink href="/search" onClick={closeMobileMenu}>Search catalog</MobileNavLink></div>
+            <div className="mobile-drawer-section"><p className="mobile-drawer-section-label">Your studio</p><MobileNavLink href={user ? '/creator' : '/auth'} onClick={closeMobileMenu}>{user ? 'Creator Studio' : 'Creator login'}</MobileNavLink>{user && <MobileNavLink href="/generated-lyrics" onClick={closeMobileMenu}>My Lyrics</MobileNavLink>}{user && <MobileNavLink href="/playlists" onClick={closeMobileMenu}>Playlists</MobileNavLink>}{user && <MobileNavLink href="/add-song" onClick={closeMobileMenu}>Add Song</MobileNavLink>}{user && <MobileNavLink href="/profile" onClick={closeMobileMenu}>Profile</MobileNavLink>}</div>
+            <div className="mobile-drawer-footer">{user ? <button type="button" className="mobile-drawer-signout" onClick={handleSignOut}><LogOut className="h-4 w-4" aria-hidden="true" /> Sign out</button> : <MobileNavLink href="/auth" onClick={closeMobileMenu}>Sign in</MobileNavLink>}<a href="https://www.youtube.com/@starlyrix" target="_blank" rel="noreferrer" className="mobile-drawer-channel"><Youtube className="h-4 w-4" aria-hidden="true" /> Visit @starlyrix <ArrowUpRight className="ml-auto h-4 w-4" aria-hidden="true" /></a></div>
+          </nav>
+        </div>
       )}
     </header>
   );
@@ -149,7 +164,7 @@ const NavLink: React.FC<{ href: string; children: React.ReactNode; icon?: React.
 );
 
 const MobileNavLink: React.FC<{ href: string; children: React.ReactNode; onClick: () => void }> = ({ href, children, onClick }) => (
-  <Link to={href} onClick={onClick} className="flex min-h-12 items-center rounded-xl px-3 text-sm font-semibold text-[var(--text-secondary)] hover:bg-[var(--bg-surface)] hover:text-[var(--gold-light)]">
+  <Link to={href} onClick={onClick} className="mobile-drawer-link">
     {children}
   </Link>
 );
