@@ -2504,6 +2504,7 @@
     display: inline-flex;
     align-items: center;
     gap: 0.55rem;
+    min-height: 48px;
     color: var(--marketing-cream);
     font-size: 0.84rem;
     font-weight: 700;
@@ -2741,6 +2742,9 @@
 
   .marketing-path-card {
     position: relative;
+    display: block;
+    color: inherit;
+    text-decoration: none;
     min-height: 15rem;
     overflow: hidden;
     border: 1px solid rgba(154, 143, 125, 0.17);
@@ -3593,5 +3597,96 @@
     .artist-submission-hero { grid-template-columns: 1fr; }
     .artist-submission-stage { min-height: 8rem; }
     .artist-submission-layout { grid-template-columns: 1fr; }
+  }
+}
+
+
+@layer components {
+  .marketing-shorts-page { width: 100%; }
+
+  .marketing-back-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    min-height: 48px;
+    color: var(--marketing-gold-light);
+    font-family: var(--font-mono);
+    font-size: 0.62rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    transition: transform 180ms ease-out, color 180ms ease-out;
+  }
+
+  .marketing-back-link:hover { color: var(--marketing-cream); transform: translateX(-2px); }
+
+  .marketing-shorts-hero {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(18rem, 0.52fr);
+    gap: clamp(2rem, 7vw, 7rem);
+    align-items: center;
+    min-height: 38rem;
+    padding: 1rem 0 4rem;
+  }
+
+  .marketing-shorts-hero h1 {
+    max-width: 8ch;
+    margin-top: 1.25rem;
+    color: var(--marketing-cream);
+    font-size: clamp(4rem, 8vw, 7.4rem);
+    font-weight: 800;
+    letter-spacing: -0.075em;
+    line-height: 0.9;
+  }
+
+  .marketing-shorts-hero h1 em { color: var(--marketing-gold-light); font-family: var(--font-lyrics); font-weight: 400; }
+
+  .marketing-shorts-lede { max-width: 34rem; margin-top: 1.7rem; color: var(--marketing-sand); font-size: clamp(1rem, 1.4vw, 1.12rem); line-height: 1.8; }
+
+  .marketing-shorts-metadata { display: flex; flex-wrap: wrap; align-items: center; gap: 0.75rem; margin-top: 2.6rem; color: var(--marketing-muted); font-family: var(--font-mono); font-size: 0.56rem; letter-spacing: 0.08em; }
+  .marketing-shorts-metadata i { width: 0.25rem; height: 0.25rem; border-radius: 50%; background: var(--marketing-gold); }
+
+  .marketing-shorts-plaque {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 25rem;
+    overflow: hidden;
+    border: 1px solid rgba(212, 168, 67, 0.35);
+    border-radius: 1rem;
+    background: radial-gradient(circle at 50% 36%, rgba(212, 168, 67, 0.22), transparent 37%), linear-gradient(145deg, rgba(255, 255, 255, 0.05), transparent 48%), var(--marketing-surface);
+    box-shadow: 0 1.5rem 5rem rgba(0, 0, 0, 0.28), var(--shadow-glow);
+    text-align: center;
+  }
+
+  .marketing-shorts-plaque-orbit { position: absolute; inset: 14% -20%; border: 1px solid rgba(242, 195, 91, 0.24); border-radius: 50%; transform: rotate(-23deg) scaleY(0.56); }
+  .marketing-shorts-plaque-orbit::after { position: absolute; inset: 18% 12%; border: 1px solid rgba(242, 195, 91, 0.13); border-radius: 50%; content: ''; }
+  .marketing-shorts-plaque-mark { position: relative; display: grid; place-items: center; width: 8rem; height: 8rem; border: 1px solid rgba(242, 195, 91, 0.55); border-radius: 50%; background: rgba(8, 8, 7, 0.72); color: var(--marketing-gold-light); box-shadow: 0 0 0 0.65rem rgba(212, 168, 67, 0.06), 0 0 3rem rgba(212, 168, 67, 0.12); }
+  .marketing-shorts-plaque-mark span { font-family: var(--font-lyrics); font-size: 4.4rem; font-style: italic; line-height: 1; }
+  .marketing-shorts-plaque .marketing-mono-label { position: relative; margin-top: 2rem; color: var(--marketing-muted); font-size: 0.54rem; }
+  .marketing-shorts-plaque strong { position: relative; margin-top: 0.6rem; color: var(--marketing-cream); font-size: 1.4rem; letter-spacing: -0.04em; }
+  .marketing-shorts-plaque-note { position: relative; max-width: 13rem; margin-top: 0.65rem; color: var(--marketing-sand); font-family: var(--font-lyrics); font-size: 1rem; line-height: 1.35; }
+
+  .marketing-shorts-stage { padding: 3.5rem 0 1rem; border-top: 1px solid rgba(212, 168, 67, 0.2); }
+  .marketing-shorts-stage .marketing-section-heading { margin-bottom: 2.25rem; }
+  .marketing-shorts-gallery-frame { padding: 1.15rem; border: 1px solid rgba(154, 143, 125, 0.16); border-radius: 1.25rem; background: linear-gradient(145deg, rgba(212, 168, 67, 0.06), transparent 42%), rgba(20, 19, 15, 0.62); }
+  .marketing-shorts-gallery-frame .surface-card { background: rgba(20, 19, 15, 0.58); }
+
+  .marketing-shorts-return { display: flex; align-items: center; justify-content: space-between; gap: 2rem; margin-top: 5rem; padding: 2.5rem 0 1.5rem; border-top: 1px solid rgba(154, 143, 125, 0.16); }
+  .marketing-shorts-return h2 { margin-top: 0.55rem; color: var(--marketing-cream); font-family: var(--font-lyrics); font-size: clamp(2rem, 4vw, 3.7rem); font-weight: 400; letter-spacing: -0.05em; line-height: 0.95; }
+  .marketing-shorts-return h2 span { color: var(--marketing-gold-light); }
+
+  @media (max-width: 780px) {
+    .marketing-shorts-hero { grid-template-columns: 1fr; min-height: auto; gap: 2.5rem; padding-top: 0; }
+    .marketing-shorts-hero h1 { font-size: clamp(3.7rem, 17vw, 5.6rem); }
+    .marketing-shorts-plaque { min-height: 19rem; }
+    .marketing-shorts-stage { padding-top: 2.5rem; }
+    .marketing-shorts-return { align-items: flex-start; flex-direction: column; }
+  }
+
+  @media (max-width: 480px) {
+    .marketing-shorts-metadata { gap: 0.55rem; line-height: 1.7; }
+    .marketing-shorts-gallery-frame { margin-inline: -0.35rem; padding: 0.75rem; }
   }
 }

@@ -36,6 +36,7 @@ const Home = () => (
         <div className="marketing-hero-actions">
           <Link to="/auth" className="btn-primary marketing-primary-action"><Sparkles className="h-4 w-4" aria-hidden="true" /> Start creating <ArrowUpRight className="h-4 w-4" aria-hidden="true" /></Link>
           <Link to="/lyrics" className="marketing-text-action"><BookOpen className="h-4 w-4" aria-hidden="true" /> Enter the Reading Room</Link>
+          <Link to="/shorts" className="marketing-text-action"><Youtube className="h-4 w-4" aria-hidden="true" /> Watch Shorts</Link>
         </div>
         <div className="marketing-hero-footnote"><span className="marketing-footnote-mark">01</span><span>Original-first. Rights-aware. No autoplay.</span></div>
       </div>
@@ -71,7 +72,7 @@ const Home = () => (
 
     <section className="marketing-paths" aria-labelledby="marketing-paths-title">
       <div className="marketing-section-heading"><p className="marketing-kicker">The Star Lyrix loop</p><h2 id="marketing-paths-title">One line.<br /><span>Many worlds.</span></h2></div>
-      <div className="marketing-path-grid"><PathCard number="01" icon={<Wand2 className="h-5 w-5" />} title="Write" text="Shape an original lyric draft with the AI provider you choose." tone="gold" /><PathCard number="02" icon={<Film className="h-5 w-5" />} title="Frame" text="Move from a feeling to a scene, a visual language, a story." tone="rose" /><PathCard number="03" icon={<Youtube className="h-5 w-5" />} title="Share" text="Cut the moment into Shorts when the rights are clear." tone="sage" /></div>
+      <div className="marketing-path-grid"><PathCard href="/auth" number="01" icon={<Wand2 className="h-5 w-5" />} title="Write" text="Shape an original lyric draft with the AI provider you choose." tone="gold" /><PathCard href="/lyrics" number="02" icon={<Film className="h-5 w-5" />} title="Frame" text="Move from a feeling to a scene, a visual language, a story." tone="rose" /><PathCard href="/shorts" number="03" icon={<Youtube className="h-5 w-5" />} title="Share" text="Cut the moment into Shorts when the rights are clear." tone="sage" /></div>
     </section>
 
     <section className="marketing-channel-section" aria-labelledby="marketing-channel-title">
@@ -88,7 +89,7 @@ const Home = () => (
   </div>
 );
 
-const PathCard: React.FC<{ number: string; icon: React.ReactNode; title: string; text: string; tone: string }> = ({ number, icon, title, text, tone }) => <article className={`marketing-path-card marketing-path-${tone}`}><div className="marketing-path-top"><span>{number}</span><span className="marketing-path-icon">{icon}</span></div><h3>{title}</h3><p>{text}</p><span className="marketing-path-arrow" aria-hidden="true"><ArrowUpRight className="h-4 w-4" /></span></article>;
+const PathCard: React.FC<{ href: string; number: string; icon: React.ReactNode; title: string; text: string; tone: string }> = ({ href, number, icon, title, text, tone }) => <Link to={href} className={`marketing-path-card marketing-path-${tone}`}><div className="marketing-path-top"><span>{number}</span><span className="marketing-path-icon">{icon}</span></div><h3>{title}</h3><p>{text}</p><span className="marketing-path-arrow" aria-hidden="true"><ArrowUpRight className="h-4 w-4" /></span></Link>;
 
 const RailCard: React.FC<{ number: string; title: string }> = ({ number, title }) => <a href="https://www.youtube.com/@starlyrix" target="_blank" rel="noreferrer" className="marketing-rail-card"><span className="marketing-mono-label">{number} / SHORT</span><span className="marketing-rail-visual"><span className="marketing-rail-play"><Play className="h-3.5 w-3.5 fill-current" aria-hidden="true" /></span></span><strong>{title}</strong><span className="marketing-rail-link">Watch <ArrowUpRight className="h-3 w-3" aria-hidden="true" /></span></a>;
 

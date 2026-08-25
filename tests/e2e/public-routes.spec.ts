@@ -15,6 +15,14 @@ test.describe('Star Lyrix public shell', () => {
     await expect(page.getByRole('link', { name: 'Star Lyrix', exact: true })).toBeVisible();
     await expect(page.getByRole('link', { name: /Start creating|For creators/i }).first()).toBeVisible();
     await expect(page.getByRole('link', { name: /Submit a video/i }).first()).toBeVisible();
+    await expect(page.getByRole('link', { name: /Watch Shorts/i }).first()).toHaveAttribute('href', '/shorts');
+  });
+
+  test('creator story panels route to the correct public or protected entry point', async ({ page }) => {
+    await page.goto('/');
+    await expect(page.locator('.marketing-path-card').nth(0)).toHaveAttribute('href', '/auth');
+    await expect(page.locator('.marketing-path-card').nth(1)).toHaveAttribute('href', '/lyrics');
+    await expect(page.locator('.marketing-path-card').nth(2)).toHaveAttribute('href', '/shorts');
   });
 
   test('command palette opens with keyboard and navigates by selection', async ({ page }) => {
