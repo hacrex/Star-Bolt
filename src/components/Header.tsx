@@ -10,6 +10,7 @@ import {
   Music2,
   Search,
   Sparkles,
+  Film as FilmIcon,
   Sun,
   User,
   Wand2,
@@ -69,6 +70,7 @@ const Header = () => {
           <NavLink href="/" active={location.pathname === "/"}>Discover</NavLink>
           <NavLink href="/lyrics" active={location.pathname.startsWith('/lyrics')} icon={<BookOpen className="h-3.5 w-3.5" />}>Lyrics Reader</NavLink>
           <NavLink href="/shorts" active={location.pathname.startsWith('/shorts')} icon={<Youtube className="h-3.5 w-3.5" />}>Shorts</NavLink>
+          <NavLink href="/submit" active={location.pathname.startsWith('/submit')} icon={<FilmIcon className="h-3.5 w-3.5" />}>Submit a video</NavLink>
           {user && <NavLink href="/creator" active={location.pathname.startsWith('/creator') || location.pathname.startsWith('/ai-lyrics')} icon={<Wand2 className="h-3.5 w-3.5" />}>Creator Studio</NavLink>}
           {user && <NavLink href="/generated-lyrics" active={location.pathname.startsWith('/generated-lyrics')}>My Lyrics</NavLink>}
           {user && <NavLink href="/playlists" active={location.pathname.startsWith('/playlists')} icon={<ListMusic className="h-3.5 w-3.5" />}>Playlists</NavLink>}
@@ -127,6 +129,7 @@ const Header = () => {
             <MobileNavLink href="/" onClick={closeMobileMenu}>Discover</MobileNavLink>
             <MobileNavLink href="/lyrics" onClick={closeMobileMenu}>Lyrics Reader</MobileNavLink>
             <MobileNavLink href="/shorts" onClick={closeMobileMenu}>Star Lyrix Shorts</MobileNavLink>
+            <MobileNavLink href="/submit" onClick={closeMobileMenu}>Submit a video</MobileNavLink>
             <MobileNavLink href={user ? '/creator' : '/auth'} onClick={closeMobileMenu}>{user ? 'Creator Studio' : 'Creator login'}</MobileNavLink>
             {user && <MobileNavLink href="/generated-lyrics" onClick={closeMobileMenu}>My Lyrics</MobileNavLink>}
             {user && <MobileNavLink href="/playlists" onClick={closeMobileMenu}>Playlists</MobileNavLink>}

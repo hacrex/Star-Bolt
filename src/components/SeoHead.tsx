@@ -11,6 +11,7 @@ const routeMeta: Record<string, { title: string; description: string }> = {
   '/ai-lyrics': { title: 'AI Lyrics Studio — Star Lyrix', description: 'Create original lyrics in a warm, private studio built for musical ideas.' },
   '/creator': { title: 'Creator Studio — Star Lyrix', description: 'Bring your own AI provider and shape original lyric content in Star Lyrix.' },
   '/settings/ai': { title: 'AI Provider Settings — Star Lyrix', description: 'Manage your private BYOK provider connections for original Star Lyrix creator work.' },
+  '/submit': { title: 'Artist Submission Portal — Star Lyrix', description: 'Submit an artist video for rights review and possible publication to the Star Lyrix YouTube channel.' },
   '/auth': { title: 'Sign in — Star Lyrix', description: 'Return to the songs, shelves, and lyric rooms you love.' },
   '/terms': { title: 'Terms — Star Lyrix', description: 'Read the Star Lyrix terms of service.' },
   '/privacy': { title: 'Privacy — Star Lyrix', description: 'Read the Star Lyrix privacy policy.' },

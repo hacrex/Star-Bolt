@@ -8,6 +8,7 @@ Disallow: /add-song
 Disallow: /creator
 Disallow: /ai-lyrics
 Disallow: /settings
+Disallow: /submit
 Disallow: /translate
 
 Sitemap: https://starlyrix.com/sitemap.xml

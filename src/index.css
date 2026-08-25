@@ -3317,3 +3317,281 @@
     .marketing-lyric-lines p { transform: none; }
   }
 }
+
+
+@layer components {
+  .marketing-discovery {
+    margin-top: clamp(5rem, 10vw, 8rem);
+  }
+
+  .marketing-discovery-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    grid-template-rows: repeat(2, minmax(12rem, 16rem));
+    gap: 1rem;
+    margin-top: 2.5rem;
+  }
+
+  .marketing-discovery-feature,
+  .marketing-discovery-lyric,
+  .marketing-discovery-tile {
+    position: relative;
+    overflow: hidden;
+    border: 1px solid rgba(154, 143, 125, 0.17);
+    border-radius: 1rem;
+    color: inherit;
+    background: var(--bg-surface);
+    box-shadow: var(--shadow-card);
+  }
+
+  .marketing-discovery-feature {
+    grid-column: span 2;
+    grid-row: span 2;
+    min-height: 27rem;
+  }
+
+  .marketing-discovery-feature img,
+  .marketing-discovery-tile img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 600ms cubic-bezier(0.23, 1, 0.32, 1), filter 300ms ease-out;
+  }
+
+  .marketing-discovery-feature img { filter: saturate(0.82) contrast(1.05); }
+  .marketing-discovery-feature:hover img,
+  .marketing-discovery-tile:hover img { transform: scale(1.05); filter: saturate(1) contrast(1.06); }
+
+  .marketing-discovery-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(155deg, rgba(8, 8, 7, 0.08), rgba(8, 8, 7, 0.82) 86%);
+  }
+
+  .marketing-discovery-badge {
+    position: absolute;
+    top: 1.15rem;
+    left: 1.15rem;
+    color: var(--marketing-gold-light);
+    font-family: var(--font-mono);
+    font-size: 0.58rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+
+  .marketing-discovery-feature-copy {
+    position: absolute;
+    right: 1.5rem;
+    bottom: 1.5rem;
+    left: 1.5rem;
+  }
+
+  .marketing-discovery-feature-copy h3 {
+    max-width: 13ch;
+    color: var(--marketing-cream);
+    font-family: var(--font-lyrics);
+    font-size: clamp(2rem, 4vw, 3.8rem);
+    font-weight: 400;
+    line-height: 0.95;
+  }
+
+  .marketing-discovery-feature-copy p {
+    max-width: 25rem;
+    margin-top: 0.7rem;
+    color: rgba(244, 239, 229, 0.73);
+    font-size: 0.85rem;
+    line-height: 1.65;
+  }
+
+  .marketing-discovery-feature-copy .marketing-text-action { margin-top: 1.15rem; color: var(--marketing-gold-light); }
+
+  .marketing-discovery-lyric {
+    grid-column: span 2;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 1.45rem;
+    background: radial-gradient(circle at 75% 15%, rgba(212, 168, 67, 0.2), transparent 45%), linear-gradient(145deg, #211a0d, #12110d 62%);
+  }
+
+  .marketing-discovery-card-top,
+  .marketing-discovery-card-bottom {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+  }
+
+  .marketing-discovery-card-top > svg { color: var(--marketing-gold-light); }
+
+  .marketing-discovery-quote {
+    position: relative;
+    max-width: 15ch;
+    color: var(--marketing-cream);
+    font-family: var(--font-lyrics);
+    font-size: clamp(1.65rem, 3vw, 2.7rem);
+    line-height: 1.04;
+  }
+
+  .marketing-discovery-card-bottom > span:first-child { display: flex; flex-direction: column; gap: 0.25rem; }
+  .marketing-discovery-card-bottom strong { color: var(--marketing-cream); font-family: var(--font-lyrics); font-size: 1rem; font-weight: 400; }
+  .marketing-discovery-card-bottom small { color: var(--marketing-muted); font-family: var(--font-mono); font-size: 0.57rem; letter-spacing: 0.08em; text-transform: uppercase; }
+
+  .marketing-round-arrow {
+    display: grid;
+    place-items: center;
+    width: 2.25rem;
+    height: 2.25rem;
+    border: 1px solid rgba(242, 195, 91, 0.38);
+    border-radius: 50%;
+    color: var(--marketing-gold-light);
+    transition: background-color 180ms ease-out, color 180ms ease-out;
+  }
+
+  .marketing-discovery-lyric:hover .marketing-round-arrow { background: var(--marketing-gold); color: #17120a; }
+
+  .marketing-discovery-tile { grid-column: span 1; min-height: 12rem; }
+  .marketing-discovery-tile .marketing-mono-label { position: absolute; top: 1rem; left: 1rem; z-index: 1; color: rgba(244, 239, 229, 0.7); font-size: 0.55rem; }
+  .marketing-discovery-tile > div { position: absolute; right: 1rem; bottom: 1rem; left: 1rem; display: flex; align-items: end; justify-content: space-between; gap: 0.5rem; z-index: 1; }
+  .marketing-discovery-tile h3 { color: var(--marketing-cream); font-family: var(--font-lyrics); font-size: 1.35rem; font-weight: 400; line-height: 1; }
+  .marketing-tile-arrow { color: var(--marketing-gold-light); }
+
+  .marketing-mood-strip {
+    display: flex;
+    align-items: center;
+    gap: 1.25rem;
+    margin-top: 1.25rem;
+    padding: 0.85rem 0;
+    border-top: 1px solid var(--border-subtle);
+    border-bottom: 1px solid var(--border-subtle);
+  }
+
+  .marketing-mood-label {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    flex: 0 0 auto;
+    color: var(--marketing-sand);
+    font-family: var(--font-mono);
+    font-size: 0.62rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+
+  .marketing-mood-label svg { color: var(--marketing-gold-light); }
+  .marketing-mood-chips { display: flex; gap: 0.55rem; overflow-x: auto; padding-bottom: 0.15rem; scrollbar-width: none; }
+  .marketing-mood-chips::-webkit-scrollbar { display: none; }
+
+  .marketing-mood-chip {
+    flex: 0 0 auto;
+    border: 1px solid rgba(154, 143, 125, 0.22);
+    border-radius: 999px;
+    padding: 0.55rem 0.72rem;
+    color: var(--marketing-muted);
+    font-family: var(--font-mono);
+    font-size: 0.58rem;
+    letter-spacing: 0.06em;
+    transition: border-color 180ms ease-out, color 180ms ease-out, background-color 180ms ease-out;
+  }
+
+  .marketing-mood-chip:hover { border-color: rgba(242, 195, 91, 0.46); background: rgba(212, 168, 67, 0.08); color: var(--marketing-gold-light); }
+
+  @media (max-width: 1023px) {
+    .marketing-discovery-grid { grid-template-rows: repeat(3, minmax(12rem, 15rem)); }
+    .marketing-discovery-feature { grid-column: span 4; grid-row: span 2; }
+    .marketing-discovery-lyric { grid-column: span 4; }
+    .marketing-discovery-tile { grid-column: span 2; }
+  }
+
+  @media (max-width: 767px) {
+    .marketing-discovery-grid { display: flex; flex-direction: column; gap: 0.75rem; margin-top: 1.7rem; }
+    .marketing-discovery-feature { min-height: 26rem; }
+    .marketing-discovery-lyric { min-height: 17rem; }
+    .marketing-discovery-tile { min-height: 12rem; }
+    .marketing-mood-strip { display: block; }
+    .marketing-mood-chips { margin-top: 0.8rem; }
+  }
+}
+
+
+@layer components {
+  .artist-submission-page { width: 100%; }
+
+  .artist-submission-hero {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 18rem;
+    gap: 2rem;
+    align-items: end;
+    padding: clamp(1rem, 4vw, 3rem) 0 clamp(2.5rem, 6vw, 4.5rem);
+  }
+
+  .artist-submission-hero h1 span,
+  .artist-pipeline-card h2 span { color: var(--gold-light); font-family: var(--font-lyrics); font-weight: 400; }
+
+  .artist-submission-stage {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 12rem;
+    overflow: hidden;
+    gap: 0.8rem;
+    border: 1px solid rgba(212, 168, 67, 0.32);
+    border-radius: 1rem;
+    background: radial-gradient(circle at center, rgba(212, 168, 67, 0.18), transparent 48%), var(--bg-surface);
+    color: var(--gold-light);
+    font-family: var(--font-mono);
+    font-size: 0.6rem;
+    letter-spacing: 0.1em;
+    text-align: center;
+  }
+
+  .artist-submission-stage-orbit {
+    position: absolute;
+    inset: 10% -15%;
+    border: 1px solid rgba(242, 195, 91, 0.2);
+    border-radius: 50%;
+    transform: rotate(-18deg) scaleY(0.55);
+  }
+
+  .artist-submission-stage svg,
+  .artist-submission-stage span { position: relative; z-index: 1; }
+
+  .artist-submission-layout {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(18rem, 0.42fr);
+    gap: 1.25rem;
+    align-items: start;
+  }
+
+  .artist-pipeline-card {
+    border: 1px solid rgba(212, 168, 67, 0.24);
+    border-radius: 1rem;
+    background: linear-gradient(145deg, rgba(212, 168, 67, 0.1), transparent 62%), var(--bg-surface);
+    padding: 1.5rem;
+  }
+
+  .artist-pipeline { position: relative; display: grid; gap: 0.2rem; }
+  .artist-pipeline::before { position: absolute; top: 1.15rem; bottom: 1.15rem; left: 0.9rem; width: 1px; background: rgba(212, 168, 67, 0.23); content: ''; }
+
+  .artist-pipeline-step { position: relative; display: flex; align-items: center; gap: 0.8rem; min-height: 2.8rem; color: var(--text-muted); }
+  .artist-pipeline-step span { position: relative; z-index: 1; display: grid; place-items: center; width: 1.8rem; height: 1.8rem; border: 1px solid var(--border-subtle); border-radius: 50%; background: var(--bg-surface); font-family: var(--font-mono); font-size: 0.55rem; }
+  .artist-pipeline-step strong { font-size: 0.82rem; font-weight: 600; }
+  .artist-pipeline-step.active { color: var(--gold-light); }
+  .artist-pipeline-step.active span { border-color: rgba(242, 195, 91, 0.58); background: rgba(212, 168, 67, 0.15); }
+
+  .submission-status { display: inline-flex; align-items: center; flex: 0 0 auto; border: 1px solid var(--border-subtle); border-radius: 999px; padding: 0.25rem 0.45rem; color: var(--text-muted); font-family: var(--font-mono); font-size: 0.52rem; letter-spacing: 0.05em; text-transform: uppercase; }
+  .submission-status-submitted, .submission-status-rights_review, .submission-status-content_review { border-color: rgba(242, 195, 91, 0.35); color: var(--gold-light); }
+  .submission-status-approved, .submission-status-publish_queued, .submission-status-published { border-color: rgba(117, 143, 124, 0.45); color: #a2c1a8; }
+  .submission-status-rejected { border-color: rgba(184, 108, 108, 0.45); color: #d79797; }
+
+  @media (max-width: 900px) {
+    .artist-submission-hero { grid-template-columns: 1fr; }
+    .artist-submission-stage { min-height: 8rem; }
+    .artist-submission-layout { grid-template-columns: 1fr; }
+  }
+}
