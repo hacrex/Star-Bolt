@@ -172,3 +172,9 @@ A Vercel SPA fallback was added because direct navigation to the deployed `/ai-l
 The attached Vevo-for-Lyrics requirements are tracked in `docs/Star_Lyrix_Vevo_for_Lyrics_Product_Requirements.md`, with architecture decisions in `docs/STAR_LYrix_VEVO_IMPLEMENTATION_PLAN.md`. The next safe foundation is now implemented: migration `20260824000008_add_youtube_video_catalog.sql` creates a public-read, server-written `youtube_videos` metadata catalog, and `sync-youtube-catalog` imports only from a configured Star Lyrix playlist or explicit video allowlist.
 
 The public `/shorts` gallery reads cached rows first. The sync function never exposes the YouTube key or sync secret, and the cached row is intentionally neutral about rights. YouTube distribution metadata is separate from lyrics/audio licensing and from any “Official,” “Verified,” or “Star Lyrix Original” label. The public site continues to show only rights-aware lyrics and authorized playback surfaces.
+
+## Cinematic marketing redesign checkpoint
+
+The marketing homepage was rebuilt from the new `docs/STAR_LYrix_MARKETING_UIUX_SPEC.md` after the previous compact card sequence felt too restrained. The current composition uses the Stitch charcoal/gold visual system with an asymmetric record-sleeve hero, `/public/metaimage.webp` as an optimized visual anchor, serif lyric typography, a content ticker, varied path cards, channel feature/rail, Reading Room preview, creator flywheel, and rights-aware trust band.
+
+`ShortsGallery` now supports a headerless mode so it can be composed inside the editorial homepage without duplicating the section header. The public marketing boundary remains unchanged: `/lyrics` and `/shorts` are public, while creator tools and BYOK settings route through authentication. The redesigned page was validated through TypeScript, production build, targeted lint, `git diff --check`, and 22 Playwright tests.
