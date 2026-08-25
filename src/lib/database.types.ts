@@ -469,6 +469,174 @@ export interface Database {
           created_at?: string
         }
       }
+      artist_profiles: {
+        Row: {
+          id: string
+          owner_id: string
+          display_name: string
+          biography: string | null
+          profile_image_url: string | null
+          website_url: string | null
+          social_links: Json
+          verified: boolean
+          is_public: boolean
+          created_at: string
+          updated_at: string
+        }
+        Insert: {
+          id?: string
+          owner_id: string
+          display_name: string
+          biography?: string | null
+          profile_image_url?: string | null
+          website_url?: string | null
+          social_links?: Json
+          verified?: boolean
+          is_public?: boolean
+          created_at?: string
+          updated_at?: string
+        }
+        Update: {
+          id?: string
+          owner_id?: string
+          display_name?: string
+          biography?: string | null
+          profile_image_url?: string | null
+          website_url?: string | null
+          social_links?: Json
+          verified?: boolean
+          is_public?: boolean
+          created_at?: string
+          updated_at?: string
+        }
+      }
+      artist_video_submissions: {
+        Row: {
+          id: string
+          artist_profile_id: string
+          created_by: string
+          artist_name: string
+          song_title: string
+          album_title: string | null
+          video_title: string
+          description: string | null
+          language_code: string
+          genre: string | null
+          release_date: string | null
+          video_source_type: string
+          video_source_url: string
+          thumbnail_url: string | null
+          rights_holder: string
+          rights_evidence_url: string | null
+          lyrics_rights_status: string
+          lyrics_license_reference: string | null
+          rights_attested: boolean
+          permission_to_edit: boolean
+          permission_to_publish: boolean
+          status: string
+          reviewer_note: string | null
+          reviewed_by: string | null
+          reviewed_at: string | null
+          youtube_video_id: string | null
+          youtube_published_at: string | null
+          created_at: string
+          updated_at: string
+        }
+        Insert: {
+          id?: string
+          artist_profile_id: string
+          created_by: string
+          artist_name: string
+          song_title: string
+          album_title?: string | null
+          video_title: string
+          description?: string | null
+          language_code?: string
+          genre?: string | null
+          release_date?: string | null
+          video_source_type?: string
+          video_source_url: string
+          thumbnail_url?: string | null
+          rights_holder: string
+          rights_evidence_url?: string | null
+          lyrics_rights_status?: string
+          lyrics_license_reference?: string | null
+          rights_attested?: boolean
+          permission_to_edit?: boolean
+          permission_to_publish?: boolean
+          status?: string
+          reviewer_note?: string | null
+          reviewed_by?: string | null
+          reviewed_at?: string | null
+          youtube_video_id?: string | null
+          youtube_published_at?: string | null
+          created_at?: string
+          updated_at?: string
+        }
+        Update: {
+          id?: string
+          artist_profile_id?: string
+          created_by?: string
+          artist_name?: string
+          song_title?: string
+          album_title?: string | null
+          video_title?: string
+          description?: string | null
+          language_code?: string
+          genre?: string | null
+          release_date?: string | null
+          video_source_type?: string
+          video_source_url?: string
+          thumbnail_url?: string | null
+          rights_holder?: string
+          rights_evidence_url?: string | null
+          lyrics_rights_status?: string
+          lyrics_license_reference?: string | null
+          rights_attested?: boolean
+          permission_to_edit?: boolean
+          permission_to_publish?: boolean
+          status?: string
+          reviewer_note?: string | null
+          reviewed_by?: string | null
+          reviewed_at?: string | null
+          youtube_video_id?: string | null
+          youtube_published_at?: string | null
+          created_at?: string
+          updated_at?: string
+        }
+      }
+      artist_submission_events: {
+        Row: {
+          id: string
+          submission_id: string
+          actor_id: string | null
+          event_type: string
+          from_status: string | null
+          to_status: string | null
+          note: string | null
+          created_at: string
+        }
+        Insert: {
+          id?: string
+          submission_id: string
+          actor_id?: string | null
+          event_type: string
+          from_status?: string | null
+          to_status?: string | null
+          note?: string | null
+          created_at?: string
+        }
+        Update: {
+          id?: string
+          submission_id?: string
+          actor_id?: string | null
+          event_type?: string
+          from_status?: string | null
+          to_status?: string | null
+          note?: string | null
+          created_at?: string
+        }
+      }
       youtube_videos: {
         Row: {
           id: string
@@ -537,6 +705,47 @@ export interface Database {
           updated_at: string
         }
         Relationships: []
+      }
+    }
+    Functions: {
+      submit_artist_video_submission: {
+        Args: {
+          p_submission_id: string
+          p_rights_attested: boolean
+          p_permission_to_edit: boolean
+          p_permission_to_publish: boolean
+        }
+        Returns: {
+          id: string
+          artist_profile_id: string
+          created_by: string
+          artist_name: string
+          song_title: string
+          album_title: string | null
+          video_title: string
+          description: string | null
+          language_code: string
+          genre: string | null
+          release_date: string | null
+          video_source_type: string
+          video_source_url: string
+          thumbnail_url: string | null
+          rights_holder: string
+          rights_evidence_url: string | null
+          lyrics_rights_status: string
+          lyrics_license_reference: string | null
+          rights_attested: boolean
+          permission_to_edit: boolean
+          permission_to_publish: boolean
+          status: string
+          reviewer_note: string | null
+          reviewed_by: string | null
+          reviewed_at: string | null
+          youtube_video_id: string | null
+          youtube_published_at: string | null
+          created_at: string
+          updated_at: string
+        }
       }
     }
   }
