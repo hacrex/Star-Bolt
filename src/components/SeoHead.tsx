@@ -8,6 +8,7 @@ const routeMeta: Record<string, { title: string; description: string }> = {
   '/search': { title: 'Music catalog — Star Lyrix', description: 'Match songs and artists across the Star Lyrix music catalog.' },
   '/lyrics': { title: 'Lyrics Reader — Star Lyrix', description: 'Read authorized lyrics with Spotify catalog matching and Musixmatch-powered availability.' },
   '/shorts': { title: 'Star Lyrix Shorts — YouTube gallery', description: 'Watch the official Star Lyrix Shorts gallery on YouTube.' },
+  '/creators': { title: 'For Creators — Star Lyrix', description: 'Turn original lyrics into visual stories, lyric videos, and Shorts with a rights-aware Star Lyrix creator workflow.' },
   '/ai-lyrics': { title: 'AI Lyrics Studio — Star Lyrix', description: 'Create original lyrics in a warm, private studio built for musical ideas.' },
   '/creator': { title: 'Creator Studio — Star Lyrix', description: 'Bring your own AI provider and shape original lyric content in Star Lyrix.' },
   '/settings/ai': { title: 'AI Provider Settings — Star Lyrix', description: 'Manage your private BYOK provider connections for original Star Lyrix creator work.' },

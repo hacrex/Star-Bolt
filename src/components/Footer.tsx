@@ -30,6 +30,7 @@ const Footer = () => {
             ['YouTube channel', 'https://www.youtube.com/@starlyrix'],
           ]} />
           <FooterColumn title="For creators" links={[
+            ['For Creators', '/creators'],
             ['Creator Studio', '/creator'],
             ['AI provider settings', '/settings/ai'],
             ['Sign in', '/auth'],
