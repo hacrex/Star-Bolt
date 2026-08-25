@@ -25,11 +25,11 @@ The frontend is **conditionally ready for staging review**. The public routing, 
 |---|---|---|
 | TypeScript | `npx tsc -p tsconfig.app.json --noEmit` | Passed |
 | Production build | `npm run build` | Passed |
-| Targeted lint | `npx eslint playwright.config.ts tests/e2e src/components/SeoHead.tsx src/App.tsx src/pages/Home.tsx src/pages/Search.tsx src/pages/Videos.tsx vite.config.ts scripts/report-bundle.mjs` | Passed; only the repository’s existing TypeScript-version compatibility warning was emitted |
+| Targeted lint | `npx eslint playwright.config.ts tests/e2e src/components/SeoHead.tsx src/App.tsx src/pages/Home.tsx src/pages/Search.tsx vite.config.ts scripts/report-bundle.mjs` | Passed; only the repository’s existing TypeScript-version compatibility warning was emitted |
 | Browser smoke | `npm run test:e2e` | Passed: 17 tests |
 | Diff hygiene | `git diff --check` | Passed |
 | Manual browser QA | Local Vite on port 5175, Home and Terms routes | Passed after hydration settled; evidence recorded in `qa/phase6-browser-qa-notes.md` |
-| Full lint inventory | `npm run lint` | Existing unrelated failures remain in the duplicate `home/project` tree and Supabase Edge Function catch bindings; no Phase 6 targeted file failed. |
+| Full lint inventory | `npm run lint` | Passed with two non-blocking Fast Refresh warnings in `Toast.tsx` and `ThemeContext.tsx`; the duplicate `home/project` tree has been removed. |
 
 ## Bundle measurement
 
