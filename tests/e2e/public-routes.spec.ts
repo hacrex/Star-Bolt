@@ -16,6 +16,8 @@ test.describe('Star Lyrix public shell', () => {
     await expect(page.getByRole('link', { name: /Start creating|For creators/i }).first()).toBeVisible();
     await expect(page.getByRole('link', { name: /Submit a video/i }).first()).toBeVisible();
     await expect(page.getByRole('link', { name: /Watch Shorts/i }).first()).toHaveAttribute('href', '/shorts');
+    await expect(page.locator('.site-header').getByRole('link', { name: /Submit a video/i })).toHaveCount(0);
+    await expect(page.locator('.site-header').getByRole('link', { name: /For creators/i }).first()).toHaveAttribute('href', '/creators');
   });
 
   test('creator story panels route to the correct public or protected entry point', async ({ page }) => {
@@ -31,6 +33,7 @@ test.describe('Star Lyrix public shell', () => {
     await expect(page.getByRole('dialog', { name: /quick jump/i })).toBeVisible();
     await expect(page.getByRole('button', { name: /translate & collaborate/i })).toBeVisible();
     await expect(page.getByRole('button', { name: /creator studio/i })).toBeVisible();
+    await expect(page.getByRole('button', { name: /for creators/i })).toBeVisible();
     await page.keyboard.press('Escape');
     await expect(page.getByRole('dialog', { name: /quick jump/i })).toHaveCount(0);
   });
@@ -50,6 +53,14 @@ test.describe('Star Lyrix public shell', () => {
       await hindiFilter.click();
       await expect(page).toHaveURL(/language=hi/);
     }
+  });
+
+  test('For Creators page presents the Artist and Stars pathway', async ({ page }) => {
+    await page.goto('/creators');
+    await expect(page).toHaveTitle(/For Creators/i);
+    await expect(page.locator('main')).toContainText(/Artists \/ Stars|Your sound|Original lyric studio|Official channel pathway/i);
+    await expect(page.getByRole('link', { name: /Submit for review/i })).toHaveAttribute('href', '/submit');
+    await expect(page.locator('meta[name="description"]')).toHaveAttribute('content', /rights-aware Star Lyrix creator workflow/i);
   });
 
   test('public Lyrics Reader keeps catalog and lyrics source language clear', async ({ page }) => {

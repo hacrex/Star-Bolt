@@ -2,7 +2,7 @@
 
 **Status:** Design direction approved for implementation  
 **Product:** Star Lyrix — Creator Studio and the Vevo for Lyrics  
-**Primary public routes:** `/`, `/lyrics`, `/shorts`, `/search`, and legal pages  
+**Primary public routes:** `/`, `/lyrics`, `/shorts`, `/search`, `/creators`, and legal pages
 **Protected routes:** `/auth`, `/creator`, `/ai-lyrics`, `/settings/ai`, `/generated-lyrics`, `/playlists`, `/profile`, and contribution/workspace routes  
 **Source of truth:** Stitch design system, prior Star Lyrix implementation history, product memory, build specification, BYOK requirements, and Vevo-for-Lyrics requirements.
 
@@ -167,6 +167,10 @@ This is the public Reading Room entry. Above the search form, show a quiet edito
 ### `/search`
 
 Keep search utility-focused but visually consistent: a large search field, language/mood chips, curated context, and result cards. Avoid turning this page into a second homepage.
+
+### `/creators`
+
+This is the public artist and creator landing page. It should introduce the Artist/Stars audience to the current creator toolkit—original lyric studio, BYOK provider control, rights-aware Reading Room, and submission for review—then distinguish future production stages such as lyric-video direction, Shorts packaging, voiceover, and the server-only official-channel publishing pathway. Use a cinematic artist hero, a varied feature matrix, a five-step release path, a visible rights promise, and protected CTAs. The page may invite artists to submit, but must not promise approval, official status, or automatic YouTube publication.
 
 ## 7. Creator boundary
 

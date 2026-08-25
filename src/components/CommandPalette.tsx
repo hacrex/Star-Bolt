@@ -13,6 +13,7 @@ const COMMANDS: Command[] = [
   { label: 'Discover', hint: 'Find a new feeling', href: '/', icon: Compass },
   { label: 'Lyrics Reader', hint: 'Read an authorized lyric room', href: '/lyrics', icon: BookOpen },
   { label: 'Watch Star Lyrix Shorts', hint: 'Open the official YouTube gallery', href: '/shorts', icon: Youtube },
+  { label: 'For Creators', hint: 'Explore the Artist and Stars pathway', href: '/creators', icon: Sparkles },
   { label: 'Creator Studio', hint: 'Build original lyric content', href: '/creator', icon: Sparkles },
   { label: 'AI provider settings', hint: 'Manage your BYOK connections', href: '/settings/ai', icon: KeyRound },
   { label: 'Your library', hint: 'Playlists and saved work', href: '/playlists', icon: Library },

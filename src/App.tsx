@@ -26,6 +26,7 @@ const TranslationWorkspace = React.lazy(() => import('./pages/TranslationWorkspa
 const AISettings = React.lazy(() => import('./pages/AISettings'));
 const CreatorStudio = React.lazy(() => import('./pages/CreatorStudio'));
 const ArtistSubmission = React.lazy(() => import('./pages/ArtistSubmission'));
+const Creators = React.lazy(() => import('./pages/Creators'));
 
 class ErrorBoundary extends React.Component<
   { children: React.ReactNode },
@@ -104,6 +105,7 @@ const App = () => {
                     <Route path="/search" element={<Search />} />
                     <Route path="/lyrics" element={<LyricsReader />} />
                     <Route path="/shorts" element={<Shorts />} />
+                    <Route path="/creators" element={<Creators />} />
                     <Route path="/ai-lyrics" element={<ProtectedRoute><AILyricsGenerator /></ProtectedRoute>} />
                     <Route path="/creator" element={<ProtectedRoute><CreatorStudio /></ProtectedRoute>} />
                     <Route path="/settings/ai" element={<ProtectedRoute><AISettings /></ProtectedRoute>} />
