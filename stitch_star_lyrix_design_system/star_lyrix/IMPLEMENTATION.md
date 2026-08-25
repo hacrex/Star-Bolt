@@ -166,3 +166,9 @@ The public homepage now presents Star Lyrix as a Creator Studio product for orig
 The new `/shorts` route renders only the curated Star Lyrix channel gallery from the server-side `search-media` function and links to `https://www.youtube.com/@starlyrix`. The new `/lyrics` route separates Spotify catalog matching from Musixmatch-authorized lyric display. No Spotify response is treated as lyric text, and no unofficial lyric endpoint is used. Missing service configuration produces a visible, truthful unavailable state rather than fake content.
 
 A Vercel SPA fallback was added because direct navigation to the deployed `/ai-lyrics` route returned `404: NOT_FOUND`. Deployment still requires a redeploy and verification. The public media gateway requires server-side YouTube, Spotify, and licensed Musixmatch configuration; those credentials are documented only in `supabase/functions/.env.example` and must not be exposed as `VITE_*` variables.
+
+## Vevo-for-Lyrics catalog foundation
+
+The attached Vevo-for-Lyrics requirements are tracked in `docs/Star_Lyrix_Vevo_for_Lyrics_Product_Requirements.md`, with architecture decisions in `docs/STAR_LYrix_VEVO_IMPLEMENTATION_PLAN.md`. The next safe foundation is now implemented: migration `20260824000008_add_youtube_video_catalog.sql` creates a public-read, server-written `youtube_videos` metadata catalog, and `sync-youtube-catalog` imports only from a configured Star Lyrix playlist or explicit video allowlist.
+
+The public `/shorts` gallery reads cached rows first. The sync function never exposes the YouTube key or sync secret, and the cached row is intentionally neutral about rights. YouTube distribution metadata is separate from lyrics/audio licensing and from any “Official,” “Verified,” or “Star Lyrix Original” label. The public site continues to show only rights-aware lyrics and authorized playback surfaces.
